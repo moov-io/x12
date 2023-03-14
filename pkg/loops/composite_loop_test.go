@@ -117,7 +117,7 @@ var testComplexRule = rules.LoopRule{
 	},
 }
 
-func FillUnifiedLoopWithRule(loop *UnifiedLoop) {
+func FillCompositeLoopWithRule(loop *CompositeLoop) {
 
 	seg11 := segments.NewNM1(&testSegRule1.Get(0).Elements)
 	seg11.SetFieldByIndex("01", "41")
@@ -145,7 +145,7 @@ func FillUnifiedLoopWithRule(loop *UnifiedLoop) {
 	l1001a.Segments = []segments.SegmentInterface{seg21, seg22}
 
 	subRule1 := testComplexRule.SubLoopRule[0]
-	sub1 := NewUnifiedLoop(&subRule1)
+	sub1 := NewCompositeLoop(&subRule1)
 	sub1.Loop = *l1001a
 
 	seg31 := segments.NewNM1(&testSegRule3.Get(0).Elements)
@@ -161,58 +161,58 @@ func FillUnifiedLoopWithRule(loop *UnifiedLoop) {
 	l1002a.Segments = []segments.SegmentInterface{seg31, seg32}
 
 	subRule2 := testComplexRule.SubLoopRule[1]
-	sub2 := NewUnifiedLoop(&subRule2)
+	sub2 := NewCompositeLoop(&subRule2)
 	sub2.Loop = *l1002a
 
-	loop.SubLoops = []UnifiedLoop{*sub1, *sub2}
+	loop.SubLoops = []CompositeLoop{*sub1, *sub2}
 
 	return
 }
 
-func TestUnifiedLoop(t *testing.T) {
+func TestCompositeLoop(t *testing.T) {
 
-	t.Run("testing empty unified loop", func(t *testing.T) {
+	t.Run("testing empty Composite loop", func(t *testing.T) {
 
-		loop := &UnifiedLoop{}
+		loop := &CompositeLoop{}
 		require.Error(t, loop.Validate(nil))
-		require.Equal(t, "please specify rules for this unified loop", loop.Validate(nil).Error())
+		require.Equal(t, "please specify rules for this Composite loop", loop.Validate(nil).Error())
 		require.Equal(t, "", loop.String())
-		require.Equal(t, "unified loop", loop.Name())
+		require.Equal(t, "Composite loop", loop.Name())
 
 		read, err := loop.Parse("")
 		require.Error(t, err)
-		require.Equal(t, "please specify rules for this unified loop", err.Error())
+		require.Equal(t, "please specify rules for this Composite loop", err.Error())
 		require.Equal(t, 0, read)
 
-		loop = NewUnifiedLoop(nil)
+		loop = NewCompositeLoop(nil)
 		require.Error(t, loop.Validate(nil))
-		require.Equal(t, "please specify rules for this unified loop", loop.Validate(nil).Error())
+		require.Equal(t, "please specify rules for this Composite loop", loop.Validate(nil).Error())
 		require.Equal(t, "", loop.String())
-		require.Equal(t, "unified loop", loop.Name())
+		require.Equal(t, "Composite loop", loop.Name())
 
 		read, err = loop.Parse("")
 		require.Error(t, err)
-		require.Equal(t, "please specify rules for this unified loop", err.Error())
+		require.Equal(t, "please specify rules for this Composite loop", err.Error())
 		require.Equal(t, 0, read)
 
-		loop = NewUnifiedLoop(&testRule)
+		loop = NewCompositeLoop(&testRule)
 		require.NotNil(t, loop.GetRule())
 
 		loop.SetRule(nil)
 		require.Nil(t, loop.GetRule())
 
-		require.Equal(t, "unified loop", loop.Name())
+		require.Equal(t, "Composite loop", loop.Name())
 	})
 
-	t.Run("testing unified loop with specified rule", func(t *testing.T) {
+	t.Run("testing Composite loop with specified rule", func(t *testing.T) {
 
-		loop := NewUnifiedLoop(&testComplexRule)
+		loop := NewCompositeLoop(&testComplexRule)
 		require.Error(t, loop.Validate(nil))
 		require.Equal(t, "loop(1000A) is invalid, please add new nm1 segment", loop.Validate(nil).Error())
 		require.Equal(t, "", loop.String())
 		require.Equal(t, "1000A", loop.Name())
 
-		FillUnifiedLoopWithRule(loop)
+		FillCompositeLoopWithRule(loop)
 		require.Equal(t, 2, len(loop.SubLoops))
 		require.NoError(t, loop.Validate(nil))
 		require.NoError(t, loop.Validate(&testComplexRule))
@@ -232,7 +232,7 @@ func TestUnifiedLoop(t *testing.T) {
 
 	})
 
-	t.Run("testing unified loop with 1000A", func(t *testing.T) {
+	t.Run("testing Composite loop with 1000A", func(t *testing.T) {
 
 		rule := rules.LoopRule{
 			Segments: rule_5010_837p.L1000ARule,
@@ -240,7 +240,7 @@ func TestUnifiedLoop(t *testing.T) {
 			Name:     "1000A",
 		}
 
-		loop := NewUnifiedLoop(&rule)
+		loop := NewCompositeLoop(&rule)
 
 		read, err := loop.Parse("NM1*41*2*CS*****46*133052274~PER*IC*CUSTOMER SOLUTIONS*TE*8008456592~")
 		require.NoError(t, err)

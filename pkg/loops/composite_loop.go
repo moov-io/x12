@@ -13,43 +13,43 @@ import (
 	"github.com/moov-io/x12/pkg/rules"
 )
 
-func NewUnifiedLoop(rule *rules.LoopRule) *UnifiedLoop {
+func NewCompositeLoop(rule *rules.LoopRule) *CompositeLoop {
 
-	newLoop := UnifiedLoop{rule: rule}
+	newLoop := CompositeLoop{rule: rule}
 
 	return &newLoop
 }
 
-type UnifiedLoop struct {
+type CompositeLoop struct {
 	Loop     Loop
-	SubLoops []UnifiedLoop
+	SubLoops []CompositeLoop
 
 	rule *rules.LoopRule
 }
 
-func (r UnifiedLoop) Name() string {
+func (r CompositeLoop) Name() string {
 	if r.rule != nil {
 		return r.rule.Name
 	}
-	return "unified loop"
+	return "Composite loop"
 }
 
-func (r UnifiedLoop) GetRule() *rules.LoopRule {
+func (r CompositeLoop) GetRule() *rules.LoopRule {
 	return r.rule
 }
 
-func (r *UnifiedLoop) SetRule(s *rules.LoopRule) {
+func (r *CompositeLoop) SetRule(s *rules.LoopRule) {
 	r.rule = s
 }
 
-func (r *UnifiedLoop) Validate(loopRule *rules.LoopRule) error {
+func (r *CompositeLoop) Validate(loopRule *rules.LoopRule) error {
 
 	if loopRule == nil && r.rule != nil {
 		loopRule = r.rule
 	}
 
 	if loopRule == nil {
-		return errors.New("please specify rules for this unified loop")
+		return errors.New("please specify rules for this Composite loop")
 	}
 
 	err := r.Loop.Validate(&loopRule.Segments)
@@ -98,10 +98,10 @@ func (r *UnifiedLoop) Validate(loopRule *rules.LoopRule) error {
 	return nil
 }
 
-func (r *UnifiedLoop) Parse(data string, args ...string) (int, error) {
+func (r *CompositeLoop) Parse(data string, args ...string) (int, error) {
 
 	if r.rule == nil {
-		return 0, errors.New("please specify rules for this unified loop")
+		return 0, errors.New("please specify rules for this Composite loop")
 	}
 
 	r.Loop.SetRule(r.rule)
@@ -121,7 +121,7 @@ func (r *UnifiedLoop) Parse(data string, args ...string) (int, error) {
 		rule := r.rule.SubLoopRule[index]
 
 		for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
-			newChild := NewUnifiedLoop(&rule)
+			newChild := NewCompositeLoop(&rule)
 			size, err = newChild.Parse(line, args...)
 			if err == nil {
 				read += size
@@ -140,7 +140,7 @@ func (r *UnifiedLoop) Parse(data string, args ...string) (int, error) {
 	return read, nil
 }
 
-func (r UnifiedLoop) String(args ...string) string {
+func (r CompositeLoop) String(args ...string) string {
 	var buf bytes.Buffer
 
 	buf.WriteString(r.Loop.String(args...))

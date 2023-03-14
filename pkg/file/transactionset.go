@@ -24,10 +24,10 @@ func NewTransactionSet(rule *rules.TransactionRule) *TransactionSet {
 }
 
 type TransactionSet struct {
-	ST    segments.ST         `json:"ST" xml:"ST"`
-	BHT   *segments.BHT       `json:"BHT,omitempty" xml:"BHT,omitempty"`
-	Loops []loops.UnifiedLoop `json:"loops" xml:"loops"`
-	SE    *segments.SE        `json:"SE,omitempty" xml:"SE,omitempty"`
+	ST    segments.ST           `json:"ST" xml:"ST"`
+	BHT   *segments.BHT         `json:"BHT,omitempty" xml:"BHT,omitempty"`
+	Loops []loops.CompositeLoop `json:"loops" xml:"loops"`
+	SE    *segments.SE          `json:"SE,omitempty" xml:"SE,omitempty"`
 
 	rule *rules.TransactionRule
 }
@@ -185,7 +185,7 @@ func (r *TransactionSet) Parse(data string, args ...string) (int, error) {
 		loopRule := r.rule.Loops[index]
 
 		for repeatIdx := 0; repeatIdx < loopRule.Repeat(); repeatIdx++ {
-			newLoop := loops.NewUnifiedLoop(&loopRule)
+			newLoop := loops.NewCompositeLoop(&loopRule)
 			size, err = newLoop.Parse(line, args...)
 			if err == nil {
 				read += size
