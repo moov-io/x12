@@ -1,0 +1,47 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# code coverage
+coverage.html
+
+/bin/
+
+# OpenAPITools/openapi-generator
+openapi-generator-cli-*.jar
+/client/
+
+# macOS
+.DS_Store
+
+# code coverage
+coverage.html
+cover.out
+coverage.txt
+misspell*
+staticcheck*
+/lint-project.sh
+bin/
+tmp/
+
+# fuzzing
+test/fuzz-reader/fuzzreader-fuzz.zip
+test/fuzz-reader/corpus/*.tar.gz
+
+# wasm build
+/cmd/webui/assets/fincen.wasm
+
+# GoLand
+/.idea/*
+
+# Gitleaks
+gitleaks.tar.gz
