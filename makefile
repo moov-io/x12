@@ -5,7 +5,7 @@ USERID := $(shell id -u $$USER)
 GROUPID:= $(shell id -g $$USER)
 
 .PHONY: check
-check: build services
+check:
 ifeq ($(OS),Windows_NT)
 	@echo "Skipping checks on Windows, currently unsupported."
 else
@@ -15,7 +15,7 @@ else
 	@rm -rf cmd/x12/output
 endif
 
-dist: clean build
+dist: clean
 ifeq ($(OS),Windows_NT)
 	CGO_ENABLED=1 GOOS=windows go build -o bin/x12.exe github.com/moov-io/x12/cmd/x12
 else
