@@ -5,11 +5,11 @@
 package loops
 
 import (
+	"testing"
+
 	"github.com/moov-io/x12/pkg/rules"
 	"github.com/moov-io/x12/pkg/segments"
 	"github.com/moov-io/x12/rule_5010_837p"
-	"testing"
-
 	"github.com/stretchr/testify/require"
 )
 
@@ -165,8 +165,6 @@ func FillCompositeLoopWithRule(loop *CompositeLoop) {
 	sub2.Loop = *l1002a
 
 	loop.SubLoops = []CompositeLoop{*sub1, *sub2}
-
-	return
 }
 
 func TestCompositeLoop(t *testing.T) {

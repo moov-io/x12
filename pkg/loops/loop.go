@@ -112,12 +112,6 @@ func (r *Loop) Parse(data string, args ...string) (int, error) {
 	index := 0
 
 	for rule := segRules.Get(index); rule != nil; rule = segRules.Get(index) {
-
-		cnt := 1
-		if rule.RepeatCount > cnt {
-			cnt = rule.RepeatCount
-		}
-
 		for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
 			segment, err := segments.CreateSegment(rule.Name, rule)
 			if err != nil {

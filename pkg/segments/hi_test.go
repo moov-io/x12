@@ -53,7 +53,7 @@ func TestForHI(t *testing.T) {
 
 		require.Equal(t, "HI*~", seg.String())
 
-		in := "HI*composit<AA~"
+		in := "HI*composite<AA~"
 		read, err := seg.Parse(in)
 		require.Error(t, err)
 		require.Equal(t, 0, read)
@@ -203,15 +203,19 @@ func TestForHI(t *testing.T) {
 		require.Equal(t, "doesn't match setting type", err.Error())
 
 		err = seg.SetFieldByIndex("08", nil)
+		require.NoError(t, err)
 		in = "HI*composite1:1*composite2:1*composite3:1*composite4:1*composite5:1*composite6:1*composite7:7*composite8~"
 		read, err = seg.Parse(in)
 		require.NoError(t, err)
+		require.Equal(t, 105, read)
 		require.Equal(t, "HI*composite1:1*composite2:1*composite3:1*composite4:1*composite5:1*composite6:1*composite7:7~", seg.String())
 
 		err = seg.SetFieldByIndex("07", &HealthCareCode{})
+		require.NoError(t, err)
 		in = "HI*composite1:1*composite2:1*composite3:1*composite4:1*composite5:1*composite6:1~"
 		read, err = seg.Parse(in)
 		require.NoError(t, err)
+		require.Equal(t, 81, read)
 		require.Equal(t, "HI*composite1:1*composite2:1*composite3:1*composite4:1*composite5:1*composite6:1~", seg.String())
 
 		in = "CLM*1-1180*174***11:A:1*Y*A*W*Y*P~"
