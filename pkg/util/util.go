@@ -111,23 +111,22 @@ func ValidateField(data any, spec rules.ElementRule, mask string) error {
 	dataStr := strings.TrimSpace(fmt.Sprintf("%v", data))
 
 	switch mask {
-	case rules.MASK_REQUIRED:
-		if dataStr == "" {
-			// TODO
-			fmt.Errorf("the element is require")
-		}
-		break
-	case rules.MASK_NOTUSED:
-		if dataStr != "" {
-			// TODO
-			fmt.Errorf("the element is not used")
-		}
-		break
+	/*
+		case rules.MASK_REQUIRED:
+			if dataStr == "" {
+				// TODO
+				return errors.New("the element is require")
+			}
+		case rules.MASK_NOTUSED:
+			if dataStr != "" {
+				// TODO
+				return errors.New("the element is not used")
+			}
+	*/
 	case rules.MASK_OPTIONAL:
 		if dataStr == "" {
 			return nil
 		}
-		break
 	}
 
 	if len(spec.AcceptValues) > 0 {
@@ -136,7 +135,7 @@ func ValidateField(data any, spec rules.ElementRule, mask string) error {
 				return nil
 			}
 		}
-		return fmt.Errorf("the element contains unexpected value")
+		return errors.New("the element contains unexpected value")
 	}
 
 	return nil

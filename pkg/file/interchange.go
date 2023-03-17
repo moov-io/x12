@@ -130,8 +130,9 @@ func (r *Interchange) Parse(data string, args ...string) (int, error) {
 			return 0, errors.New("unable to parse iea segment")
 		} else if err == nil {
 			read += size
-			line = data[read:]
-			r.IEA = newIEA.(*segments.IEA)
+			if s, ok := newIEA.(*segments.IEA); ok {
+				r.IEA = s
+			}
 		}
 	}
 

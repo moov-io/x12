@@ -131,8 +131,9 @@ func (r *FunctionalGroup) Parse(data string, args ...string) (int, error) {
 			return 0, errors.New("unable to parse ge segment")
 		} else if err == nil {
 			read += size
-			line = data[read:]
-			r.GE = newGE.(*segments.GE)
+			if s, ok := newGE.(*segments.GE); ok {
+				r.GE = s
+			}
 		}
 	}
 

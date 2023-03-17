@@ -72,34 +72,34 @@ func (r *HI) Validate(rule *rules.Elements) error {
 
 		switch i {
 		case 1:
-			err = r.HealthCareCodeInformation1.Validate(nil)
+			err = r.HealthCareCodeInformation1.Validate(rule)
 		case 2:
 			if r.HealthCareCodeInformation2 != nil {
-				err = r.HealthCareCodeInformation2.Validate(nil)
+				err = r.HealthCareCodeInformation2.Validate(rule)
 			}
 		case 3:
 			if r.HealthCareCodeInformation3 != nil {
-				err = r.HealthCareCodeInformation3.Validate(nil)
+				err = r.HealthCareCodeInformation3.Validate(rule)
 			}
 		case 4:
 			if r.HealthCareCodeInformation4 != nil {
-				err = r.HealthCareCodeInformation4.Validate(nil)
+				err = r.HealthCareCodeInformation4.Validate(rule)
 			}
 		case 5:
 			if r.HealthCareCodeInformation5 != nil {
-				err = r.HealthCareCodeInformation5.Validate(nil)
+				err = r.HealthCareCodeInformation5.Validate(rule)
 			}
 		case 6:
 			if r.HealthCareCodeInformation6 != nil {
-				err = r.HealthCareCodeInformation6.Validate(nil)
+				err = r.HealthCareCodeInformation6.Validate(rule)
 			}
 		case 7:
 			if r.HealthCareCodeInformation7 != nil {
-				err = r.HealthCareCodeInformation7.Validate(nil)
+				err = r.HealthCareCodeInformation7.Validate(rule)
 			}
 		case 8:
 			if r.HealthCareCodeInformation8 != nil {
-				err = r.HealthCareCodeInformation8.Validate(nil)
+				err = r.HealthCareCodeInformation8.Validate(rule)
 			}
 		}
 

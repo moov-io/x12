@@ -176,7 +176,9 @@ func (r *TransactionSet) Parse(data string, args ...string) (int, error) {
 		} else if err == nil {
 			read += size
 			line = data[read:]
-			r.BHT = newBHT.(*segments.BHT)
+			if s, ok := newBHT.(*segments.BHT); ok {
+				r.BHT = s
+			}
 		}
 	}
 
@@ -210,8 +212,9 @@ func (r *TransactionSet) Parse(data string, args ...string) (int, error) {
 			return 0, errors.New("unable to parse se segment")
 		} else if err == nil {
 			read += size
-			line = data[read:]
-			r.SE = newSE.(*segments.SE)
+			if s, ok := newSE.(*segments.SE); ok {
+				r.SE = s
+			}
 		}
 	}
 
