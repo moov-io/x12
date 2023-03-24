@@ -72,11 +72,10 @@ func TestForSVD(t *testing.T) {
 
 	t.Run("parsing and encoding of svd segment with specified rule", func(t *testing.T) {
 
-		rule := rules.Elements{
+		rule := rules.ElementSetRule{
 			"03": {
-				Mask:           rules.MASK_REQUIRED,
-				HasSubElements: true,
-				SubRule: map[string]rules.ElementRule{
+				Mask: rules.MASK_REQUIRED,
+				Composite: rules.ElementSetRule{
 					"01": {AcceptValues: []string{"A"}},
 					"02": {AcceptValues: []string{"1", "2", "3", "4", "5", "7", "8"}},
 				},

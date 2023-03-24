@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var testSegRule1 = rules.Segments{
+var testSegRule1 = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "NM1",
 		Description: "SUBMITTER NAME-1000A",
@@ -43,7 +43,7 @@ var testSegRule1 = rules.Segments{
 	},
 }
 
-var testSegRule2 = rules.Segments{
+var testSegRule2 = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "NM1",
 		Description: "SUBMITTER NAME-1001A",
@@ -71,7 +71,7 @@ var testSegRule2 = rules.Segments{
 	},
 }
 
-var testSegRule3 = rules.Segments{
+var testSegRule3 = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "NM1",
 		Description: "SUBMITTER NAME-1002A",
@@ -102,7 +102,7 @@ var testSegRule3 = rules.Segments{
 var testComplexRule = rules.LoopRule{
 	Name:     "1000A",
 	Segments: testSegRule1,
-	SubLoopRule: map[int]rules.LoopRule{
+	Composite: rules.LoopSetRule{
 		0: {
 			Segments: testSegRule2,
 			Mask:     rules.MASK_REQUIRED,
@@ -144,8 +144,8 @@ func FillCompositeLoopWithRule(loop *CompositeLoop) {
 	l1001a := NewLoop(&testComplexRule)
 	l1001a.Segments = []segments.SegmentInterface{seg21, seg22}
 
-	subRule1 := testComplexRule.SubLoopRule[0]
-	sub1 := NewCompositeLoop(&subRule1)
+	compositeRule1 := testComplexRule.Composite[0]
+	sub1 := NewCompositeLoop(&compositeRule1)
 	sub1.Loop = *l1001a
 
 	seg31 := segments.NewNM1(&testSegRule3.Get(0).Elements)
@@ -160,8 +160,8 @@ func FillCompositeLoopWithRule(loop *CompositeLoop) {
 	l1002a := NewLoop(&testComplexRule)
 	l1002a.Segments = []segments.SegmentInterface{seg31, seg32}
 
-	subRule2 := testComplexRule.SubLoopRule[1]
-	sub2 := NewCompositeLoop(&subRule2)
+	compositeRule2 := testComplexRule.Composite[1]
+	sub2 := NewCompositeLoop(&compositeRule2)
 	sub2.Loop = *l1002a
 
 	loop.SubLoops = []CompositeLoop{*sub1, *sub2}

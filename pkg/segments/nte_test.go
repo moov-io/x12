@@ -68,7 +68,7 @@ func TestForNTE(t *testing.T) {
 
 	t.Run("parsing and encoding of nte segment with specified rule", func(t *testing.T) {
 
-		rule := rules.Elements{
+		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"0019"}},
 			"02": {Mask: rules.MASK_OPTIONAL},
 		}

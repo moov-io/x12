@@ -10,20 +10,20 @@ import (
 )
 
 type Element struct {
-	rule        *rules.Elements
+	rule        *rules.ElementSetRule
 	description string
 }
 
-func (e Element) GetRule() *rules.Elements {
+func (e Element) GetRule() *rules.ElementSetRule {
 	if e.rule != nil {
 		return e.rule
 	}
 
-	newRule := make(rules.Elements)
+	newRule := make(rules.ElementSetRule)
 	return &newRule
 }
 
-func (e *Element) SetRule(s *rules.Elements) {
+func (e *Element) SetRule(s *rules.ElementSetRule) {
 	if s == nil || e == nil {
 		return
 	}
@@ -41,13 +41,13 @@ func (e *Element) SetDescription(description string) {
 
 type SegmentInterface interface {
 	Name() string
-	GetRule() *rules.Elements
-	SetRule(s *rules.Elements)
+	GetRule() *rules.ElementSetRule
+	SetRule(s *rules.ElementSetRule)
 	GetDescription() string
 	SetDescription(string)
 	GetFieldByIndex(index string) any
 	SetFieldByIndex(index string, data any) error
-	Validate(rule *rules.Elements) error
+	Validate(rule *rules.ElementSetRule) error
 	Parse(data string, args ...string) (int, error)
 	String(args ...string) string
 }
@@ -86,41 +86,41 @@ var (
 	_ SegmentInterface = (*SVD)(nil)
 )
 
-type constructorFunc func(rule *rules.Elements) SegmentInterface
+type constructorFunc func(rule *rules.ElementSetRule) SegmentInterface
 
 var (
 	segmentConstructor = map[string]constructorFunc{
-		"AMT": func(rule *rules.Elements) SegmentInterface { return NewAMT(rule) },
-		"BHT": func(rule *rules.Elements) SegmentInterface { return NewBHT(rule) },
-		"CAS": func(rule *rules.Elements) SegmentInterface { return NewCAS(rule) },
-		"CLM": func(rule *rules.Elements) SegmentInterface { return NewCLM(rule) },
-		"CR1": func(rule *rules.Elements) SegmentInterface { return NewCR1(rule) },
-		"DMG": func(rule *rules.Elements) SegmentInterface { return NewDMG(rule) },
-		"DTP": func(rule *rules.Elements) SegmentInterface { return NewDTP(rule) },
-		"GE":  func(rule *rules.Elements) SegmentInterface { return NewGE(rule) },
-		"GS":  func(rule *rules.Elements) SegmentInterface { return NewGS(rule) },
-		"HI":  func(rule *rules.Elements) SegmentInterface { return NewHI(rule) },
-		"HL":  func(rule *rules.Elements) SegmentInterface { return NewHL(rule) },
-		"IEA": func(rule *rules.Elements) SegmentInterface { return NewIEA(rule) },
-		"ISA": func(rule *rules.Elements) SegmentInterface { return NewISA(rule) },
-		"LX":  func(rule *rules.Elements) SegmentInterface { return NewLX(rule) },
-		"MOA": func(rule *rules.Elements) SegmentInterface { return NewMOA(rule) },
-		"N3":  func(rule *rules.Elements) SegmentInterface { return NewN3(rule) },
-		"N4":  func(rule *rules.Elements) SegmentInterface { return NewN4(rule) },
-		"NM1": func(rule *rules.Elements) SegmentInterface { return NewNM1(rule) },
-		"NTE": func(rule *rules.Elements) SegmentInterface { return NewNTE(rule) },
-		"OI":  func(rule *rules.Elements) SegmentInterface { return NewOI(rule) },
-		"PAT": func(rule *rules.Elements) SegmentInterface { return NewPAT(rule) },
-		"PER": func(rule *rules.Elements) SegmentInterface { return NewPER(rule) },
-		"PRV": func(rule *rules.Elements) SegmentInterface { return NewPRV(rule) },
-		"PWK": func(rule *rules.Elements) SegmentInterface { return NewPWK(rule) },
-		"REF": func(rule *rules.Elements) SegmentInterface { return NewREF(rule) },
-		"SBR": func(rule *rules.Elements) SegmentInterface { return NewSBR(rule) },
-		"SE":  func(rule *rules.Elements) SegmentInterface { return NewSE(rule) },
-		"ST":  func(rule *rules.Elements) SegmentInterface { return NewST(rule) },
-		"SV1": func(rule *rules.Elements) SegmentInterface { return NewSV1(rule) },
-		"SV5": func(rule *rules.Elements) SegmentInterface { return NewSV5(rule) },
-		"SVD": func(rule *rules.Elements) SegmentInterface { return NewSVD(rule) },
+		"AMT": func(rule *rules.ElementSetRule) SegmentInterface { return NewAMT(rule) },
+		"BHT": func(rule *rules.ElementSetRule) SegmentInterface { return NewBHT(rule) },
+		"CAS": func(rule *rules.ElementSetRule) SegmentInterface { return NewCAS(rule) },
+		"CLM": func(rule *rules.ElementSetRule) SegmentInterface { return NewCLM(rule) },
+		"CR1": func(rule *rules.ElementSetRule) SegmentInterface { return NewCR1(rule) },
+		"DMG": func(rule *rules.ElementSetRule) SegmentInterface { return NewDMG(rule) },
+		"DTP": func(rule *rules.ElementSetRule) SegmentInterface { return NewDTP(rule) },
+		"GE":  func(rule *rules.ElementSetRule) SegmentInterface { return NewGE(rule) },
+		"GS":  func(rule *rules.ElementSetRule) SegmentInterface { return NewGS(rule) },
+		"HI":  func(rule *rules.ElementSetRule) SegmentInterface { return NewHI(rule) },
+		"HL":  func(rule *rules.ElementSetRule) SegmentInterface { return NewHL(rule) },
+		"IEA": func(rule *rules.ElementSetRule) SegmentInterface { return NewIEA(rule) },
+		"ISA": func(rule *rules.ElementSetRule) SegmentInterface { return NewISA(rule) },
+		"LX":  func(rule *rules.ElementSetRule) SegmentInterface { return NewLX(rule) },
+		"MOA": func(rule *rules.ElementSetRule) SegmentInterface { return NewMOA(rule) },
+		"N3":  func(rule *rules.ElementSetRule) SegmentInterface { return NewN3(rule) },
+		"N4":  func(rule *rules.ElementSetRule) SegmentInterface { return NewN4(rule) },
+		"NM1": func(rule *rules.ElementSetRule) SegmentInterface { return NewNM1(rule) },
+		"NTE": func(rule *rules.ElementSetRule) SegmentInterface { return NewNTE(rule) },
+		"OI":  func(rule *rules.ElementSetRule) SegmentInterface { return NewOI(rule) },
+		"PAT": func(rule *rules.ElementSetRule) SegmentInterface { return NewPAT(rule) },
+		"PER": func(rule *rules.ElementSetRule) SegmentInterface { return NewPER(rule) },
+		"PRV": func(rule *rules.ElementSetRule) SegmentInterface { return NewPRV(rule) },
+		"PWK": func(rule *rules.ElementSetRule) SegmentInterface { return NewPWK(rule) },
+		"REF": func(rule *rules.ElementSetRule) SegmentInterface { return NewREF(rule) },
+		"SBR": func(rule *rules.ElementSetRule) SegmentInterface { return NewSBR(rule) },
+		"SE":  func(rule *rules.ElementSetRule) SegmentInterface { return NewSE(rule) },
+		"ST":  func(rule *rules.ElementSetRule) SegmentInterface { return NewST(rule) },
+		"SV1": func(rule *rules.ElementSetRule) SegmentInterface { return NewSV1(rule) },
+		"SV5": func(rule *rules.ElementSetRule) SegmentInterface { return NewSV5(rule) },
+		"SVD": func(rule *rules.ElementSetRule) SegmentInterface { return NewSVD(rule) },
 	}
 )
 

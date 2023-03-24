@@ -63,7 +63,7 @@ func TestForOI(t *testing.T) {
 
 	t.Run("parsing and encoding of oi segment with specified rule", func(t *testing.T) {
 
-		rule := rules.Elements{
+		rule := rules.ElementSetRule{
 			"03": {AcceptValues: []string{"0019"}},
 			"06": {AcceptValues: []string{"00"}},
 		}

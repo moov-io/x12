@@ -45,7 +45,7 @@ func (r Loop) Name() string {
 	return "loop"
 }
 
-func (r *Loop) Validate(loopRule *rules.Segments) error {
+func (r *Loop) Validate(loopRule *rules.SegmentSetRule) error {
 
 	if loopRule == nil && r.rule != nil {
 		loopRule = &r.rule.Segments

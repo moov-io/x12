@@ -12,12 +12,12 @@ import (
 	"github.com/moov-io/x12/pkg/util"
 )
 
-func NewAMT(rule *rules.Elements) SegmentInterface {
+func NewAMT(rule *rules.ElementSetRule) SegmentInterface {
 
 	newSegment := AMT{}
 
 	if rule == nil {
-		newRule := make(rules.Elements)
+		newRule := make(rules.ElementSetRule)
 		newSegment.SetRule(&newRule)
 	} else {
 		newSegment.SetRule(rule)
@@ -45,7 +45,7 @@ func (r AMT) GetFieldByIndex(index string) any {
 	return util.GetFieldByIndex(r, index)
 }
 
-func (r *AMT) Validate(rule *rules.Elements) error {
+func (r *AMT) Validate(rule *rules.ElementSetRule) error {
 
 	if rule == nil {
 		rule = r.GetRule()

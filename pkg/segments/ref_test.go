@@ -68,7 +68,7 @@ func TestForREF(t *testing.T) {
 
 	t.Run("parsing and encoding of ref segment with specified rule", func(t *testing.T) {
 
-		rule := rules.Elements{
+		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"5"}, Mask: rules.MASK_OPTIONAL},
 			"02": {Mask: rules.MASK_NOTUSED},
 		}

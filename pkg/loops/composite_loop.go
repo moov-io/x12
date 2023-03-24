@@ -58,8 +58,8 @@ func (r *CompositeLoop) Validate(loopRule *rules.LoopRule) error {
 	}
 
 	segIndex := 0
-	for index := 0; index < len(loopRule.SubLoopRule); index++ {
-		rule := loopRule.SubLoopRule[index]
+	for index := 0; index < len(loopRule.Composite); index++ {
+		rule := loopRule.Composite[index]
 		for repeatCnt := 0; repeatCnt < rule.Repeat(); repeatCnt++ {
 
 			if segIndex+1 > len(r.SubLoops) {
@@ -110,15 +110,15 @@ func (r *CompositeLoop) Parse(data string, args ...string) (int, error) {
 		return 0, fmt.Errorf("unable to parse %s loop", strings.ToLower(r.rule.Name))
 	}
 
-	if len(r.rule.SubLoopRule) == 0 {
+	if len(r.rule.Composite) == 0 {
 		return size, nil
 	}
 
 	read := size
 	line := data[read:]
 
-	for index := 0; index < len(r.rule.SubLoopRule); index++ {
-		rule := r.rule.SubLoopRule[index]
+	for index := 0; index < len(r.rule.Composite); index++ {
+		rule := r.rule.Composite[index]
 
 		for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
 			newChild := NewCompositeLoop(&rule)

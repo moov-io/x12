@@ -13,7 +13,7 @@ import (
 
 func TestForHealthCareServiceLocation(t *testing.T) {
 
-	rule := rules.Elements{
+	rule := rules.ElementSetRule{
 		"02": {AcceptValues: []string{"2"}},
 		"03": {AcceptValues: []string{"1", "2", "3", "4", "5", "7", "8"}},
 	}
@@ -40,7 +40,7 @@ func TestForHealthCareServiceLocation(t *testing.T) {
 
 func TestForRelatedCausesInformation(t *testing.T) {
 
-	rule := rules.Elements{
+	rule := rules.ElementSetRule{
 		"01": {AcceptValues: []string{"AA", "EM", "OA"}},
 		"02": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"AA", "EM", "OA"}},
 		"03": {Mask: rules.MASK_NOTUSED, AcceptValues: []string{"AA", "EM", "OA"}},

@@ -63,7 +63,7 @@ func TestForSV5(t *testing.T) {
 
 	t.Run("parsing and encoding of sv5 segment with specified rule", func(t *testing.T) {
 
-		rule := rules.Elements{
+		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"85"}},
 		}
 

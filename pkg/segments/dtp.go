@@ -12,12 +12,12 @@ import (
 	"github.com/moov-io/x12/pkg/util"
 )
 
-func NewDTP(rule *rules.Elements) SegmentInterface {
+func NewDTP(rule *rules.ElementSetRule) SegmentInterface {
 
 	newSegment := DTP{}
 
 	if rule == nil {
-		newRule := make(rules.Elements)
+		newRule := make(rules.ElementSetRule)
 		newSegment.SetRule(&newRule)
 	} else {
 		newSegment.SetRule(rule)
@@ -46,7 +46,7 @@ func (r DTP) GetFieldByIndex(index string) any {
 	return util.GetFieldByIndex(r, index)
 }
 
-func (r *DTP) Validate(rule *rules.Elements) error {
+func (r *DTP) Validate(rule *rules.ElementSetRule) error {
 
 	if rule == nil {
 		rule = r.GetRule()

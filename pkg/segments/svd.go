@@ -12,12 +12,12 @@ import (
 	"github.com/moov-io/x12/pkg/util"
 )
 
-func NewSVD(rule *rules.Elements) SegmentInterface {
+func NewSVD(rule *rules.ElementSetRule) SegmentInterface {
 
 	newSegment := SVD{}
 
 	if rule == nil {
-		newRule := make(rules.Elements)
+		newRule := make(rules.ElementSetRule)
 		newSegment.SetRule(&newRule)
 	} else {
 		newSegment.SetRule(rule)
@@ -57,7 +57,7 @@ func (r SVD) GetFieldByIndex(index string) any {
 	return util.GetFieldByIndex(r, index)
 }
 
-func (r *SVD) Validate(rule *rules.Elements) error {
+func (r *SVD) Validate(rule *rules.ElementSetRule) error {
 
 	if rule == nil {
 		rule = r.GetRule()
@@ -114,12 +114,12 @@ func (r *SVD) Parse(data string, args ...string) (int, error) {
 		} else {
 			read += size
 
-			subRule := rule.SubRule
+			compositeRule := rule.Composite
 
 			if i == 3 { // HealthCareServiceLocation
 				var composite ProcedureIdentifier
-				if subRule != nil {
-					composite.SetRule((*rules.Elements)(&subRule))
+				if compositeRule != nil {
+					composite.SetRule(&compositeRule)
 				}
 
 				_, parseErr := composite.Parse(value, args...)

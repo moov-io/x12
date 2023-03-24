@@ -71,13 +71,12 @@ func TestForCLM(t *testing.T) {
 
 	t.Run("parsing and encoding of clm segment with specified rule", func(t *testing.T) {
 
-		rule := rules.Elements{
+		rule := rules.ElementSetRule{
 			"03": {Mask: rules.MASK_NOTUSED},
 			"04": {Mask: rules.MASK_NOTUSED},
 			"05": {
-				Mask:           rules.MASK_REQUIRED,
-				HasSubElements: true,
-				SubRule: map[string]rules.ElementRule{
+				Mask: rules.MASK_REQUIRED,
+				Composite: rules.ElementSetRule{
 					"02": {AcceptValues: []string{"2"}},
 					"03": {AcceptValues: []string{"1", "2", "3", "4", "5", "7", "8"}},
 				},
@@ -88,9 +87,8 @@ func TestForCLM(t *testing.T) {
 			"09": {AcceptValues: []string{"I", "Y"}},
 			"10": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"P"}},
 			"11": {
-				Mask:           rules.MASK_OPTIONAL,
-				HasSubElements: true,
-				SubRule: map[string]rules.ElementRule{
+				Mask: rules.MASK_OPTIONAL,
+				Composite: rules.ElementSetRule{
 					"01": {AcceptValues: []string{"AA", "EM", "OA"}},
 					"02": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"AA", "EM", "OA"}},
 					"03": {Mask: rules.MASK_NOTUSED, AcceptValues: []string{"AA", "EM", "OA"}},

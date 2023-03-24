@@ -39,7 +39,7 @@ func (r ProcedureIdentifier) GetFieldByIndex(index string) any {
 	return util.GetFieldByIndex(r, index)
 }
 
-func (r *ProcedureIdentifier) Validate(rule *rules.Elements) error {
+func (r *ProcedureIdentifier) Validate(rule *rules.ElementSetRule) error {
 
 	if rule == nil {
 		rule = r.GetRule()

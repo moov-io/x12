@@ -12,12 +12,12 @@ import (
 	"github.com/moov-io/x12/pkg/util"
 )
 
-func NewHI(rule *rules.Elements) SegmentInterface {
+func NewHI(rule *rules.ElementSetRule) SegmentInterface {
 
 	newSegment := HI{}
 
 	if rule == nil {
-		newRule := make(rules.Elements)
+		newRule := make(rules.ElementSetRule)
 		newSegment.SetRule(&newRule)
 	} else {
 		newSegment.SetRule(rule)
@@ -59,7 +59,7 @@ func (r HI) GetFieldByIndex(index string) any {
 	return util.GetFieldByIndex(r, index)
 }
 
-func (r *HI) Validate(rule *rules.Elements) error {
+func (r *HI) Validate(rule *rules.ElementSetRule) error {
 
 	if rule == nil {
 		rule = r.GetRule()
@@ -142,10 +142,10 @@ func (r *HI) Parse(data string, args ...string) (int, error) {
 		} else {
 			read += size
 
-			subRule := rule.SubRule
+			compositeRule := rule.Composite
 			var composite HealthCareCode
-			if subRule != nil {
-				composite.SetRule((*rules.Elements)(&subRule))
+			if compositeRule != nil {
+				composite.SetRule(&compositeRule)
 			}
 
 			_, parseErr := composite.Parse(value, args...)

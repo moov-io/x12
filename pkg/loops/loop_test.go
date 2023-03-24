@@ -11,7 +11,7 @@ import (
 	"testing"
 )
 
-var testSegRule = rules.Segments{
+var testSegRule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "NM1",
 		Description: "SUBMITTER NAME-1000A",
@@ -198,7 +198,7 @@ func TestLoop100A(t *testing.T) {
 
 		var rule = rules.LoopRule{
 			Name: "1000A",
-			Segments: rules.Segments{
+			Segments: rules.SegmentSetRule{
 				0: rules.SegmentRule{
 					Name:        "NM1",
 					Description: "SUBMITTER NAME-1000A",
@@ -290,7 +290,7 @@ func TestLoop100A(t *testing.T) {
 
 		var rule = rules.LoopRule{
 			Name: "1000A",
-			Segments: rules.Segments{
+			Segments: rules.SegmentSetRule{
 				0: rules.SegmentRule{
 					Name:        "NM1",
 					Description: "SUBMITTER NAME-1000A",

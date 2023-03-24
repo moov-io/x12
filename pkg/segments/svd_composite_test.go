@@ -13,7 +13,7 @@ import (
 
 func TestForProcedureIdentifier(t *testing.T) {
 
-	rule := rules.Elements{
+	rule := rules.ElementSetRule{
 		"02": {AcceptValues: []string{"2"}},
 		"03": {AcceptValues: []string{"1", "2", "3", "4", "5", "7", "8"}},
 	}

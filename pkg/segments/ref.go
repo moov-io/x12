@@ -12,12 +12,12 @@ import (
 	"github.com/moov-io/x12/pkg/util"
 )
 
-func NewREF(rule *rules.Elements) SegmentInterface {
+func NewREF(rule *rules.ElementSetRule) SegmentInterface {
 
 	newSegment := REF{}
 
 	if rule == nil {
-		newRule := make(rules.Elements)
+		newRule := make(rules.ElementSetRule)
 		newSegment.SetRule(&newRule)
 	} else {
 		newSegment.SetRule(rule)
@@ -45,7 +45,7 @@ func (r REF) GetFieldByIndex(index string) any {
 	return util.GetFieldByIndex(r, index)
 }
 
-func (r *REF) Validate(rule *rules.Elements) error {
+func (r *REF) Validate(rule *rules.ElementSetRule) error {
 
 	if rule == nil {
 		rule = r.GetRule()

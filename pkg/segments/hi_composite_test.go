@@ -13,7 +13,7 @@ import (
 
 func TestForHealthCareCode(t *testing.T) {
 
-	rule := rules.Elements{
+	rule := rules.ElementSetRule{
 		"01": {AcceptValues: []string{"composite"}},
 		"02": {AcceptValues: []string{"1", "2", "3", "4", "5", "7", "8"}},
 	}
