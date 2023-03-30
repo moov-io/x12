@@ -5,11 +5,11 @@
 package loops
 
 import (
+	rule_5010_837p "github.com/moov-io/x12/rule_5010_837d"
 	"testing"
 
 	"github.com/moov-io/x12/pkg/rules"
 	"github.com/moov-io/x12/pkg/segments"
-	"github.com/moov-io/x12/rule_5010_837p"
 	"github.com/stretchr/testify/require"
 )
 
@@ -206,7 +206,7 @@ func TestCompositeLoop(t *testing.T) {
 
 		loop := NewCompositeLoop(&testComplexRule)
 		require.Error(t, loop.Validate(nil))
-		require.Equal(t, "loop(1000A) is invalid, please add new nm1 segment", loop.Validate(nil).Error())
+		require.Equal(t, "loop(1000A) is invalid, please add new NM1 segment", loop.Validate(nil).Error())
 		require.Equal(t, "", loop.String())
 		require.Equal(t, "1000A", loop.Name())
 
@@ -226,7 +226,7 @@ func TestCompositeLoop(t *testing.T) {
 		err = loop.Validate(nil)
 		require.Equal(t, 1, len(loop.SubLoops))
 		require.Error(t, err)
-		require.Equal(t, "please add new 1002a loop", err.Error())
+		require.Equal(t, "please add new 1002A loop", err.Error())
 
 	})
 

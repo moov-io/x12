@@ -90,7 +90,6 @@ func (r *CLM) Validate(rule *rules.ElementSetRule) error {
 			}
 		} else {
 			err = util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask(i))
-
 		}
 
 		if err != nil {

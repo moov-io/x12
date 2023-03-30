@@ -14,12 +14,12 @@ import (
 
 	"github.com/moov-io/x12/pkg/file"
 	"github.com/moov-io/x12/pkg/util"
-	. "github.com/moov-io/x12/rule_5010_837p"
+	. "github.com/moov-io/x12/rule_5010_837d"
 )
 
 func main() {
 
-	f, err := os.Open(path.Join("examples", "example_5010_837p", "sample.txt"))
+	f, err := os.Open(path.Join("examples", "example_5010_837d", "sample.txt"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -33,7 +33,11 @@ func main() {
 
 	newChange := file.NewInterchange(&InterchangeRule)
 
-	_, err = newChange.Parse(raw, "<")
+	if _, err = newChange.Parse(raw); err != nil {
+		util.Log().Error().Log(err.Error())
+		return
+	}
+
 	if err = newChange.Validate(nil); err != nil {
 		util.Log().Error().Log(err.Error())
 		return

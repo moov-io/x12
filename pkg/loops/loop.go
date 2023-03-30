@@ -8,7 +8,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"log"
+	"github.com/moov-io/x12/pkg/util"
 	"strings"
 
 	"github.com/moov-io/x12/pkg/rules"
@@ -63,7 +63,7 @@ func (r *Loop) Validate(loopRule *rules.SegmentSetRule) error {
 
 			if segIndex+1 > len(r.Segments) {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
-					return fmt.Errorf("please add new %s segment", strings.ToLower(rule.Name))
+					return fmt.Errorf("please add new %s segment", strings.ToUpper(rule.Name))
 				}
 				continue
 			}
@@ -77,7 +77,7 @@ func (r *Loop) Validate(loopRule *rules.SegmentSetRule) error {
 
 			if err := r.Segments[segIndex].Validate(&rule.Elements); err != nil {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
-					return fmt.Errorf("segment(%02d) should be valid %s segment", segIndex, strings.ToLower(rule.Name))
+					return fmt.Errorf("segment(%02d) should be valid %s segment", segIndex, strings.ToUpper(rule.Name))
 				}
 				continue
 			}
@@ -115,13 +115,19 @@ func (r *Loop) Parse(data string, args ...string) (int, error) {
 		for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
 			segment, err := segments.CreateSegment(rule.Name, rule)
 			if err != nil {
-				log.Println(err)
-				return 0, fmt.Errorf("unable to parse %s segment", strings.ToLower(rule.Name))
+				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
+					return 0, fmt.Errorf("unable to parse %s segment", strings.ToLower(rule.Name))
+				}
+				continue
 			}
 
 			size, err := segment.Parse(data[read:], args...)
 			if err != nil {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
+					length := util.GetRecordSize(data[read:])
+					if length > 0 && rule.Name == data[read:read+len(rule.Name)] {
+						util.Log().Debug().Log("Parse Error:(" + rule.Name + "), (" + err.Error() + "), (" + data[read:read+int(length)] + ")")
+					}
 					return 0, fmt.Errorf("unable to parse %s segment", strings.ToLower(rule.Name))
 				}
 				continue

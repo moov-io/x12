@@ -7,10 +7,12 @@ package util
 import (
 	"errors"
 	"fmt"
-	"github.com/moov-io/x12/pkg/rules"
 	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/moov-io/base/log"
+	"github.com/moov-io/x12/pkg/rules"
 )
 
 const (
@@ -117,12 +119,12 @@ func ValidateField(data any, spec rules.ElementRule, mask string) error {
 				// TODO
 				return errors.New("the element is require")
 			}
-		case rules.MASK_NOTUSED:
-			if dataStr != "" {
-				// TODO
-				return errors.New("the element is not used")
-			}
 	*/
+
+	case rules.MASK_NOTUSED:
+		// TODO
+		return nil
+
 	case rules.MASK_OPTIONAL:
 		if dataStr == "" {
 			return nil
@@ -241,4 +243,12 @@ func ReadFieldAsInt(input string, start int, spec rules.ElementRule, mask string
 	}
 
 	return value, idx + 1, nil
+}
+
+var (
+	logger = log.NewDefaultLogger().Set("app", log.String("x12"))
+)
+
+func Log() log.Logger {
+	return logger
 }

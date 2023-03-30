@@ -8,7 +8,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"log"
+	"github.com/moov-io/x12/pkg/util"
 	"strings"
 
 	"github.com/moov-io/x12/pkg/loops"
@@ -80,7 +80,7 @@ func (r *TransactionSet) Validate(transRule *rules.TransactionRule) error {
 
 				if segIndex+1 > len(r.Loops) {
 					if repeatCnt == 0 && rules.IsMaskRequired(rule.Mask) {
-						return fmt.Errorf("please add new %s loop", strings.ToLower(rule.Name))
+						return fmt.Errorf("please add new %s loop", strings.ToUpper(rule.Name))
 					}
 					continue
 				}
@@ -94,7 +94,7 @@ func (r *TransactionSet) Validate(transRule *rules.TransactionRule) error {
 
 				if err = r.Loops[segIndex].Validate(&rule); err != nil {
 					if rules.IsMaskRequired(rule.Mask) {
-						log.Println(err)
+						util.Log().Debug().Log("Validation Error: " + err.Error())
 						return fmt.Errorf("loop(%02d) should have valid %s loop, %s", segIndex, strings.ToLower(rule.Name), err.Error())
 					}
 					continue
@@ -159,6 +159,7 @@ func (r *TransactionSet) Parse(data string, args ...string) (int, error) {
 		r.ST.SetRule(&stRule.Elements)
 		size, err = r.ST.Parse(line, args...)
 		if err != nil {
+			util.Log().Error().Log("Parse Error:(" + err.Error() + ")")
 			return 0, errors.New("unable to parse st segment")
 		} else {
 			read += size

@@ -91,7 +91,7 @@ func TestLoop100A(t *testing.T) {
 
 		loop.Segments = append(loop.Segments, segments.NewNM1(nil), segments.NewPER(nil))
 		require.Error(t, loop.Validate(nil))
-		require.Equal(t, "segment(00) should be valid nm1 segment", loop.Validate(nil).Error())
+		require.Equal(t, "segment(00) should be valid NM1 segment", loop.Validate(nil).Error())
 		require.Equal(t, "NM1*********~PER****~", loop.String())
 
 	})
@@ -185,13 +185,13 @@ func TestLoop100A(t *testing.T) {
 
 		err = loop.Validate(nil)
 		require.Error(t, err)
-		require.Equal(t, "segment(01) should be valid per segment", err.Error())
+		require.Equal(t, "segment(01) should be valid PER segment", err.Error())
 
 		loop.Segments = []segments.SegmentInterface{&nm1}
 
 		err = loop.Validate(nil)
 		require.Error(t, err)
-		require.Equal(t, "please add new per segment", err.Error())
+		require.Equal(t, "please add new PER segment", err.Error())
 	})
 
 	t.Run("testing loop 1000a with repeated segments", func(t *testing.T) {
@@ -345,13 +345,13 @@ func TestLoop100A(t *testing.T) {
 
 		err = loop.Validate(nil)
 		require.Error(t, err)
-		require.Equal(t, "please add new per segment", err.Error())
+		require.Equal(t, "please add new PER segment", err.Error())
 
 		loop.Segments = []segments.SegmentInterface{&nm1}
 
 		err = loop.Validate(nil)
 		require.Error(t, err)
-		require.Equal(t, "please add new per segment", err.Error())
+		require.Equal(t, "please add new PER segment", err.Error())
 
 		in := "NM1*41*2*PREMIER BILLING SERVICE*****46*TGJ23~NM1*41*2*PREMIER BILLING SERVICE*****46*TGJ23~PER*IC*JERRY*TE*7176149999~"
 

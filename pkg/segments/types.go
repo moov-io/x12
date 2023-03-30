@@ -57,11 +57,16 @@ var (
 	_ SegmentInterface = (*BHT)(nil)
 	_ SegmentInterface = (*CAS)(nil)
 	_ SegmentInterface = (*CLM)(nil)
+	_ SegmentInterface = (*CN1)(nil)
 	_ SegmentInterface = (*CR1)(nil)
+	_ SegmentInterface = (*CUR)(nil)
 	_ SegmentInterface = (*DMG)(nil)
+	_ SegmentInterface = (*DN1)(nil)
+	_ SegmentInterface = (*DN2)(nil)
 	_ SegmentInterface = (*DTP)(nil)
 	_ SegmentInterface = (*GE)(nil)
 	_ SegmentInterface = (*GS)(nil)
+	_ SegmentInterface = (*HCP)(nil)
 	_ SegmentInterface = (*HI)(nil)
 	_ SegmentInterface = (*HL)(nil)
 	_ SegmentInterface = (*IEA)(nil)
@@ -82,8 +87,10 @@ var (
 	_ SegmentInterface = (*SE)(nil)
 	_ SegmentInterface = (*ST)(nil)
 	_ SegmentInterface = (*SV1)(nil)
+	_ SegmentInterface = (*SV3)(nil)
 	_ SegmentInterface = (*SV5)(nil)
 	_ SegmentInterface = (*SVD)(nil)
+	_ SegmentInterface = (*TOO)(nil)
 )
 
 type constructorFunc func(rule *rules.ElementSetRule) SegmentInterface
@@ -94,11 +101,16 @@ var (
 		"BHT": func(rule *rules.ElementSetRule) SegmentInterface { return NewBHT(rule) },
 		"CAS": func(rule *rules.ElementSetRule) SegmentInterface { return NewCAS(rule) },
 		"CLM": func(rule *rules.ElementSetRule) SegmentInterface { return NewCLM(rule) },
+		"CN1": func(rule *rules.ElementSetRule) SegmentInterface { return NewCN1(rule) },
 		"CR1": func(rule *rules.ElementSetRule) SegmentInterface { return NewCR1(rule) },
+		"CUR": func(rule *rules.ElementSetRule) SegmentInterface { return NewCUR(rule) },
 		"DMG": func(rule *rules.ElementSetRule) SegmentInterface { return NewDMG(rule) },
+		"DN1": func(rule *rules.ElementSetRule) SegmentInterface { return NewDN1(rule) },
+		"DN2": func(rule *rules.ElementSetRule) SegmentInterface { return NewDN2(rule) },
 		"DTP": func(rule *rules.ElementSetRule) SegmentInterface { return NewDTP(rule) },
 		"GE":  func(rule *rules.ElementSetRule) SegmentInterface { return NewGE(rule) },
 		"GS":  func(rule *rules.ElementSetRule) SegmentInterface { return NewGS(rule) },
+		"HCP": func(rule *rules.ElementSetRule) SegmentInterface { return NewHCP(rule) },
 		"HI":  func(rule *rules.ElementSetRule) SegmentInterface { return NewHI(rule) },
 		"HL":  func(rule *rules.ElementSetRule) SegmentInterface { return NewHL(rule) },
 		"IEA": func(rule *rules.ElementSetRule) SegmentInterface { return NewIEA(rule) },
@@ -119,8 +131,10 @@ var (
 		"SE":  func(rule *rules.ElementSetRule) SegmentInterface { return NewSE(rule) },
 		"ST":  func(rule *rules.ElementSetRule) SegmentInterface { return NewST(rule) },
 		"SV1": func(rule *rules.ElementSetRule) SegmentInterface { return NewSV1(rule) },
+		"SV3": func(rule *rules.ElementSetRule) SegmentInterface { return NewSV3(rule) },
 		"SV5": func(rule *rules.ElementSetRule) SegmentInterface { return NewSV5(rule) },
 		"SVD": func(rule *rules.ElementSetRule) SegmentInterface { return NewSVD(rule) },
+		"TOO": func(rule *rules.ElementSetRule) SegmentInterface { return NewTOO(rule) },
 	}
 )
 

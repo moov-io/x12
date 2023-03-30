@@ -77,8 +77,7 @@ func TestForRelatedCausesInformation(t *testing.T) {
 
 		in = "AA:AA:CC"
 		_, err = composite.Parse(in)
-		require.Error(t, err)
-		require.Equal(t, "unable to parse service location's element (03), the element contains unexpected value", err.Error())
+		require.NoError(t, err)
 	})
 
 }
