@@ -11,7 +11,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/moov-io/base/log"
 	"github.com/moov-io/x12/pkg/rules"
 )
 
@@ -243,12 +242,4 @@ func ReadFieldAsInt(input string, start int, spec rules.ElementRule, mask string
 	}
 
 	return value, idx + 1, nil
-}
-
-var (
-	logger = log.NewDefaultLogger().Set("app", log.String("x12"))
-)
-
-func Log() log.Logger {
-	return logger
 }

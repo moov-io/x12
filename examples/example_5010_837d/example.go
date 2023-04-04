@@ -13,7 +13,6 @@ import (
 	"strings"
 
 	"github.com/moov-io/x12/pkg/file"
-	"github.com/moov-io/x12/pkg/util"
 	. "github.com/moov-io/x12/rule_5010_837d"
 )
 
@@ -34,18 +33,18 @@ func main() {
 	newChange := file.NewInterchange(&InterchangeRule)
 
 	if _, err = newChange.Parse(raw); err != nil {
-		util.Log().Error().Log(err.Error())
+		log.Fatal(err.Error())
 		return
 	}
 
 	if err = newChange.Validate(nil); err != nil {
-		util.Log().Error().Log(err.Error())
+		log.Fatal(err.Error())
 		return
 	}
 
 	err = newChange.Validate(&InterchangeRule)
 	if err = newChange.Validate(nil); err != nil {
-		util.Log().Error().Log(err.Error())
+		log.Fatal(err.Error())
 		return
 	}
 

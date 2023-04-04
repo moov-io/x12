@@ -8,10 +8,11 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/moov-io/x12/pkg/util"
+	"log"
 	"strings"
 
 	"github.com/moov-io/x12/pkg/rules"
+	"github.com/moov-io/x12/pkg/util"
 )
 
 func NewCompositeLoop(rule *rules.LoopRule) *CompositeLoop {
@@ -132,7 +133,7 @@ func (r *CompositeLoop) Parse(data string, args ...string) (int, error) {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
 					length := util.GetRecordSize(data[read:])
 					if length > 0 {
-						util.Log().Error().Log("Parse Error:(" + rule.Name + "), (" + err.Error() + "), (" + data[read:read+int(length)] + ")")
+						log.Println("Parse Error:(" + rule.Name + "), (" + err.Error() + "), (" + data[read:read+int(length)] + ")")
 					}
 					return 0, fmt.Errorf("unable to parse %s loop", strings.ToLower(rule.Name))
 				}

@@ -8,11 +8,12 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/moov-io/x12/pkg/util"
+	"log"
 	"strings"
 
 	"github.com/moov-io/x12/pkg/rules"
 	"github.com/moov-io/x12/pkg/segments"
+	"github.com/moov-io/x12/pkg/util"
 )
 
 func NewLoop(rule *rules.LoopRule) *Loop {
@@ -126,7 +127,7 @@ func (r *Loop) Parse(data string, args ...string) (int, error) {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
 					length := util.GetRecordSize(data[read:])
 					if length > 0 && rule.Name == data[read:read+len(rule.Name)] {
-						util.Log().Debug().Log("Parse Error:(" + rule.Name + "), (" + err.Error() + "), (" + data[read:read+int(length)] + ")")
+						log.Println("Parse Error:(" + rule.Name + "), (" + err.Error() + "), (" + data[read:read+int(length)] + ")")
 					}
 					return 0, fmt.Errorf("unable to parse %s segment", strings.ToLower(rule.Name))
 				}
