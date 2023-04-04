@@ -42,7 +42,7 @@ func main() {
 		log.Fatal(err.Error())
 		return
 	}
-	
+
 	err = newChange.Validate(&InterchangeRule)
 	if err = newChange.Validate(nil); err != nil {
 		log.Fatal(err.Error())
