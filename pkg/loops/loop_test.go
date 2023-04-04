@@ -118,18 +118,18 @@ func TestLoop100A(t *testing.T) {
 		read, err = loop.Parse(in)
 		require.Error(t, err)
 		require.Equal(t, 0, read)
-		require.Equal(t, "unable to parse nm1 segment", err.Error())
+		require.Equal(t, "unable to parse nm1 segment (nm1 segment contains invalid code)", err.Error())
 
 		in = "NM1*41*2*PREMIER BILLING SERVICE*****46*TGJ23~PRV*IC*JERRY*TE*7176149999~"
 		read, err = loop.Parse(in)
 		require.Error(t, err)
-		require.Equal(t, "unable to parse per segment", err.Error())
+		require.Equal(t, "unable to parse per segment (per segment contains invalid code)", err.Error())
 		require.Equal(t, 0, read)
 
 		in = "NM1*43*2*PREMIER BILLING SERVICE*****46*TGJ23~PRV*IC*JERRY*TE*7176149999~"
 		read, err = loop.Parse(in)
 		require.Error(t, err)
-		require.Equal(t, "unable to parse nm1 segment", err.Error())
+		require.Equal(t, "unable to parse nm1 segment (unable to parse nm1's element (01), the element contains unexpected value)", err.Error())
 		require.Equal(t, 0, read)
 	})
 
