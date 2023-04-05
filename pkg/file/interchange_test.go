@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/moov-io/x12/rule_5010_837p"
+	rule "github.com/moov-io/x12/rule_5010_837p"
 	"github.com/stretchr/testify/require"
 )
 
@@ -214,7 +214,7 @@ IEA*1*000002120~`
 
 		data := strings.ReplaceAll(raw, "\n", "")
 
-		newChange := NewInterchange(&rule_5010_837p.InterchangeRule)
+		newChange := NewInterchange(&rule.InterchangeRule)
 
 		read, err := newChange.Parse(data, "<")
 		require.NoError(t, err)
@@ -223,7 +223,7 @@ IEA*1*000002120~`
 		err = newChange.Validate(nil)
 		require.NoError(t, err)
 
-		err = newChange.Validate(&rule_5010_837p.InterchangeRule)
+		err = newChange.Validate(&rule.InterchangeRule)
 		require.NoError(t, err)
 
 		require.Equal(t, data, newChange.String("<"))

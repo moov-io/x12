@@ -61,7 +61,7 @@ func TestForPAT(t *testing.T) {
 
 	t.Run("parsing and encoding of pat segment with specified rule", func(t *testing.T) {
 
-		rule := rules.Elements{
+		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"19"}, Mask: rules.MASK_REQUIRED},
 			"08": {Mask: rules.MASK_OPTIONAL},
 			"09": {Mask: rules.MASK_NOTUSED},

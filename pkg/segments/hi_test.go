@@ -66,11 +66,10 @@ func TestForHI(t *testing.T) {
 
 	t.Run("parsing and encoding of hi segment with specified rule", func(t *testing.T) {
 
-		rule := rules.Elements{
+		rule := rules.ElementSetRule{
 			"01": {
-				Mask:           rules.MASK_REQUIRED,
-				HasSubElements: true,
-				SubRule: map[string]rules.ElementRule{
+				Mask: rules.MASK_REQUIRED,
+				Composite: rules.ElementSetRule{
 					"01": {AcceptValues: []string{"composite1"}},
 					"02": {AcceptValues: []string{"1", "2", "3", "4", "5", "7", "8"}},
 					"03": {Mask: rules.MASK_NOTUSED},
@@ -83,9 +82,8 @@ func TestForHI(t *testing.T) {
 				},
 			},
 			"02": {
-				Mask:           rules.MASK_OPTIONAL,
-				HasSubElements: true,
-				SubRule: map[string]rules.ElementRule{
+				Mask: rules.MASK_OPTIONAL,
+				Composite: rules.ElementSetRule{
 					"01": {AcceptValues: []string{"composite2"}},
 					"02": {AcceptValues: []string{"1", "2", "3", "4", "5", "7", "8"}},
 					"03": {Mask: rules.MASK_NOTUSED},
@@ -98,9 +96,8 @@ func TestForHI(t *testing.T) {
 				},
 			},
 			"03": {
-				Mask:           rules.MASK_OPTIONAL,
-				HasSubElements: true,
-				SubRule: map[string]rules.ElementRule{
+				Mask: rules.MASK_OPTIONAL,
+				Composite: rules.ElementSetRule{
 					"01": {AcceptValues: []string{"composite3"}},
 					"02": {AcceptValues: []string{"1", "2", "3", "4", "5", "7", "8"}},
 					"03": {Mask: rules.MASK_NOTUSED},
@@ -113,9 +110,8 @@ func TestForHI(t *testing.T) {
 				},
 			},
 			"04": {
-				Mask:           rules.MASK_OPTIONAL,
-				HasSubElements: true,
-				SubRule: map[string]rules.ElementRule{
+				Mask: rules.MASK_OPTIONAL,
+				Composite: rules.ElementSetRule{
 					"01": {AcceptValues: []string{"composite4"}},
 					"02": {AcceptValues: []string{"1", "2", "3", "4", "5", "7", "8"}},
 					"03": {Mask: rules.MASK_NOTUSED},
@@ -128,9 +124,8 @@ func TestForHI(t *testing.T) {
 				},
 			},
 			"05": {
-				Mask:           rules.MASK_OPTIONAL,
-				HasSubElements: true,
-				SubRule: map[string]rules.ElementRule{
+				Mask: rules.MASK_OPTIONAL,
+				Composite: rules.ElementSetRule{
 					"01": {AcceptValues: []string{"composite5"}},
 					"02": {AcceptValues: []string{"1", "2", "3", "4", "5", "7", "8"}},
 					"03": {Mask: rules.MASK_NOTUSED},
@@ -143,9 +138,8 @@ func TestForHI(t *testing.T) {
 				},
 			},
 			"06": {
-				Mask:           rules.MASK_OPTIONAL,
-				HasSubElements: true,
-				SubRule: map[string]rules.ElementRule{
+				Mask: rules.MASK_OPTIONAL,
+				Composite: rules.ElementSetRule{
 					"01": {AcceptValues: []string{"composite6"}},
 					"02": {AcceptValues: []string{"1", "2", "3", "4", "5", "7", "8"}},
 					"03": {Mask: rules.MASK_NOTUSED},
@@ -158,9 +152,8 @@ func TestForHI(t *testing.T) {
 				},
 			},
 			"07": {
-				Mask:           rules.MASK_OPTIONAL,
-				HasSubElements: true,
-				SubRule: map[string]rules.ElementRule{
+				Mask: rules.MASK_OPTIONAL,
+				Composite: rules.ElementSetRule{
 					"01": {AcceptValues: []string{"composite7"}},
 					"02": {AcceptValues: []string{"1", "2", "3", "4", "5", "7", "8"}},
 					"03": {Mask: rules.MASK_NOTUSED},
@@ -173,9 +166,8 @@ func TestForHI(t *testing.T) {
 				},
 			},
 			"08": {
-				Mask:           rules.MASK_OPTIONAL,
-				HasSubElements: true,
-				SubRule: map[string]rules.ElementRule{
+				Mask: rules.MASK_OPTIONAL,
+				Composite: rules.ElementSetRule{
 					"01": {AcceptValues: []string{"composite8"}},
 					"02": {AcceptValues: []string{"1", "2", "3", "4", "5", "7", "8"}},
 					"03": {Mask: rules.MASK_NOTUSED},

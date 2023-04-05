@@ -117,7 +117,9 @@ func (r *Interchange) Parse(data string, args ...string) (int, error) {
 			line = data[read:]
 			r.FunctionalGroups = append(r.FunctionalGroups, *newTrans)
 		} else {
-			break
+			if len(r.FunctionalGroups) == 0 && (len(line) > 2 && line[0:2] == "GS") {
+				return 0, errors.New("unable to parse group section")
+			}
 		}
 	}
 

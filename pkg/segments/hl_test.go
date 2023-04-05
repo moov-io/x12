@@ -68,7 +68,7 @@ func TestForHL(t *testing.T) {
 
 	t.Run("parsing and encoding of hl segment with specified rule", func(t *testing.T) {
 
-		rule := rules.Elements{
+		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"HC"}},
 			"02": {Mask: rules.MASK_OPTIONAL},
 			"03": {Mask: rules.MASK_NOTUSED},

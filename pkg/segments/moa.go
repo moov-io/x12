@@ -12,12 +12,12 @@ import (
 	"github.com/moov-io/x12/pkg/util"
 )
 
-func NewMOA(rule *rules.Elements) SegmentInterface {
+func NewMOA(rule *rules.ElementSetRule) SegmentInterface {
 
 	newSegment := MOA{}
 
 	if rule == nil {
-		newRule := make(rules.Elements)
+		newRule := make(rules.ElementSetRule)
 		newSegment.SetRule(&newRule)
 	} else {
 		newSegment.SetRule(rule)
@@ -56,7 +56,7 @@ func (r MOA) GetFieldByIndex(index string) any {
 	return util.GetFieldByIndex(r, index)
 }
 
-func (r *MOA) Validate(rule *rules.Elements) error {
+func (r *MOA) Validate(rule *rules.ElementSetRule) error {
 
 	if rule == nil {
 		rule = r.GetRule()

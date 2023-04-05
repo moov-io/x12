@@ -68,7 +68,7 @@ func TestForISA(t *testing.T) {
 
 	t.Run("parsing and encoding of isa segment with specified rule", func(t *testing.T) {
 
-		rule := rules.Elements{
+		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"00"}},
 			"14": {Mask: rules.MASK_OPTIONAL},
 			"15": {Mask: rules.MASK_NOTUSED},

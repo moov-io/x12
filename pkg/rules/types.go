@@ -34,15 +34,36 @@ type TransactionRule struct {
 	ST    SegmentRule
 	BHT   SegmentRule
 	SE    SegmentRule
-	Loops map[int]LoopRule
+	Loops LoopSetRule
 }
 
+type LoopSetRule map[int]LoopRule
+
 type LoopRule struct {
-	Segments    Segments
+	Segments    SegmentSetRule
 	Mask        string
 	RepeatCount int
 	Name        string
-	SubLoopRule map[int]LoopRule
+	Composite   LoopSetRule
+}
+
+type SegmentSetRule map[int]SegmentRule
+
+type SegmentRule struct {
+	Elements    ElementSetRule
+	Mask        string
+	RepeatCount int
+	Name        string
+	Description string
+}
+
+type ElementSetRule map[string]ElementRule
+
+type ElementRule struct {
+	Mask         string
+	Name         string
+	AcceptValues []string
+	Composite    ElementSetRule
 }
 
 func (s LoopRule) Repeat() int {
@@ -53,9 +74,7 @@ func (s LoopRule) Repeat() int {
 	return 1
 }
 
-type Segments map[int]SegmentRule
-
-func (s Segments) Get(index int) *SegmentRule {
+func (s SegmentSetRule) Get(index int) *SegmentRule {
 
 	segment, ok := s[index]
 	if ok {
@@ -63,14 +82,6 @@ func (s Segments) Get(index int) *SegmentRule {
 	}
 
 	return nil
-}
-
-type SegmentRule struct {
-	Elements    Elements
-	Mask        string
-	RepeatCount int
-	Description string
-	Name        string
 }
 
 func (s SegmentRule) Repeat() int {
@@ -81,9 +92,7 @@ func (s SegmentRule) Repeat() int {
 	return 1
 }
 
-type Elements map[string]ElementRule
-
-func (e Elements) Get(name string) ElementRule {
+func (e ElementSetRule) Get(name string) ElementRule {
 
 	element, ok := e[name]
 	if ok {
@@ -93,7 +102,7 @@ func (e Elements) Get(name string) ElementRule {
 	return ElementRule{}
 }
 
-func (e Elements) GetMask(name, defaultMask string) string {
+func (e ElementSetRule) GetMask(name, defaultMask string) string {
 
 	element, ok := e[name]
 	if !ok {
@@ -106,11 +115,4 @@ func (e Elements) GetMask(name, defaultMask string) string {
 	}
 
 	return mask
-}
-
-type ElementRule struct {
-	AcceptValues   []string
-	Mask           string
-	HasSubElements bool
-	SubRule        map[string]ElementRule
 }

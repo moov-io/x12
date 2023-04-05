@@ -68,7 +68,7 @@ func TestForGS(t *testing.T) {
 
 	t.Run("parsing and encoding of gs segment with specified rule", func(t *testing.T) {
 
-		rule := rules.Elements{
+		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"HC"}},
 			"06": {Mask: rules.MASK_OPTIONAL},
 			"07": {Mask: rules.MASK_NOTUSED},

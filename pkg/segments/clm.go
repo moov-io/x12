@@ -12,12 +12,12 @@ import (
 	"github.com/moov-io/x12/pkg/util"
 )
 
-func NewCLM(rule *rules.Elements) SegmentInterface {
+func NewCLM(rule *rules.ElementSetRule) SegmentInterface {
 
 	newSegment := CLM{}
 
 	if rule == nil {
-		newRule := make(rules.Elements)
+		newRule := make(rules.ElementSetRule)
 		newSegment.SetRule(&newRule)
 	} else {
 		newSegment.SetRule(rule)
@@ -71,7 +71,7 @@ func (r CLM) GetFieldByIndex(index string) any {
 	return util.GetFieldByIndex(r, index)
 }
 
-func (r *CLM) Validate(rule *rules.Elements) error {
+func (r *CLM) Validate(rule *rules.ElementSetRule) error {
 
 	if rule == nil {
 		rule = r.GetRule()
@@ -90,7 +90,6 @@ func (r *CLM) Validate(rule *rules.Elements) error {
 			}
 		} else {
 			err = util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask(i))
-
 		}
 
 		if err != nil {
@@ -132,12 +131,12 @@ func (r *CLM) Parse(data string, args ...string) (int, error) {
 		} else {
 			read += size
 
-			subRule := rule.SubRule
+			compositeRule := rule.Composite
 
 			if i == 5 { // HealthCareServiceLocation
 				var composite HealthCareServiceLocation
-				if subRule != nil {
-					composite.SetRule((*rules.Elements)(&subRule))
+				if compositeRule != nil {
+					composite.SetRule((*rules.ElementSetRule)(&compositeRule))
 				}
 
 				_, parseErr := composite.Parse(value, args...)
@@ -151,8 +150,8 @@ func (r *CLM) Parse(data string, args ...string) (int, error) {
 
 			} else if i == 11 { // RelatedCausesInformation
 				var composite RelatedCausesInformation
-				if subRule != nil {
-					composite.SetRule((*rules.Elements)(&subRule))
+				if compositeRule != nil {
+					composite.SetRule(&compositeRule)
 				}
 				if _, parseErr := composite.Parse(value, args...); parseErr == nil {
 					r.RelatedCausesInformation = &composite

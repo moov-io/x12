@@ -27,7 +27,7 @@ func (r HealthCareServiceLocation) GetFieldByIndex(index string) any {
 	return util.GetFieldByIndex(r, index)
 }
 
-func (r *HealthCareServiceLocation) Validate(rule *rules.Elements) error {
+func (r *HealthCareServiceLocation) Validate(rule *rules.ElementSetRule) error {
 
 	if rule == nil {
 		rule = r.GetRule()
@@ -120,7 +120,7 @@ func (r RelatedCausesInformation) GetFieldByIndex(index string) any {
 	return util.GetFieldByIndex(r, index)
 }
 
-func (r *RelatedCausesInformation) Validate(rule *rules.Elements) error {
+func (r *RelatedCausesInformation) Validate(rule *rules.ElementSetRule) error {
 
 	if rule == nil {
 		rule = r.GetRule()

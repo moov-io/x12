@@ -5,15 +5,15 @@
 package loops
 
 import (
+	rule_5010_837p "github.com/moov-io/x12/rule_5010_837d"
 	"testing"
 
 	"github.com/moov-io/x12/pkg/rules"
 	"github.com/moov-io/x12/pkg/segments"
-	"github.com/moov-io/x12/rule_5010_837p"
 	"github.com/stretchr/testify/require"
 )
 
-var testSegRule1 = rules.Segments{
+var testSegRule1 = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "NM1",
 		Description: "SUBMITTER NAME-1000A",
@@ -43,7 +43,7 @@ var testSegRule1 = rules.Segments{
 	},
 }
 
-var testSegRule2 = rules.Segments{
+var testSegRule2 = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "NM1",
 		Description: "SUBMITTER NAME-1001A",
@@ -71,7 +71,7 @@ var testSegRule2 = rules.Segments{
 	},
 }
 
-var testSegRule3 = rules.Segments{
+var testSegRule3 = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "NM1",
 		Description: "SUBMITTER NAME-1002A",
@@ -102,7 +102,7 @@ var testSegRule3 = rules.Segments{
 var testComplexRule = rules.LoopRule{
 	Name:     "1000A",
 	Segments: testSegRule1,
-	SubLoopRule: map[int]rules.LoopRule{
+	Composite: rules.LoopSetRule{
 		0: {
 			Segments: testSegRule2,
 			Mask:     rules.MASK_REQUIRED,
@@ -144,8 +144,8 @@ func FillCompositeLoopWithRule(loop *CompositeLoop) {
 	l1001a := NewLoop(&testComplexRule)
 	l1001a.Segments = []segments.SegmentInterface{seg21, seg22}
 
-	subRule1 := testComplexRule.SubLoopRule[0]
-	sub1 := NewCompositeLoop(&subRule1)
+	compositeRule1 := testComplexRule.Composite[0]
+	sub1 := NewCompositeLoop(&compositeRule1)
 	sub1.Loop = *l1001a
 
 	seg31 := segments.NewNM1(&testSegRule3.Get(0).Elements)
@@ -160,8 +160,8 @@ func FillCompositeLoopWithRule(loop *CompositeLoop) {
 	l1002a := NewLoop(&testComplexRule)
 	l1002a.Segments = []segments.SegmentInterface{seg31, seg32}
 
-	subRule2 := testComplexRule.SubLoopRule[1]
-	sub2 := NewCompositeLoop(&subRule2)
+	compositeRule2 := testComplexRule.Composite[1]
+	sub2 := NewCompositeLoop(&compositeRule2)
 	sub2.Loop = *l1002a
 
 	loop.SubLoops = []CompositeLoop{*sub1, *sub2}
@@ -206,7 +206,7 @@ func TestCompositeLoop(t *testing.T) {
 
 		loop := NewCompositeLoop(&testComplexRule)
 		require.Error(t, loop.Validate(nil))
-		require.Equal(t, "loop(1000A) is invalid, please add new nm1 segment", loop.Validate(nil).Error())
+		require.Equal(t, "loop(1000A) is invalid, please add new NM1 segment", loop.Validate(nil).Error())
 		require.Equal(t, "", loop.String())
 		require.Equal(t, "1000A", loop.Name())
 
@@ -226,7 +226,7 @@ func TestCompositeLoop(t *testing.T) {
 		err = loop.Validate(nil)
 		require.Equal(t, 1, len(loop.SubLoops))
 		require.Error(t, err)
-		require.Equal(t, "please add new 1002a loop", err.Error())
+		require.Equal(t, "please add new 1002A loop", err.Error())
 
 	})
 

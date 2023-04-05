@@ -1,0 +1,105 @@
+// Copyright 2020 The Moov Authors
+// Use of this source code is governed by an Apache License
+// license that can be found in the LICENSE file.
+
+package segments
+
+import (
+	"fmt"
+
+	"github.com/moov-io/x12/pkg/rules"
+	"github.com/moov-io/x12/pkg/util"
+)
+
+type ToothSurfaceCode struct {
+	Code1 string `index:"01" json:"01,omitempty" xml:"01,omitempty"`
+	Code2 string `index:"02" json:"02,omitempty" xml:"02,omitempty"`
+	Code3 string `index:"03" json:"03,omitempty" xml:"03,omitempty"`
+	Code4 string `index:"04" json:"04,omitempty" xml:"04,omitempty"`
+	Code5 string `index:"05" json:"05,omitempty" xml:"05,omitempty"`
+
+	Element
+}
+
+func (r *ToothSurfaceCode) SetFieldByIndex(index string, data any) error {
+	return util.SetFieldByIndex(r, index, data)
+}
+
+func (r ToothSurfaceCode) GetFieldByIndex(index string) any {
+	return util.GetFieldByIndex(r, index)
+}
+
+func (r *ToothSurfaceCode) Validate(rule *rules.ElementSetRule) error {
+
+	if rule == nil {
+		rule = r.GetRule()
+	}
+
+	for i := 1; i <= 5; i++ {
+
+		idx := fmt.Sprintf("%02d", i)
+		mask := rules.MASK_OPTIONAL
+
+		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), mask); err != nil {
+			return fmt.Errorf("tooth surface code's element (%s) has invalid value, %s", idx, err.Error())
+		}
+	}
+
+	return nil
+}
+
+func (r *ToothSurfaceCode) Parse(data string, args ...string) (int, error) {
+
+	var err error
+	var size, read int
+	line := data
+
+	for i := 1; i <= 5; i++ {
+
+		var value string
+		mask := rules.MASK_OPTIONAL
+		idx := fmt.Sprintf("%02d", i)
+
+		if value, size, err = util.ReadCompositeField(line, read, r.GetRule().Get(idx), mask, args...); err != nil {
+			return 0, fmt.Errorf("unable to parse tooth surface code's element (%s), %s", idx, err.Error())
+		} else {
+			read += size
+			r.SetFieldByIndex(idx, value)
+		}
+	}
+
+	return read, nil
+}
+
+func (r *ToothSurfaceCode) String(args ...string) string {
+	var buf string
+
+	separator := util.SubElementSeparator
+	if len(args) > 0 {
+		separator = args[0]
+	}
+
+	for i := 5; i > 0; i-- {
+
+		idx := fmt.Sprintf("%02d", i)
+		value := r.GetFieldByIndex(idx)
+
+		if buf == "" {
+			mask := r.GetRule().GetMask(idx, rules.MASK_OPTIONAL)
+			if mask == rules.MASK_NOTUSED {
+				continue
+			}
+			if mask == rules.MASK_OPTIONAL && (value == nil || fmt.Sprintf("%v", value) == "") {
+				continue
+			}
+		}
+
+		if buf == "" {
+			buf = fmt.Sprintf("%s", value)
+		} else {
+			buf = fmt.Sprintf("%v%s", value, separator) + buf
+		}
+	}
+
+	return buf
+}

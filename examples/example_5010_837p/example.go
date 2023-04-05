@@ -13,7 +13,7 @@ import (
 	"strings"
 
 	"github.com/moov-io/x12/pkg/file"
-	"github.com/moov-io/x12/rule_5010_837p"
+	. "github.com/moov-io/x12/rule_5010_837p"
 )
 
 func main() {
@@ -30,17 +30,22 @@ func main() {
 		raw += strings.TrimSpace(scanner.Text())
 	}
 
-	newChange := file.NewInterchange(&rule_5010_837p.InterchangeRule)
+	newChange := file.NewInterchange(&InterchangeRule)
 
 	_, err = newChange.Parse(raw, "<")
 	if err = newChange.Validate(nil); err != nil {
-		fmt.Println(err)
+		log.Fatal(err.Error())
 		return
 	}
 
-	err = newChange.Validate(&rule_5010_837p.InterchangeRule)
 	if err = newChange.Validate(nil); err != nil {
-		fmt.Println(err)
+		log.Fatal(err.Error())
+		return
+	}
+
+	err = newChange.Validate(&InterchangeRule)
+	if err = newChange.Validate(nil); err != nil {
+		log.Fatal(err.Error())
 		return
 	}
 

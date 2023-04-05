@@ -12,12 +12,12 @@ import (
 	"github.com/moov-io/x12/pkg/util"
 )
 
-func NewDMG(rule *rules.Elements) SegmentInterface {
+func NewDMG(rule *rules.ElementSetRule) SegmentInterface {
 
 	newSegment := DMG{}
 
 	if rule == nil {
-		newRule := make(rules.Elements)
+		newRule := make(rules.ElementSetRule)
 		newSegment.SetRule(&newRule)
 	} else {
 		newSegment.SetRule(rule)
@@ -46,7 +46,7 @@ func (r DMG) GetFieldByIndex(index string) any {
 	return util.GetFieldByIndex(r, index)
 }
 
-func (r *DMG) Validate(rule *rules.Elements) error {
+func (r *DMG) Validate(rule *rules.ElementSetRule) error {
 
 	if rule == nil {
 		rule = r.GetRule()

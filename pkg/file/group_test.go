@@ -5,10 +5,11 @@
 package file
 
 import (
-	"github.com/moov-io/x12/rule_5010_837p"
-	"github.com/stretchr/testify/require"
 	"strings"
 	"testing"
+
+	rule "github.com/moov-io/x12/rule_5010_837p"
+	"github.com/stretchr/testify/require"
 )
 
 func TestGroupFor837P(t *testing.T) {
@@ -211,7 +212,7 @@ GE*1*2120~`
 
 		data := strings.ReplaceAll(raw, "\n", "")
 
-		newGroup := NewGroup(&rule_5010_837p.GroupRule)
+		newGroup := NewGroup(&rule.GroupRule)
 
 		read, err := newGroup.Parse(data, "<")
 		require.NoError(t, err)
@@ -220,7 +221,7 @@ GE*1*2120~`
 		err = newGroup.Validate(nil)
 		require.NoError(t, err)
 
-		err = newGroup.Validate(&rule_5010_837p.GroupRule)
+		err = newGroup.Validate(&rule.GroupRule)
 		require.NoError(t, err)
 
 		require.Equal(t, data, newGroup.String("<"))

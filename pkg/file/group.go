@@ -118,7 +118,9 @@ func (r *FunctionalGroup) Parse(data string, args ...string) (int, error) {
 			line = data[read:]
 			r.TransactionSets = append(r.TransactionSets, *newTrans)
 		} else {
-			break
+			if len(r.TransactionSets) == 0 && (len(line) > 2 && line[0:2] == "ST") {
+				return 0, errors.New("unable to parse transaction set")
+			}
 		}
 	}
 

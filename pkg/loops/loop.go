@@ -8,7 +8,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/moov-io/x12/pkg/rules"
@@ -45,7 +44,7 @@ func (r Loop) Name() string {
 	return "loop"
 }
 
-func (r *Loop) Validate(loopRule *rules.Segments) error {
+func (r *Loop) Validate(loopRule *rules.SegmentSetRule) error {
 
 	if loopRule == nil && r.rule != nil {
 		loopRule = &r.rule.Segments
@@ -63,7 +62,7 @@ func (r *Loop) Validate(loopRule *rules.Segments) error {
 
 			if segIndex+1 > len(r.Segments) {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
-					return fmt.Errorf("please add new %s segment", strings.ToLower(rule.Name))
+					return fmt.Errorf("please add new %s segment", strings.ToUpper(rule.Name))
 				}
 				continue
 			}
@@ -77,7 +76,7 @@ func (r *Loop) Validate(loopRule *rules.Segments) error {
 
 			if err := r.Segments[segIndex].Validate(&rule.Elements); err != nil {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
-					return fmt.Errorf("segment(%02d) should be valid %s segment", segIndex, strings.ToLower(rule.Name))
+					return fmt.Errorf("segment(%02d) should be valid %s segment", segIndex, strings.ToUpper(rule.Name))
 				}
 				continue
 			}
@@ -115,14 +114,16 @@ func (r *Loop) Parse(data string, args ...string) (int, error) {
 		for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
 			segment, err := segments.CreateSegment(rule.Name, rule)
 			if err != nil {
-				log.Println(err)
-				return 0, fmt.Errorf("unable to parse %s segment", strings.ToLower(rule.Name))
+				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
+					return 0, fmt.Errorf("unable to parse %s segment", strings.ToLower(rule.Name))
+				}
+				continue
 			}
 
 			size, err := segment.Parse(data[read:], args...)
 			if err != nil {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
-					return 0, fmt.Errorf("unable to parse %s segment", strings.ToLower(rule.Name))
+					return 0, fmt.Errorf("unable to parse %s segment (%s)", strings.ToLower(rule.Name), err.Error())
 				}
 				continue
 			} else {

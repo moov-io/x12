@@ -11,12 +11,12 @@ import (
 	"github.com/moov-io/x12/pkg/util"
 )
 
-func NewPWK(rule *rules.Elements) SegmentInterface {
+func NewPWK(rule *rules.ElementSetRule) SegmentInterface {
 
 	newSegment := PWK{}
 
 	if rule == nil {
-		newRule := make(rules.Elements)
+		newRule := make(rules.ElementSetRule)
 		newSegment.SetRule(&newRule)
 	} else {
 		newSegment.SetRule(rule)
@@ -56,7 +56,7 @@ func (r PWK) GetFieldByIndex(index string) any {
 	return util.GetFieldByIndex(r, index)
 }
 
-func (r *PWK) Validate(rule *rules.Elements) error {
+func (r *PWK) Validate(rule *rules.ElementSetRule) error {
 
 	if rule == nil {
 		rule = r.GetRule()

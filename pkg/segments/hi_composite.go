@@ -41,7 +41,7 @@ func (r HealthCareCode) GetFieldByIndex(index string) any {
 	return util.GetFieldByIndex(r, index)
 }
 
-func (r *HealthCareCode) Validate(rule *rules.Elements) error {
+func (r *HealthCareCode) Validate(rule *rules.ElementSetRule) error {
 
 	if rule == nil {
 		rule = r.GetRule()

@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/moov-io/x12/rule_5010_837p"
+	rule "github.com/moov-io/x12/rule_5010_837p"
 	"github.com/stretchr/testify/require"
 )
 
@@ -210,7 +210,7 @@ SE*191*000000533~`
 
 		data := strings.ReplaceAll(raw, "\n", "")
 
-		newTransaction := NewTransactionSet(&rule_5010_837p.TransactionSetRule)
+		newTransaction := NewTransactionSet(&rule.TransactionSetRule)
 
 		read, err := newTransaction.Parse(data, "<")
 		require.NoError(t, err)
@@ -219,7 +219,7 @@ SE*191*000000533~`
 		err = newTransaction.Validate(nil)
 		require.NoError(t, err)
 
-		err = newTransaction.Validate(&rule_5010_837p.TransactionSetRule)
+		err = newTransaction.Validate(&rule.TransactionSetRule)
 		require.NoError(t, err)
 
 		require.Equal(t, data, newTransaction.String("<"))

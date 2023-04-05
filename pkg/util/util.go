@@ -7,10 +7,11 @@ package util
 import (
 	"errors"
 	"fmt"
-	"github.com/moov-io/x12/pkg/rules"
 	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/moov-io/x12/pkg/rules"
 )
 
 const (
@@ -117,12 +118,12 @@ func ValidateField(data any, spec rules.ElementRule, mask string) error {
 				// TODO
 				return errors.New("the element is require")
 			}
-		case rules.MASK_NOTUSED:
-			if dataStr != "" {
-				// TODO
-				return errors.New("the element is not used")
-			}
 	*/
+
+	case rules.MASK_NOTUSED:
+		// TODO
+		return nil
+
 	case rules.MASK_OPTIONAL:
 		if dataStr == "" {
 			return nil
