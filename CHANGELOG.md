@@ -1,4 +1,4 @@
-## v0.1.0 (Unreleased)
+## v0.1.0 (Released 2023-04-05)
 
 INITIAL RELEASE
 
