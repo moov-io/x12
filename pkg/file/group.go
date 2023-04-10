@@ -8,9 +8,11 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"strconv"
 
 	"github.com/moov-io/x12/pkg/rules"
 	"github.com/moov-io/x12/pkg/segments"
+	"github.com/moov-io/x12/pkg/util"
 )
 
 func NewGroup(rule *rules.GroupRule) *FunctionalGroup {
@@ -74,6 +76,22 @@ func (r *FunctionalGroup) Validate(groupRule *rules.GroupRule) error {
 		err = r.GE.Validate(&geRule.Elements)
 		if err != nil && rules.IsMaskRequired(geRule.Mask) {
 			return errors.New("unable to validate ge segment")
+		}
+	}
+
+	// Validating Group
+	if r.GE != nil {
+
+		// compare control set number
+		if r.GE.GroupControlNumber != r.GS.GroupControlNumber {
+			return errors.New("has invalid group control number")
+		}
+
+		// compare number of transaction set
+		if v, conErr := strconv.ParseInt(r.GE.NumberOfTransactionSet, 10, 32); conErr == nil {
+			if v != int64(len(r.TransactionSets)) {
+				return errors.New("has invalid number of transaction set")
+			}
 		}
 	}
 
@@ -154,4 +172,23 @@ func (r FunctionalGroup) String(args ...string) string {
 	}
 
 	return buf.String()
+}
+
+func (r FunctionalGroup) DumpStructInfo(level int) []util.ElementInfo {
+	var selfDumps []util.ElementInfo
+
+	dump := util.DumpStructInfo(r.GS, level)
+	selfDumps = append(selfDumps, dump)
+
+	for _, t := range r.TransactionSets {
+		dumps := t.DumpStructInfo(level + 1)
+		selfDumps = append(selfDumps, dumps...)
+	}
+
+	if r.GE != nil {
+		dump = util.DumpStructInfo(r.GE, level)
+		selfDumps = append(selfDumps, dump)
+	}
+
+	return selfDumps
 }

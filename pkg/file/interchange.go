@@ -8,8 +8,14 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io"
+	"strconv"
+	"strings"
+	"text/tabwriter"
+
 	"github.com/moov-io/x12/pkg/rules"
 	"github.com/moov-io/x12/pkg/segments"
+	"github.com/moov-io/x12/pkg/util"
 )
 
 func NewInterchange(rule *rules.InterChangeRule) *Interchange {
@@ -76,10 +82,26 @@ func (r *Interchange) Validate(changeRule *rules.InterChangeRule) error {
 		}
 	}
 
+	// Validating InterChange
+	if r.IEA != nil {
+
+		// compare control set number
+		if r.IEA.InterchangeControlNumber != r.ISA.InterchangeControlNumber {
+			return errors.New("has invalid interchange control number")
+		}
+
+		// compare number of groups
+		if v, conErr := strconv.ParseInt(r.IEA.NumberOfFunctionalGroups, 10, 32); conErr == nil {
+			if v != int64(len(r.FunctionalGroups)) {
+				return errors.New("has invalid number of functional groups")
+			}
+		}
+	}
+
 	return nil
 }
 
-func (r *Interchange) Parse(data string, args ...string) (int, error) {
+func (r *Interchange) Parse(data string) (int, error) {
 
 	if r.rule == nil {
 		return 0, errors.New("please specify rules for this group")
@@ -98,7 +120,7 @@ func (r *Interchange) Parse(data string, args ...string) (int, error) {
 		}
 
 		r.ISA.SetRule(&isaRule.Elements)
-		size, err = r.ISA.Parse(line, args...)
+		size, err = r.ISA.Parse(line)
 		if err != nil {
 			return 0, errors.New("unable to parse isa segment")
 		} else {
@@ -111,7 +133,7 @@ func (r *Interchange) Parse(data string, args ...string) (int, error) {
 	grRule := r.rule.Group
 	for err == nil {
 		newTrans := NewGroup(&grRule)
-		size, err = newTrans.Parse(line, args...)
+		size, err = newTrans.Parse(line, r.ISA.ComponentElementSeparator)
 		if err == nil {
 			read += size
 			line = data[read:]
@@ -127,7 +149,7 @@ func (r *Interchange) Parse(data string, args ...string) (int, error) {
 	ieaRule := r.rule.IEA
 	if ieaRule.Name == "IEA" {
 		newIEA := segments.NewIEA(&ieaRule.Elements)
-		size, err = newIEA.Parse(line, args...)
+		size, err = newIEA.Parse(line)
 		if err != nil && rules.IsMaskRequired(ieaRule.Mask) {
 			return 0, errors.New("unable to parse iea segment")
 		} else if err == nil {
@@ -144,6 +166,10 @@ func (r *Interchange) Parse(data string, args ...string) (int, error) {
 func (r Interchange) String(args ...string) string {
 	var buf bytes.Buffer
 
+	if len(args) == 0 {
+		args = append(args, r.ISA.ComponentElementSeparator)
+	}
+
 	buf.WriteString(r.ISA.String(args...))
 	for index := range r.FunctionalGroups {
 		buf.WriteString(r.FunctionalGroups[index].String(args...))
@@ -153,4 +179,71 @@ func (r Interchange) String(args ...string) string {
 	}
 
 	return buf.String()
+}
+
+func (r Interchange) Print(w io.Writer) {
+
+	padChar := byte(' ')
+	padding := 1
+	level := 0
+
+	var selfDumps []util.ElementInfo
+
+	dump := util.DumpStructInfo(r.ISA, level)
+	selfDumps = append(selfDumps, dump)
+
+	for _, g := range r.FunctionalGroups {
+		dumps := g.DumpStructInfo(level + 1)
+		selfDumps = append(selfDumps, dumps...)
+	}
+
+	if r.IEA != nil {
+		dump = util.DumpStructInfo(r.IEA, level)
+		selfDumps = append(selfDumps, dump)
+	}
+
+	maxItemCnt := 0
+	for _, d := range selfDumps {
+		if len(d.Items) > maxItemCnt {
+			maxItemCnt = len(d.Items)
+		}
+	}
+
+	tw := tabwriter.NewWriter(w, 0, 0, padding, padChar, tabwriter.Debug)
+
+	// header line
+	{
+		printStr := "INDEX:\t"
+		for i := 0; i < maxItemCnt+1; i++ {
+			idx := fmt.Sprintf(" %02d", i)
+			printStr = printStr + idx + "\t"
+		}
+		fmt.Fprintln(tw, printStr)
+	}
+
+	for _, d := range selfDumps {
+
+		printStr := d.Name + "\t"
+		for _, item := range d.Items {
+			printStr = printStr + item + "\t"
+		}
+
+		if len(d.Items) > 0 {
+			printStr = printStr + util.SegmentTerminator + "\t"
+		} else {
+			printStr = printStr + "\t"
+		}
+
+		for i := 0; i < maxItemCnt-len(d.Items); i++ {
+			printStr = printStr + "\t"
+		}
+
+		if d.Level > 0 {
+			printStr = strings.Repeat(string(padChar), d.Level) + printStr
+		}
+
+		fmt.Fprintln(tw, printStr)
+	}
+
+	tw.Flush()
 }

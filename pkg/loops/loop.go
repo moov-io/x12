@@ -12,6 +12,7 @@ import (
 
 	"github.com/moov-io/x12/pkg/rules"
 	"github.com/moov-io/x12/pkg/segments"
+	"github.com/moov-io/x12/pkg/util"
 )
 
 func NewLoop(rule *rules.LoopRule) *Loop {
@@ -148,4 +149,17 @@ func (r Loop) String(args ...string) string {
 	}
 
 	return buf.String()
+}
+
+func (r Loop) DumpStructInfo(level int) []util.ElementInfo {
+	var selfDumps []util.ElementInfo
+
+	selfDumps = append(selfDumps, util.ElementInfo{Name: r.Name(), Level: level})
+
+	for _, s := range r.Segments {
+		dumps := util.DumpStructInfo(s, level+1)
+		selfDumps = append(selfDumps, dumps)
+	}
+
+	return selfDumps
 }

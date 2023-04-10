@@ -2,9 +2,9 @@
 // Use of this source code is governed by an Apache License
 // license that can be found in the LICENSE file.
 
-// 005010X222A1
+// 005010X224A2
 
-package rule_5010_837p
+package rule_5010_837d
 
 import "github.com/moov-io/x12/pkg/rules"
 
@@ -2079,6 +2079,7 @@ var GroupRule = rules.GroupRule{
 }
 
 var InterchangeRule = rules.InterChangeRule{
+	Name: "837D(005010X224A2)",
 	ISA: rules.SegmentRule{
 		Name:        "ISA",
 		Description: "INTERCHANGE CONTROL HEADER",

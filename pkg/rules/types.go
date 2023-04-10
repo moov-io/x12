@@ -19,6 +19,7 @@ func IsMaskRequired(mask string) bool {
 }
 
 type InterChangeRule struct {
+	Name  string
 	ISA   SegmentRule
 	IEA   SegmentRule
 	Group GroupRule
