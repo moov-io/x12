@@ -13,8 +13,7 @@ import (
 )
 
 type Scanner struct {
-	scan  *bufio.Scanner
-	index int
+	scan *bufio.Scanner
 }
 
 func (b *Scanner) GetInterChange() string {
