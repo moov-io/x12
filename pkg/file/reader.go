@@ -16,7 +16,7 @@ type Scanner struct {
 	scan *bufio.Scanner
 }
 
-func (b *Scanner) GetInterChange() string {
+func (b *Scanner) GetInterchange() string {
 	if !b.scan.Scan() {
 		return ""
 	}
@@ -42,7 +42,7 @@ func NewScanner(fd io.Reader) Scanner {
 	return Scanner{scan: scan}
 }
 
-func getInterChangeTerminatorPosition(input string) int {
+func getInterchangeTerminatorPosition(input string) int {
 
 	startPos1 := strings.Index(input, "ISA")
 	startPos2 := strings.LastIndex(input, "ISA")
@@ -75,8 +75,8 @@ func scanInterChange(data []byte, atEOF bool) (advance int, token []byte, err er
 	}
 
 	line := string(data)
-	pos := getInterChangeTerminatorPosition(line)
-	if getInterChangeTerminatorPosition(line) < 0 || !atEOF {
+	pos := getInterchangeTerminatorPosition(line)
+	if getInterchangeTerminatorPosition(line) < 0 || !atEOF {
 		// need more data
 		return 0, nil, nil
 	}

@@ -18,7 +18,7 @@ func TestScanner(t *testing.T) {
 
 		f := strings.NewReader(raw)
 		scan := NewScanner(f)
-		for line := scan.GetInterChange(); line != ""; line = scan.GetInterChange() {
+		for line := scan.GetInterchange(); line != ""; line = scan.GetInterchange() {
 			require.Equal(t, raw, line)
 		}
 	})
@@ -30,7 +30,7 @@ func TestScanner(t *testing.T) {
 
 		f := strings.NewReader(raw)
 		scan := NewScanner(f)
-		for line := scan.GetInterChange(); line != ""; line = scan.GetInterChange() {
+		for line := scan.GetInterchange(); line != ""; line = scan.GetInterchange() {
 			require.Equal(t, "ISA SECTION1 ~", line)
 		}
 	})
@@ -42,7 +42,7 @@ func TestScanner(t *testing.T) {
 
 		f := strings.NewReader(raw)
 		scan := NewScanner(f)
-		for line := scan.GetInterChange(); line != ""; line = scan.GetInterChange() {
+		for line := scan.GetInterchange(); line != ""; line = scan.GetInterchange() {
 			require.Equal(t, "ISA SECTION1 ~IEA SECTION1*~", line)
 		}
 	})
@@ -54,7 +54,7 @@ func TestScanner(t *testing.T) {
 
 		f := strings.NewReader(raw)
 		scan := NewScanner(f)
-		for line := scan.GetInterChange(); line != ""; line = scan.GetInterChange() {
+		for line := scan.GetInterchange(); line != ""; line = scan.GetInterchange() {
 			require.Equal(t, "ISA SECTION1 ~IEA SECTION1*~", line)
 		}
 	})

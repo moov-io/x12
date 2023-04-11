@@ -18,7 +18,7 @@ import (
 	"github.com/moov-io/x12/pkg/util"
 )
 
-func NewInterchange(rule *rules.InterChangeRule) *Interchange {
+func NewInterchange(rule *rules.InterchangeRule) *Interchange {
 
 	newChange := Interchange{rule: rule}
 
@@ -30,10 +30,10 @@ type Interchange struct {
 	FunctionalGroups []FunctionalGroup
 	IEA              *segments.IEA `json:"IEA,omitempty" xml:"IEA,omitempty"`
 
-	rule *rules.InterChangeRule
+	rule *rules.InterchangeRule
 }
 
-func (r *Interchange) Validate(changeRule *rules.InterChangeRule) error {
+func (r *Interchange) Validate(changeRule *rules.InterchangeRule) error {
 
 	if changeRule == nil && r.rule != nil {
 		changeRule = r.rule
@@ -82,7 +82,7 @@ func (r *Interchange) Validate(changeRule *rules.InterChangeRule) error {
 		}
 	}
 
-	// Validating InterChange
+	// Validating
 	if r.IEA != nil {
 
 		// compare control set number
@@ -180,6 +180,21 @@ func (r Interchange) String(args ...string) string {
 
 	return buf.String()
 }
+
+//  The function will print human-readable format of edi file
+//  User should be fund segments and loops with level, indexes are normal spec indexes
+//
+//	INDEX:       | 00           | 01               | 02                     | 03        | 04    | 05             | 06 | 07             | 08        | 09  | 10 | 11   | 12       | 13 | 14 | 15 | 16 | 17 | 18 |
+//	ISA          |00            |                  |00                      |           |ZZ     |133052274       |ZZ  |311279999       |120419     |2125 |^   |00501 |000002120 |0   |P   |:   |~   |    |    |
+//	 GS          |HC            |133052274         |311279999               |20120419   |212549 |2120            |X   |005010X224A2    |~          |     |    |      |          |    |    |    |    |    |    |
+//	  ST         |837           |3456              |005010X224A2            |~          |       |                |    |                |           |     |    |      |          |    |    |    |    |    |    |
+//	   1000A     |              |                  |                        |           |       |                |    |                |           |     |    |      |          |    |    |    |    |    |    |
+//	    NM1      |41            |2                 |PREMIER BILLING SERVICE |           |       |                |    |46              |TGJ23      |~    |    |      |          |    |    |    |    |    |    |
+//	    PER      |IC            |JERRY             |TE                      |7176149999 |       |                |    |                |~          |     |    |      |          |    |    |    |    |    |    |
+//   ... ...
+//	  SE         |31            |3456              |~                       |           |       |                |    |                |           |     |    |      |          |    |    |    |    |    |    |
+//	 GE          |1             |2120              |~                       |           |       |                |    |                |           |     |    |      |          |    |    |    |    |    |    |
+//	IEA          |1             |000002120         |~                       |           |       |                |    |                |           |     |    |      |          |    |    |    |    |    |    |
 
 func (r Interchange) Print(w io.Writer) {
 

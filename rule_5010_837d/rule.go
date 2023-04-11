@@ -2078,7 +2078,7 @@ var GroupRule = rules.GroupRule{
 	Trans: TransactionSetRule,
 }
 
-var InterchangeRule = rules.InterChangeRule{
+var InterchangeRule = rules.InterchangeRule{
 	Name: "837D(005010X224A2)",
 	ISA: rules.SegmentRule{
 		Name:        "ISA",

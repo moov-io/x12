@@ -24,7 +24,7 @@ var (
 	describeCmd = "describe"
 )
 
-var availableRules = map[string]rules.InterChangeRule{
+var availableRules = map[string]rules.InterchangeRule{
 	"837d": rule837d.InterchangeRule,
 	"837p": rule837p.InterchangeRule,
 }
@@ -108,7 +108,7 @@ func main() {
 	}
 }
 
-func describe(paths []string, rule rules.InterChangeRule, validateFlag bool) error {
+func describe(paths []string, rule rules.InterchangeRule, validateFlag bool) error {
 
 	for _, path := range paths {
 		reader, err := os.Open(path)

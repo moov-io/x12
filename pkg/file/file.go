@@ -12,7 +12,7 @@ import (
 	"github.com/moov-io/x12/pkg/rules"
 )
 
-func NewFile(rule *rules.InterChangeRule) *File {
+func NewFile(rule *rules.InterchangeRule) *File {
 
 	f := File{rule: rule}
 
@@ -22,7 +22,7 @@ func NewFile(rule *rules.InterChangeRule) *File {
 type File struct {
 	Interchanges []Interchange
 
-	rule *rules.InterChangeRule
+	rule *rules.InterchangeRule
 }
 
 func (f *File) Validate() error {
@@ -44,6 +44,23 @@ func (f *File) Validate() error {
 	return nil
 }
 
+//  The function will print human-readable format of edi file
+//  User should be fund segments and loops with level, indexes are normal spec indexes
+//
+//  	DUMP EDI FILE WITH 837D(005010X224A2)
+//
+//	INDEX:       | 00           | 01               | 02                     | 03        | 04    | 05             | 06 | 07             | 08        | 09  | 10 | 11   | 12       | 13 | 14 | 15 | 16 | 17 | 18 |
+//	ISA          |00            |                  |00                      |           |ZZ     |133052274       |ZZ  |311279999       |120419     |2125 |^   |00501 |000002120 |0   |P   |:   |~   |    |    |
+//	 GS          |HC            |133052274         |311279999               |20120419   |212549 |2120            |X   |005010X224A2    |~          |     |    |      |          |    |    |    |    |    |    |
+//	  ST         |837           |3456              |005010X224A2            |~          |       |                |    |                |           |     |    |      |          |    |    |    |    |    |    |
+//	   1000A     |              |                  |                        |           |       |                |    |                |           |     |    |      |          |    |    |    |    |    |    |
+//	    NM1      |41            |2                 |PREMIER BILLING SERVICE |           |       |                |    |46              |TGJ23      |~    |    |      |          |    |    |    |    |    |    |
+//	    PER      |IC            |JERRY             |TE                      |7176149999 |       |                |    |                |~          |     |    |      |          |    |    |    |    |    |    |
+//   ... ...
+//	  SE         |31            |3456              |~                       |           |       |                |    |                |           |     |    |      |          |    |    |    |    |    |    |
+//	 GE          |1             |2120              |~                       |           |       |                |    |                |           |     |    |      |          |    |    |    |    |    |    |
+//	IEA          |1             |000002120         |~                       |           |       |                |    |                |           |     |    |      |          |    |    |    |    |    |    |
+
 func (f File) Print(w io.Writer) {
 	if f.rule == nil {
 		w.Write([]byte("unable to find valid rule"))
@@ -64,7 +81,7 @@ func (f *File) Parse(scan Scanner) error {
 		return errors.New("unable to find valid rule")
 	}
 
-	for line := scan.GetInterChange(); line != ""; line = scan.GetInterChange() {
+	for line := scan.GetInterchange(); line != ""; line = scan.GetInterchange() {
 		newChange := NewInterchange(f.rule)
 		read, err := newChange.Parse(line)
 		if err == nil && read > 0 {
