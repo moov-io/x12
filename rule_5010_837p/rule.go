@@ -4,7 +4,7 @@
 
 // 005010X222A1
 
-package rule_5010_837d
+package rule_5010_837p
 
 import "github.com/moov-io/x12/pkg/rules"
 
@@ -2730,7 +2730,8 @@ var GroupRule = rules.GroupRule{
 	Trans: TransactionSetRule,
 }
 
-var InterchangeRule = rules.InterChangeRule{
+var InterchangeRule = rules.InterchangeRule{
+	Name: "837D(005010X224A2)",
 	ISA: rules.SegmentRule{
 		Name:        "ISA",
 		Description: "INTERCHANGE CONTROL HEADER",

@@ -11,6 +11,8 @@ import (
 	"strings"
 
 	"github.com/moov-io/x12/pkg/rules"
+	"github.com/moov-io/x12/pkg/segments"
+	"github.com/moov-io/x12/pkg/util"
 )
 
 func NewCompositeLoop(rule *rules.LoopRule) *CompositeLoop {
@@ -32,6 +34,16 @@ func (r CompositeLoop) Name() string {
 		return r.rule.Name
 	}
 	return "Composite loop"
+}
+
+func (r CompositeLoop) GetSegments() []segments.SegmentInterface {
+
+	segments := r.Loop.Segments
+	for _, loop := range r.SubLoops {
+		segments = append(segments, loop.GetSegments()...)
+	}
+
+	return segments
 }
 
 func (r CompositeLoop) GetRule() *rules.LoopRule {
@@ -123,7 +135,7 @@ func (r *CompositeLoop) Parse(data string, args ...string) (int, error) {
 		for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
 			newChild := NewCompositeLoop(&rule)
 			size, err = newChild.Parse(line, args...)
-			if err == nil {
+			if err == nil && size > 0 {
 				read += size
 				line = data[read:]
 				r.SubLoops = append(r.SubLoops, *newChild)
@@ -149,4 +161,18 @@ func (r CompositeLoop) String(args ...string) string {
 	}
 
 	return buf.String()
+}
+
+func (r CompositeLoop) DumpStructInfo(level int) []util.ElementInfo {
+	var selfDumps []util.ElementInfo
+
+	dumps := r.Loop.DumpStructInfo(level)
+	selfDumps = append(selfDumps, dumps...)
+
+	for _, s := range r.SubLoops {
+		dumps = s.DumpStructInfo(level + 1)
+		selfDumps = append(selfDumps, dumps...)
+	}
+
+	return selfDumps
 }

@@ -8,11 +8,13 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/moov-io/x12/pkg/loops"
 	"github.com/moov-io/x12/pkg/rules"
 	"github.com/moov-io/x12/pkg/segments"
+	"github.com/moov-io/x12/pkg/util"
 )
 
 func NewTransactionSet(rule *rules.TransactionRule) *TransactionSet {
@@ -129,6 +131,33 @@ func (r *TransactionSet) Validate(transRule *rules.TransactionRule) error {
 		}
 	}
 
+	// Validating Transaction Set
+	if r.SE != nil {
+
+		// compare control set number
+		if r.SE.TransactionSetControlNumber != r.ST.TransactionSetControlNumber {
+			return errors.New("has invalid transaction set control number")
+		}
+
+		// getting segments count
+		segmentCnt := 2
+		if r.BHT != nil {
+			segmentCnt++
+		}
+
+		for _, loop := range r.Loops {
+			segs := loop.GetSegments()
+			segmentCnt += len(segs)
+		}
+
+		// compare number of segments
+		if v, conErr := strconv.ParseInt(r.SE.NumberOfSegments, 10, 32); conErr == nil {
+			if v != int64(segmentCnt) {
+				return errors.New("has invalid number of segments")
+			}
+		}
+	}
+
 	return nil
 }
 
@@ -234,4 +263,23 @@ func (r TransactionSet) String(args ...string) string {
 	}
 
 	return buf.String()
+}
+
+func (r TransactionSet) DumpStructInfo(level int) []util.ElementInfo {
+	var selfDumps []util.ElementInfo
+
+	dump := util.DumpStructInfo(r.ST, level)
+	selfDumps = append(selfDumps, dump)
+
+	for _, l := range r.Loops {
+		dumps := l.DumpStructInfo(level + 1)
+		selfDumps = append(selfDumps, dumps...)
+	}
+
+	if r.SE != nil {
+		dump = util.DumpStructInfo(r.SE, level)
+		selfDumps = append(selfDumps, dump)
+	}
+
+	return selfDumps
 }

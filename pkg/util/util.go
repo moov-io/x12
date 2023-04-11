@@ -21,6 +21,12 @@ const (
 	SegmentTerminator    = "~"
 )
 
+type ElementInfo struct {
+	Name  string
+	Level int
+	Items []string
+}
+
 func SetFieldByIndex(r any, index string, data any) error {
 
 	var dataStruct reflect.Value
@@ -71,6 +77,51 @@ func GetFieldByIndex(r any, index string) any {
 	}
 
 	return nil
+}
+
+func DumpStructInfo(r any, level int) ElementInfo {
+
+	info := ElementInfo{
+		Level: level,
+	}
+
+	var dataStruct reflect.Value
+	if reflect.ValueOf(r).Kind() == reflect.Ptr {
+		dataStruct = reflect.ValueOf(r).Elem()
+		info.Name = reflect.TypeOf(r).Elem().Name()
+	} else if reflect.ValueOf(r).Kind() == reflect.Struct {
+		dataStruct = reflect.ValueOf(r)
+		info.Name = reflect.TypeOf(r).Name()
+	}
+
+	for i := 0; i < dataStruct.NumField(); i++ {
+		field := dataStruct.Type().Field(i)
+
+		if len(field.Tag.Get("index")) > 0 {
+
+			elm := dataStruct.Field(i)
+			if elm.Kind() == reflect.String {
+				inf := elm.Interface()
+				if v, ok := inf.(string); ok {
+					info.Items = append(info.Items, v)
+				}
+			} else if elm.Kind() == reflect.Struct {
+				method := elm.MethodByName("String")
+				if method.IsValid() {
+					response := method.Call(nil)
+					info.Items = append(info.Items, response[0].String())
+				}
+			} else if elm.Kind() == reflect.Ptr && !elm.IsNil() {
+				method := reflect.ValueOf(elm.Interface()).MethodByName("String")
+				if method.IsValid() {
+					response := method.Call(nil)
+					info.Items = append(info.Items, response[0].String())
+				}
+			}
+		}
+	}
+
+	return info
 }
 
 func getIndex(input string) int {

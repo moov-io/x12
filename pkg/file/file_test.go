@@ -5,6 +5,7 @@
 package file
 
 import (
+	"bytes"
 	"strings"
 	"testing"
 
@@ -12,7 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestInterchangeFor837P(t *testing.T) {
+func TestFile(t *testing.T) {
 
 	raw := `ISA*00*          *00*          *ZZ*133052274      *ZZ*311279999      *120419*2125*^*00501*000002120*0*P*<~
 GS*HC*133052274*311279999*20120419*212549*2120*X*005010X222A1~
@@ -210,23 +211,25 @@ SE*191*000000533~
 GE*1*2120~
 IEA*1*000002120~`
 
-	t.Run("testing interchange for edi 837p", func(t *testing.T) {
+	t.Run("testing file", func(t *testing.T) {
 
-		data := strings.ReplaceAll(raw, "\n", "")
+		reader := strings.NewReader(raw)
+		scan := NewScanner(reader)
 
-		newChange := NewInterchange(&rule.InterchangeRule)
-
-		read, err := newChange.Parse(data)
-		require.NoError(t, err)
-		require.Equal(t, len(data), read)
-
-		err = newChange.Validate(nil)
+		f := NewFile(&rule.InterchangeRule)
+		err := f.Parse(scan)
 		require.NoError(t, err)
 
-		err = newChange.Validate(&rule.InterchangeRule)
+		err = f.Validate()
 		require.NoError(t, err)
 
-		require.Equal(t, data, newChange.String("<"))
+		out := f.String()
+		stripRaw := strings.ReplaceAll(raw, "\n", "")
+		require.Equal(t, stripRaw, out)
+
+		buf := new(bytes.Buffer)
+		f.Print(buf)
+		require.NotEqual(t, 0, len(buf.String()))
 	})
 
 }

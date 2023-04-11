@@ -5,7 +5,6 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"log"
 	"os"
@@ -18,37 +17,26 @@ import (
 
 func main() {
 
-	f, err := os.Open(path.Join("examples", "example_5010_837p", "sample.txt"))
+	reader, err := os.Open(path.Join("examples", "example_5010_837p", "sample.txt"))
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer f.Close()
+	defer reader.Close()
 
-	var raw string
-	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-		raw += strings.TrimSpace(scanner.Text())
-	}
+	newChange := file.NewFile(&InterchangeRule)
 
-	newChange := file.NewInterchange(&InterchangeRule)
-
-	_, err = newChange.Parse(raw, "<")
-	if err = newChange.Validate(nil); err != nil {
+	if err = newChange.Parse(file.NewScanner(reader)); err != nil {
 		log.Fatal(err.Error())
 		return
 	}
 
-	if err = newChange.Validate(nil); err != nil {
-		log.Fatal(err.Error())
-		return
-	}
-
-	err = newChange.Validate(&InterchangeRule)
-	if err = newChange.Validate(nil); err != nil {
+	if err = newChange.Validate(); err != nil {
 		log.Fatal(err.Error())
 		return
 	}
 
 	fmt.Println("   REGENERATED FILE   ")
-	fmt.Println(strings.ReplaceAll(newChange.String("<"), "~", "~\n"))
+	fmt.Println(strings.ReplaceAll(newChange.String(), "~", "~\n"))
+
+	newChange.Print(os.Stdout)
 }

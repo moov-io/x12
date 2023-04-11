@@ -5,9 +5,10 @@
 package segments
 
 import (
-	"github.com/moov-io/x12/pkg/rules"
 	"testing"
 
+	"github.com/moov-io/x12/pkg/rules"
+	"github.com/moov-io/x12/pkg/util"
 	"github.com/stretchr/testify/require"
 )
 
@@ -183,6 +184,13 @@ func TestForCLM(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, len(in), read)
 		require.Equal(t, "CLM*26403774*150***11:B:1*Y*A*Y*I~", seg.String())
+
+		clm, ok := seg.(*CLM)
+		require.Equal(t, true, ok)
+
+		clm.RelatedCausesInformation = &RelatedCausesInformation{Code1: "Code1", Code2: "Code2"}
+		info := util.DumpStructInfo(seg, 0)
+		require.Equal(t, "CLM", info.Name)
 	})
 
 }
