@@ -39,12 +39,16 @@ type HI struct {
 	Element
 }
 
-func (r *HI) defaultMask(index int) string {
+func (r HI) defaultMask(index int) string {
 	mask := rules.MASK_REQUIRED
 	if index > 1 {
 		mask = rules.MASK_OPTIONAL
 	}
 	return mask
+}
+
+func (r HI) fieldCount() int {
+	return 8
 }
 
 func (r HI) Name() string {
@@ -65,7 +69,7 @@ func (r *HI) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= 8; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var err error
 		idx := fmt.Sprintf("%02d", i)
@@ -116,21 +120,23 @@ func (r *HI) Parse(data string, args ...string) (int, error) {
 
 	var line string
 	var err error
-	var size, read int
+	var size int
 
 	length := util.GetRecordSize(data)
-	if length < 2 {
+	codeLen := len(r.Name())
+	read := codeLen + 1
+
+	if length < int64(read) {
 		return 0, errors.New("hi segment has not enough input data")
 	} else {
 		line = data[:length]
 	}
 
-	if r.Name() != data[:2] {
+	if r.Name() != data[:codeLen] {
 		return 0, errors.New("hi segment contains invalid code")
 	}
-	read += 3
 
-	for i := 1; i <= 8; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var value string
 		idx := fmt.Sprintf("%02d", i)
@@ -194,10 +200,10 @@ func (r *HI) Parse(data string, args ...string) (int, error) {
 	return read, nil
 }
 
-func (r *HI) String(args ...string) string {
+func (r HI) String(args ...string) string {
 	var buf string
 
-	for i := 8; i > 0; i-- {
+	for i := r.fieldCount(); i > 0; i-- {
 
 		var value any
 		idx := fmt.Sprintf("%02d", i)

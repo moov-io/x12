@@ -46,8 +46,12 @@ type HCP struct {
 	Element
 }
 
-func (r *HCP) defaultMask(index int) string {
+func (r HCP) defaultMask() string {
 	return rules.MASK_OPTIONAL
+}
+
+func (r HCP) fieldCount() int {
+	return 15
 }
 
 func (r HCP) Name() string {
@@ -68,10 +72,10 @@ func (r *HCP) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= 15; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		idx := fmt.Sprintf("%02d", i)
-		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask(i)); err != nil {
+		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask()); err != nil {
 			return fmt.Errorf("hcp's element (%s) has invalid value, %s", idx, err.Error())
 		}
 	}
@@ -83,26 +87,28 @@ func (r *HCP) Parse(data string, args ...string) (int, error) {
 
 	var line string
 	var err error
-	var size, read int
+	var size int
 
 	length := util.GetRecordSize(data)
-	if length < 3 {
+	codeLen := len(r.Name())
+	read := codeLen + 1
+
+	if length < int64(read) {
 		return 0, errors.New("hcp segment has not enough input data")
 	} else {
 		line = data[:length]
 	}
 
-	if r.Name() != data[:3] {
+	if r.Name() != data[:codeLen] {
 		return 0, errors.New("hcp segment contains invalid code")
 	}
-	read += 4
 
-	for i := 1; i <= 15; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var value string
 		idx := fmt.Sprintf("%02d", i)
 
-		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), r.defaultMask(i)); err != nil {
+		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), r.defaultMask()); err != nil {
 			return 0, fmt.Errorf("unable to parse hcp's element (%s), %s", idx, err.Error())
 		} else {
 			read += size
@@ -113,16 +119,16 @@ func (r *HCP) Parse(data string, args ...string) (int, error) {
 	return read, nil
 }
 
-func (r *HCP) String(args ...string) string {
+func (r HCP) String(args ...string) string {
 	var buf string
 
-	for i := 15; i > 0; i-- {
+	for i := r.fieldCount(); i > 0; i-- {
 
 		idx := fmt.Sprintf("%02d", i)
 		value := r.GetFieldByIndex(idx)
 
 		if buf == "" {
-			mask := r.GetRule().GetMask(idx, r.defaultMask(i))
+			mask := r.GetRule().GetMask(idx, r.defaultMask())
 			if mask == rules.MASK_NOTUSED {
 				continue
 			}

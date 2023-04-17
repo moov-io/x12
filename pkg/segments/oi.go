@@ -37,12 +37,16 @@ type OI struct {
 	Element
 }
 
-func (r *OI) defaultMask(index int) string {
+func (r OI) defaultMask(index int) string {
 	mask := rules.MASK_OPTIONAL
 	if index == 3 || index == 6 {
 		mask = rules.MASK_REQUIRED
 	}
 	return mask
+}
+
+func (r OI) fieldCount() int {
+	return 6
 }
 
 func (r OI) Name() string {
@@ -63,7 +67,7 @@ func (r *OI) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= 6; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		idx := fmt.Sprintf("%02d", i)
 
@@ -79,21 +83,23 @@ func (r *OI) Parse(data string, args ...string) (int, error) {
 
 	var line string
 	var err error
-	var size, read int
+	var size int
 
 	length := util.GetRecordSize(data)
-	if length < 2 {
+	codeLen := len(r.Name())
+	read := codeLen + 1
+
+	if length < int64(read) {
 		return 0, errors.New("oi segment has not enough input data")
 	} else {
 		line = data[:length]
 	}
 
-	if r.Name() != data[:2] {
+	if r.Name() != data[:codeLen] {
 		return 0, errors.New("oi segment contains invalid code")
 	}
-	read += 3
 
-	for i := 1; i <= 6; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var value string
 		idx := fmt.Sprintf("%02d", i)
@@ -109,10 +115,10 @@ func (r *OI) Parse(data string, args ...string) (int, error) {
 	return read, nil
 }
 
-func (r *OI) String(args ...string) string {
+func (r OI) String(args ...string) string {
 	var buf string
 
-	for i := 6; i > 0; i-- {
+	for i := r.fieldCount(); i > 0; i-- {
 
 		idx := fmt.Sprintf("%02d", i)
 		value := r.GetFieldByIndex(idx)

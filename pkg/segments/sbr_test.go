@@ -44,7 +44,7 @@ func TestForSBR(t *testing.T) {
 		require.Equal(t, "sbr segment has not enough input data", err.Error())
 		require.Equal(t, 0, read)
 
-		in = "GT~"
+		in = "GTA~"
 		read, err = seg.Parse(in)
 		require.Error(t, err)
 		require.Equal(t, "sbr segment contains invalid code", err.Error())

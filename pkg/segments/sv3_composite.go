@@ -24,6 +24,14 @@ type DentalServiceProcedure struct {
 	Element
 }
 
+func (r DentalServiceProcedure) defaultMask() string {
+	return rules.MASK_OPTIONAL
+}
+
+func (r DentalServiceProcedure) fieldCount() int {
+	return 8
+}
+
 func (r *DentalServiceProcedure) SetFieldByIndex(index string, data any) error {
 	return util.SetFieldByIndex(r, index, data)
 }
@@ -38,12 +46,11 @@ func (r *DentalServiceProcedure) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= 8; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		idx := fmt.Sprintf("%02d", i)
-		mask := rules.MASK_OPTIONAL
 
-		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), mask); err != nil {
+		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask()); err != nil {
 			return fmt.Errorf("dental procedure's element (%s) has invalid value, %s", idx, err.Error())
 		}
 	}
@@ -57,13 +64,12 @@ func (r *DentalServiceProcedure) Parse(data string, args ...string) (int, error)
 	var size, read int
 	line := data
 
-	for i := 1; i <= 8; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var value string
-		mask := rules.MASK_OPTIONAL
 		idx := fmt.Sprintf("%02d", i)
 
-		if value, size, err = util.ReadCompositeField(line, read, r.GetRule().Get(idx), mask, args...); err != nil {
+		if value, size, err = util.ReadCompositeField(line, read, r.GetRule().Get(idx), r.defaultMask(), args...); err != nil {
 			return 0, fmt.Errorf("unable to parse dental procedure's element (%s), %s", idx, err.Error())
 		} else {
 			read += size
@@ -74,7 +80,7 @@ func (r *DentalServiceProcedure) Parse(data string, args ...string) (int, error)
 	return read, nil
 }
 
-func (r *DentalServiceProcedure) String(args ...string) string {
+func (r DentalServiceProcedure) String(args ...string) string {
 	var buf string
 
 	separator := util.SubElementSeparator
@@ -82,13 +88,13 @@ func (r *DentalServiceProcedure) String(args ...string) string {
 		separator = args[0]
 	}
 
-	for i := 8; i > 0; i-- {
+	for i := r.fieldCount(); i > 0; i-- {
 
 		idx := fmt.Sprintf("%02d", i)
 		value := r.GetFieldByIndex(idx)
 
 		if buf == "" {
-			mask := r.GetRule().GetMask(idx, rules.MASK_OPTIONAL)
+			mask := r.GetRule().GetMask(idx, r.defaultMask())
 			if mask == rules.MASK_NOTUSED {
 				continue
 			}
@@ -117,6 +123,14 @@ type DentalServiceCode struct {
 	Element
 }
 
+func (r DentalServiceCode) defaultMask() string {
+	return rules.MASK_OPTIONAL
+}
+
+func (r DentalServiceCode) fieldCount() int {
+	return 5
+}
+
 func (r *DentalServiceCode) SetFieldByIndex(index string, data any) error {
 	return util.SetFieldByIndex(r, index, data)
 }
@@ -131,12 +145,11 @@ func (r *DentalServiceCode) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= 5; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		idx := fmt.Sprintf("%02d", i)
-		mask := rules.MASK_OPTIONAL
 
-		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), mask); err != nil {
+		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask()); err != nil {
 			return fmt.Errorf("dental code's element (%s) has invalid value, %s", idx, err.Error())
 		}
 	}
@@ -150,13 +163,12 @@ func (r *DentalServiceCode) Parse(data string, args ...string) (int, error) {
 	var size, read int
 	line := data
 
-	for i := 1; i <= 5; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var value string
-		mask := rules.MASK_OPTIONAL
 		idx := fmt.Sprintf("%02d", i)
 
-		if value, size, err = util.ReadCompositeField(line, read, r.GetRule().Get(idx), mask, args...); err != nil {
+		if value, size, err = util.ReadCompositeField(line, read, r.GetRule().Get(idx), r.defaultMask(), args...); err != nil {
 			return 0, fmt.Errorf("unable to parse dental code's element (%s), %s", idx, err.Error())
 		} else {
 			read += size
@@ -167,7 +179,7 @@ func (r *DentalServiceCode) Parse(data string, args ...string) (int, error) {
 	return read, nil
 }
 
-func (r *DentalServiceCode) String(args ...string) string {
+func (r DentalServiceCode) String(args ...string) string {
 	var buf string
 
 	separator := util.SubElementSeparator
@@ -175,13 +187,13 @@ func (r *DentalServiceCode) String(args ...string) string {
 		separator = args[0]
 	}
 
-	for i := 5; i > 0; i-- {
+	for i := r.fieldCount(); i > 0; i-- {
 
 		idx := fmt.Sprintf("%02d", i)
 		value := r.GetFieldByIndex(idx)
 
 		if buf == "" {
-			mask := r.GetRule().GetMask(idx, rules.MASK_OPTIONAL)
+			mask := r.GetRule().GetMask(idx, r.defaultMask())
 			if mask == rules.MASK_NOTUSED {
 				continue
 			}
@@ -209,6 +221,14 @@ type DentalServiceCodePointer struct {
 	Element
 }
 
+func (r DentalServiceCodePointer) defaultMask() string {
+	return rules.MASK_OPTIONAL
+}
+
+func (r DentalServiceCodePointer) fieldCount() int {
+	return 4
+}
+
 func (r *DentalServiceCodePointer) SetFieldByIndex(index string, data any) error {
 	return util.SetFieldByIndex(r, index, data)
 }
@@ -223,12 +243,11 @@ func (r *DentalServiceCodePointer) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= 4; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		idx := fmt.Sprintf("%02d", i)
-		mask := rules.MASK_OPTIONAL
 
-		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), mask); err != nil {
+		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask()); err != nil {
 			return fmt.Errorf("dental code pointer's element (%s) has invalid value, %s", idx, err.Error())
 		}
 	}
@@ -242,13 +261,12 @@ func (r *DentalServiceCodePointer) Parse(data string, args ...string) (int, erro
 	var size, read int
 	line := data
 
-	for i := 1; i <= 4; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var value string
-		mask := rules.MASK_OPTIONAL
 		idx := fmt.Sprintf("%02d", i)
 
-		if value, size, err = util.ReadCompositeField(line, read, r.GetRule().Get(idx), mask, args...); err != nil {
+		if value, size, err = util.ReadCompositeField(line, read, r.GetRule().Get(idx), r.defaultMask(), args...); err != nil {
 			return 0, fmt.Errorf("unable to parse dental code pointer's element (%s), %s", idx, err.Error())
 		} else {
 			read += size
@@ -259,7 +277,7 @@ func (r *DentalServiceCodePointer) Parse(data string, args ...string) (int, erro
 	return read, nil
 }
 
-func (r *DentalServiceCodePointer) String(args ...string) string {
+func (r DentalServiceCodePointer) String(args ...string) string {
 	var buf string
 
 	separator := util.SubElementSeparator
@@ -267,13 +285,13 @@ func (r *DentalServiceCodePointer) String(args ...string) string {
 		separator = args[0]
 	}
 
-	for i := 4; i > 0; i-- {
+	for i := r.fieldCount(); i > 0; i-- {
 
 		idx := fmt.Sprintf("%02d", i)
 		value := r.GetFieldByIndex(idx)
 
 		if buf == "" {
-			mask := r.GetRule().GetMask(idx, rules.MASK_OPTIONAL)
+			mask := r.GetRule().GetMask(idx, r.defaultMask())
 			if mask == rules.MASK_NOTUSED {
 				continue
 			}

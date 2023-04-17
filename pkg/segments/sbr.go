@@ -39,12 +39,16 @@ type SBR struct {
 	Element
 }
 
-func (r *SBR) defaultMask(index int) string {
+func (r SBR) defaultMask(index int) string {
 	mask := rules.MASK_REQUIRED
 	if index > 1 {
 		mask = rules.MASK_OPTIONAL
 	}
 	return mask
+}
+
+func (r SBR) fieldCount() int {
+	return 9
 }
 
 func (r SBR) Name() string {
@@ -65,7 +69,7 @@ func (r *SBR) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= 9; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 		idx := fmt.Sprintf("%02d", i)
 		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask(i)); err != nil {
 			return fmt.Errorf("sbr's element (%s) has invalid value, %s", idx, err.Error())
@@ -79,21 +83,23 @@ func (r *SBR) Parse(data string, args ...string) (int, error) {
 
 	var line string
 	var err error
-	var size, read int
+	var size int
 
 	length := util.GetRecordSize(data)
-	if length < 3 {
+	codeLen := len(r.Name())
+	read := codeLen + 1
+
+	if length < int64(read) {
 		return 0, errors.New("sbr segment has not enough input data")
 	} else {
 		line = data[:length]
 	}
 
-	if r.Name() != data[:3] {
+	if r.Name() != data[:codeLen] {
 		return 0, errors.New("sbr segment contains invalid code")
 	}
-	read += 4
 
-	for i := 1; i <= 9; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var value string
 		idx := fmt.Sprintf("%02d", i)
@@ -113,7 +119,7 @@ func (r SBR) String(args ...string) string {
 
 	var buf string
 
-	for i := 9; i > 0; i-- {
+	for i := r.fieldCount(); i > 0; i-- {
 
 		idx := fmt.Sprintf("%02d", i)
 		value := r.GetFieldByIndex(idx)

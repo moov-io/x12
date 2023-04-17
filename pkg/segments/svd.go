@@ -37,12 +37,16 @@ type SVD struct {
 	Element
 }
 
-func (r *SVD) defaultMask(index int) string {
+func (r SVD) defaultMask(index int) string {
 	mask := rules.MASK_REQUIRED
 	if index == 4 || index == 6 {
 		mask = rules.MASK_OPTIONAL
 	}
 	return mask
+}
+
+func (r SVD) fieldCount() int {
+	return 6
 }
 
 func (r SVD) Name() string {
@@ -63,7 +67,7 @@ func (r *SVD) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= 6; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var err error
 		idx := fmt.Sprintf("%02d", i)
@@ -88,21 +92,23 @@ func (r *SVD) Parse(data string, args ...string) (int, error) {
 
 	var line string
 	var err error
-	var size, read int
+	var size int
 
 	length := util.GetRecordSize(data)
-	if length < 3 {
+	codeLen := len(r.Name())
+	read := codeLen + 1
+
+	if length < int64(read) {
 		return 0, errors.New("svd segment has not enough input data")
 	} else {
 		line = data[:length]
 	}
 
-	if r.Name() != data[:3] {
+	if r.Name() != data[:codeLen] {
 		return 0, errors.New("svd segment contains invalid code")
 	}
-	read += 4
 
-	for i := 1; i <= 6; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var value string
 		idx := fmt.Sprintf("%02d", i)
@@ -140,10 +146,10 @@ func (r *SVD) Parse(data string, args ...string) (int, error) {
 	return read, nil
 }
 
-func (r *SVD) String(args ...string) string {
+func (r SVD) String(args ...string) string {
 	var buf string
 
-	for i := 6; i > 0; i-- {
+	for i := r.fieldCount(); i > 0; i-- {
 
 		var value any
 		idx := fmt.Sprintf("%02d", i)

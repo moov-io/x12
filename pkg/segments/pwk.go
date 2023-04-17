@@ -44,6 +44,10 @@ func (r *PWK) defaultMask(index int) string {
 	return mask
 }
 
+func (r PWK) fieldCount() int {
+	return 6
+}
+
 func (r PWK) Name() string {
 	return "PWK"
 }
@@ -62,7 +66,7 @@ func (r *PWK) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= 6; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 		idx := fmt.Sprintf("%02d", i)
 		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask(i)); err != nil {
 			return fmt.Errorf("pwk's element (%s) has invalid value, %s", idx, err.Error())
@@ -76,21 +80,23 @@ func (r *PWK) Parse(data string, args ...string) (int, error) {
 
 	var line string
 	var err error
-	var size, read int
+	var size int
 
 	length := util.GetRecordSize(data)
-	if length < 3 {
+	codeLen := len(r.Name())
+	read := codeLen + 1
+
+	if length < int64(read) {
 		return 0, errors.New("pwk segment has not enough input data")
 	} else {
 		line = data[:length]
 	}
 
-	if r.Name() != data[:3] {
+	if r.Name() != data[:codeLen] {
 		return 0, errors.New("pwk segment contains invalid code")
 	}
-	read += 4
 
-	for i := 1; i <= 6; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var value string
 		idx := fmt.Sprintf("%02d", i)
@@ -110,7 +116,7 @@ func (r PWK) String(args ...string) string {
 
 	var buf string
 
-	for i := 6; i > 0; i-- {
+	for i := r.fieldCount(); i > 0; i-- {
 
 		idx := fmt.Sprintf("%02d", i)
 		value := r.GetFieldByIndex(idx)

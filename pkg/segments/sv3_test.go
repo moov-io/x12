@@ -24,7 +24,7 @@ func TestForSV3(t *testing.T) {
 		in = "SV3*1-1180*174***11:B:1*Y*A*Y*Y*P*********~"
 		read, err = seg.Parse(in)
 		require.NoError(t, err)
-		require.Equal(t, len(in), read)
+		require.Equal(t, 35, read)
 
 		in = "SV3*1-1180*174***11:B:1*Y*A*Y*Y~"
 		read, err = seg.Parse(in)

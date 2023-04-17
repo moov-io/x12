@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
-	"strconv"
 	"strings"
 
 	"github.com/moov-io/x12/pkg/rules"
@@ -254,42 +253,6 @@ func ReadField(input string, start int, spec rules.ElementRule, mask string) (st
 	value := data[:idx]
 	if err := ValidateField(value, spec, mask); err != nil {
 		return "", 0, err
-	}
-
-	return value, idx + 1, nil
-}
-
-func ReadFieldAsInt(input string, start int, spec rules.ElementRule, mask string) (int64, int, error) {
-
-	data := ""
-
-	if start < len(input) {
-		data = input[start:]
-	}
-
-	if data == "" {
-		if GetMask(spec.Mask, mask) == rules.MASK_NOTUSED {
-			return 0, 0, nil
-		}
-		return 0, 0, fmt.Errorf("doesn't enough input string")
-	}
-
-	idx := getIndex(data)
-	if idx == -1 {
-		return 0, 0, fmt.Errorf("doesn't have valid delimiter")
-	}
-
-	if data[:idx] == "" {
-		return 0, 1, nil
-	}
-
-	value, err := strconv.ParseInt(data[:idx], 10, 64)
-	if err != nil {
-		return 0, 0, fmt.Errorf("doesn't have valid value")
-	}
-
-	if err = ValidateField(value, spec, mask); err != nil {
-		return 0, 0, err
 	}
 
 	return value, idx + 1, nil

@@ -40,6 +40,14 @@ type CR1 struct {
 	Element
 }
 
+func (r CR1) defaultMask() string {
+	return rules.MASK_OPTIONAL
+}
+
+func (r CR1) fieldCount() int {
+	return 10
+}
+
 func (r CR1) Name() string {
 	return "CR1"
 }
@@ -58,12 +66,11 @@ func (r *CR1) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= 10; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		idx := fmt.Sprintf("%02d", i)
-		mask := rules.MASK_OPTIONAL
 
-		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), mask); err != nil {
+		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask()); err != nil {
 			return fmt.Errorf("cr1's element (%s) has invalid value, %s", idx, err.Error())
 		}
 	}
@@ -75,27 +82,28 @@ func (r *CR1) Parse(data string, args ...string) (int, error) {
 
 	var line string
 	var err error
-	var size, read int
+	var size int
 
 	length := util.GetRecordSize(data)
-	if length < 3 {
+	codeLen := len(r.Name())
+	read := codeLen + 1
+
+	if length < int64(read) {
 		return 0, errors.New("cr1 segment has not enough input data")
 	} else {
 		line = data[:length]
 	}
 
-	if r.Name() != data[:3] {
+	if r.Name() != data[:codeLen] {
 		return 0, errors.New("cr1 segment contains invalid code")
 	}
-	read += 4
 
-	for i := 1; i <= 10; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var value string
-		mask := rules.MASK_OPTIONAL
 		idx := fmt.Sprintf("%02d", i)
 
-		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), mask); err != nil {
+		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), r.defaultMask()); err != nil {
 			return 0, fmt.Errorf("unable to parse cr1's element (%s), %s", idx, err.Error())
 		} else {
 			read += size
@@ -110,13 +118,13 @@ func (r CR1) String(args ...string) string {
 
 	var buf string
 
-	for i := 10; i > 0; i-- {
+	for i := r.fieldCount(); i > 0; i-- {
 
 		idx := fmt.Sprintf("%02d", i)
 		value := r.GetFieldByIndex(idx)
 
 		if buf == "" {
-			mask := r.GetRule().GetMask(idx, rules.MASK_OPTIONAL)
+			mask := r.GetRule().GetMask(idx, r.defaultMask())
 			if mask == rules.MASK_NOTUSED {
 				continue
 			}

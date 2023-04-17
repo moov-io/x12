@@ -39,12 +39,16 @@ type NM1 struct {
 	Element
 }
 
-func (r *NM1) defaultMask(index int) string {
+func (r NM1) defaultMask(index int) string {
 	mask := rules.MASK_REQUIRED
 	if index >= 5 && index <= 7 {
 		mask = rules.MASK_OPTIONAL
 	}
 	return mask
+}
+
+func (r NM1) fieldCount() int {
+	return 9
 }
 
 func (r NM1) Name() string {
@@ -65,7 +69,7 @@ func (r *NM1) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= 9; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		idx := fmt.Sprintf("%02d", i)
 		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask(i)); err != nil {
@@ -80,21 +84,23 @@ func (r *NM1) Parse(data string, args ...string) (int, error) {
 
 	var line string
 	var err error
-	var size, read int
+	var size int
 
 	length := util.GetRecordSize(data)
-	if length < 3 {
+	codeLen := len(r.Name())
+	read := codeLen + 1
+
+	if length < int64(read) {
 		return 0, errors.New("nm1 segment has not enough input data")
 	} else {
 		line = data[:length]
 	}
 
-	if r.Name() != data[:3] {
+	if r.Name() != data[:codeLen] {
 		return 0, errors.New("nm1 segment contains invalid code")
 	}
-	read += 4
 
-	for i := 1; i <= 9; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var value string
 		idx := fmt.Sprintf("%02d", i)
@@ -113,7 +119,7 @@ func (r *NM1) Parse(data string, args ...string) (int, error) {
 func (r NM1) String(args ...string) string {
 	var buf string
 
-	for i := 9; i > 0; i-- {
+	for i := r.fieldCount(); i > 0; i-- {
 
 		idx := fmt.Sprintf("%02d", i)
 		value := r.GetFieldByIndex(idx)
