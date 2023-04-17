@@ -33,6 +33,14 @@ type AMT struct {
 	Element
 }
 
+func (r AMT) defaultMask() string {
+	return rules.MASK_REQUIRED
+}
+
+func (r AMT) fieldCount() int {
+	return 2
+}
+
 func (r AMT) Name() string {
 	return "AMT"
 }
@@ -51,12 +59,10 @@ func (r *AMT) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= 2; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		idx := fmt.Sprintf("%02d", i)
-		mask := rules.MASK_REQUIRED
-
-		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), mask); err != nil {
+		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask()); err != nil {
 			return fmt.Errorf("amt's element (%s) has invalid value, %s", idx, err.Error())
 		}
 	}
@@ -68,21 +74,23 @@ func (r *AMT) Parse(data string, args ...string) (int, error) {
 
 	var line string
 	var err error
-	var size, read int
+	var size int
 
 	length := util.GetRecordSize(data)
-	if length < 3 {
+	codeLen := len(r.Name())
+	read := codeLen + 1
+
+	if length < int64(read) {
 		return 0, errors.New("amt segment has not enough input data")
 	} else {
 		line = data[:length]
 	}
 
-	if r.Name() != data[:3] {
+	if r.Name() != data[:codeLen] {
 		return 0, errors.New("amt segment contains invalid code")
 	}
-	read += 4
 
-	for i := 1; i <= 2; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var value string
 		mask := rules.MASK_REQUIRED
@@ -99,16 +107,16 @@ func (r *AMT) Parse(data string, args ...string) (int, error) {
 	return read, nil
 }
 
-func (r *AMT) String(args ...string) string {
+func (r AMT) String(args ...string) string {
 	var buf string
 
-	for i := 2; i > 0; i-- {
+	for i := r.fieldCount(); i > 0; i-- {
 
 		idx := fmt.Sprintf("%02d", i)
 		value := r.GetFieldByIndex(idx)
 
 		if buf == "" {
-			mask := r.GetRule().GetMask(idx, rules.MASK_REQUIRED)
+			mask := r.GetRule().GetMask(idx, r.defaultMask())
 			if mask == rules.MASK_NOTUSED {
 				continue
 			}

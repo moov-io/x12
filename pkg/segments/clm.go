@@ -51,12 +51,16 @@ type CLM struct {
 	Element
 }
 
-func (r *CLM) defaultMask(index int) string {
+func (r CLM) defaultMask(index int) string {
 	mask := rules.MASK_REQUIRED
 	if index > 9 || (index == 3 || index == 4) {
 		mask = rules.MASK_OPTIONAL
 	}
 	return mask
+}
+
+func (r CLM) fieldCount() int {
+	return 20
 }
 
 func (r CLM) Name() string {
@@ -77,7 +81,7 @@ func (r *CLM) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= 20; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var err error
 		idx := fmt.Sprintf("%02d", i)
@@ -105,21 +109,23 @@ func (r *CLM) Parse(data string, args ...string) (int, error) {
 
 	var line string
 	var err error
-	var size, read int
+	var size int
 
 	length := util.GetRecordSize(data)
-	if length < 3 {
+	codeLen := len(r.Name())
+	read := codeLen + 1
+
+	if length < int64(read) {
 		return 0, errors.New("clm segment has not enough input data")
 	} else {
 		line = data[:length]
 	}
 
-	if r.Name() != data[:3] {
+	if r.Name() != data[:codeLen] {
 		return 0, errors.New("clm segment contains invalid code")
 	}
-	read += 4
 
-	for i := 1; i <= 20; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var value string
 		idx := fmt.Sprintf("%02d", i)
@@ -166,10 +172,10 @@ func (r *CLM) Parse(data string, args ...string) (int, error) {
 	return read, nil
 }
 
-func (r *CLM) String(args ...string) string {
+func (r CLM) String(args ...string) string {
 	var buf string
 
-	for i := 20; i > 0; i-- {
+	for i := r.fieldCount(); i > 0; i-- {
 
 		var value any
 		idx := fmt.Sprintf("%02d", i)

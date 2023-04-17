@@ -55,6 +55,7 @@ type SegmentInterface interface {
 var (
 	_ SegmentInterface = (*AMT)(nil)
 	_ SegmentInterface = (*BHT)(nil)
+	_ SegmentInterface = (*BPR)(nil)
 	_ SegmentInterface = (*CAS)(nil)
 	_ SegmentInterface = (*CLM)(nil)
 	_ SegmentInterface = (*CN1)(nil)
@@ -99,6 +100,7 @@ var (
 	segmentConstructor = map[string]constructorFunc{
 		"AMT": func(rule *rules.ElementSetRule) SegmentInterface { return NewAMT(rule) },
 		"BHT": func(rule *rules.ElementSetRule) SegmentInterface { return NewBHT(rule) },
+		"BPR": func(rule *rules.ElementSetRule) SegmentInterface { return NewBPR(rule) },
 		"CAS": func(rule *rules.ElementSetRule) SegmentInterface { return NewCAS(rule) },
 		"CLM": func(rule *rules.ElementSetRule) SegmentInterface { return NewCLM(rule) },
 		"CN1": func(rule *rules.ElementSetRule) SegmentInterface { return NewCN1(rule) },

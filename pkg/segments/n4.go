@@ -34,6 +34,14 @@ type N4 struct {
 	Element
 }
 
+func (r N4) defaultMask() string {
+	return rules.MASK_REQUIRED
+}
+
+func (r N4) fieldCount() int {
+	return 3
+}
+
 func (r N4) Name() string {
 	return "N4"
 }
@@ -52,12 +60,11 @@ func (r *N4) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= 3; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		idx := fmt.Sprintf("%02d", i)
-		mask := rules.MASK_REQUIRED
 
-		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), mask); err != nil {
+		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask()); err != nil {
 			return fmt.Errorf("n4's element (%s) has invalid value, %s", idx, err.Error())
 		}
 	}
@@ -69,27 +76,28 @@ func (r *N4) Parse(data string, args ...string) (int, error) {
 
 	var line string
 	var err error
-	var size, read int
+	var size int
 
 	length := util.GetRecordSize(data)
-	if length < 2 {
+	codeLen := len(r.Name())
+	read := codeLen + 1
+
+	if length < int64(read) {
 		return 0, errors.New("n4 segment has not enough input data")
 	} else {
 		line = data[:length]
 	}
 
-	if r.Name() != data[:2] {
+	if r.Name() != data[:codeLen] {
 		return 0, errors.New("n4 segment contains invalid code")
 	}
-	read += 3
 
-	for i := 1; i <= 3; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var value string
-		mask := rules.MASK_REQUIRED
 		idx := fmt.Sprintf("%02d", i)
 
-		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), mask); err != nil {
+		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), r.defaultMask()); err != nil {
 			return 0, fmt.Errorf("unable to parse n4's element (%s), %s", idx, err.Error())
 		} else {
 			read += size
@@ -103,16 +111,17 @@ func (r *N4) Parse(data string, args ...string) (int, error) {
 func (r N4) String(args ...string) string {
 	var buf string
 
-	for i := 3; i > 0; i-- {
+	for i := r.fieldCount(); i > 0; i-- {
 
 		idx := fmt.Sprintf("%02d", i)
 		value := r.GetFieldByIndex(idx)
 
 		if buf == "" {
-			if r.GetRule().Get(idx).Mask == rules.MASK_NOTUSED {
+			mask := r.GetRule().GetMask(idx, r.defaultMask())
+			if mask == rules.MASK_NOTUSED {
 				continue
 			}
-			if r.GetRule().Get(idx).Mask == rules.MASK_OPTIONAL && value == nil {
+			if mask == rules.MASK_OPTIONAL && (value == nil || fmt.Sprintf("%v", value) == "") {
 				continue
 			}
 		}

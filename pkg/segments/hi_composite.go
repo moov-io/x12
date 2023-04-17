@@ -81,7 +81,7 @@ func (r *HealthCareCode) Parse(data string, args ...string) (int, error) {
 	return read, nil
 }
 
-func (r *HealthCareCode) String(args ...string) string {
+func (r HealthCareCode) String(args ...string) string {
 	var buf string
 
 	separator := util.SubElementSeparator

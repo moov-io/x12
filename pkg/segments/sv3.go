@@ -42,8 +42,12 @@ type SV3 struct {
 	Element
 }
 
-func (r *SV3) defaultMask(index int) string {
+func (r SV3) defaultMask() string {
 	return rules.MASK_OPTIONAL
+}
+
+func (r SV3) fieldCount() int {
+	return 11
 }
 
 func (r SV3) Name() string {
@@ -64,7 +68,7 @@ func (r *SV3) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= 21; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var err error
 		idx := fmt.Sprintf("%02d", i)
@@ -82,7 +86,7 @@ func (r *SV3) Validate(rule *rules.ElementSetRule) error {
 				err = r.Field11.Validate(nil)
 			}
 		} else {
-			err = util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask(i))
+			err = util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask())
 		}
 
 		if err != nil {
@@ -97,28 +101,30 @@ func (r *SV3) Parse(data string, args ...string) (int, error) {
 
 	var line string
 	var err error
-	var size, read int
+	var size int
 
 	length := util.GetRecordSize(data)
-	if length < 3 {
+	codeLen := len(r.Name())
+	read := codeLen + 1
+
+	if length < int64(read) {
 		return 0, errors.New("sv3 segment has not enough input data")
 	} else {
 		line = data[:length]
 	}
 
-	if r.Name() != data[:3] {
+	if r.Name() != data[:codeLen] {
 		return 0, errors.New("sv3 segment contains invalid code")
 	}
-	read += 4
 
-	for i := 1; i <= 21; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var value string
 		idx := fmt.Sprintf("%02d", i)
 
 		rule := r.GetRule().Get(idx)
 
-		if value, size, err = util.ReadField(line, read, rule, r.defaultMask(i)); err != nil {
+		if value, size, err = util.ReadField(line, read, rule, r.defaultMask()); err != nil {
 			return 0, fmt.Errorf("unable to parse sv3's element (%s), %s", idx, err.Error())
 		} else {
 			read += size
@@ -159,10 +165,10 @@ func (r *SV3) Parse(data string, args ...string) (int, error) {
 	return read, nil
 }
 
-func (r *SV3) String(args ...string) string {
+func (r SV3) String(args ...string) string {
 	var buf string
 
-	for i := 21; i > 0; i-- {
+	for i := r.fieldCount(); i > 0; i-- {
 
 		idx := fmt.Sprintf("%02d", i)
 		var value any
@@ -184,7 +190,7 @@ func (r *SV3) String(args ...string) string {
 		}
 
 		if buf == "" {
-			mask := r.GetRule().GetMask(idx, r.defaultMask(i))
+			mask := r.GetRule().GetMask(idx, r.defaultMask())
 			if mask == rules.MASK_NOTUSED {
 				continue
 			}

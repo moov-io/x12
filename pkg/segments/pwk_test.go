@@ -44,7 +44,7 @@ func TestForPWK(t *testing.T) {
 		require.Equal(t, "pwk segment has not enough input data", err.Error())
 		require.Equal(t, 0, read)
 
-		in = "GT~"
+		in = "GTA~"
 		read, err = seg.Parse(in)
 		require.Error(t, err)
 		require.Equal(t, "pwk segment contains invalid code", err.Error())

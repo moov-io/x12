@@ -21,6 +21,14 @@ type ToothSurfaceCode struct {
 	Element
 }
 
+func (r ToothSurfaceCode) defaultMask() string {
+	return rules.MASK_OPTIONAL
+}
+
+func (r ToothSurfaceCode) fieldCount() int {
+	return 5
+}
+
 func (r *ToothSurfaceCode) SetFieldByIndex(index string, data any) error {
 	return util.SetFieldByIndex(r, index, data)
 }
@@ -35,12 +43,11 @@ func (r *ToothSurfaceCode) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= 5; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		idx := fmt.Sprintf("%02d", i)
-		mask := rules.MASK_OPTIONAL
 
-		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), mask); err != nil {
+		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask()); err != nil {
 			return fmt.Errorf("tooth surface code's element (%s) has invalid value, %s", idx, err.Error())
 		}
 	}
@@ -54,13 +61,12 @@ func (r *ToothSurfaceCode) Parse(data string, args ...string) (int, error) {
 	var size, read int
 	line := data
 
-	for i := 1; i <= 5; i++ {
+	for i := 1; i <= r.fieldCount(); i++ {
 
 		var value string
-		mask := rules.MASK_OPTIONAL
 		idx := fmt.Sprintf("%02d", i)
 
-		if value, size, err = util.ReadCompositeField(line, read, r.GetRule().Get(idx), mask, args...); err != nil {
+		if value, size, err = util.ReadCompositeField(line, read, r.GetRule().Get(idx), r.defaultMask(), args...); err != nil {
 			return 0, fmt.Errorf("unable to parse tooth surface code's element (%s), %s", idx, err.Error())
 		} else {
 			read += size
@@ -71,7 +77,7 @@ func (r *ToothSurfaceCode) Parse(data string, args ...string) (int, error) {
 	return read, nil
 }
 
-func (r *ToothSurfaceCode) String(args ...string) string {
+func (r ToothSurfaceCode) String(args ...string) string {
 	var buf string
 
 	separator := util.SubElementSeparator
@@ -79,13 +85,13 @@ func (r *ToothSurfaceCode) String(args ...string) string {
 		separator = args[0]
 	}
 
-	for i := 5; i > 0; i-- {
+	for i := r.fieldCount(); i > 0; i-- {
 
 		idx := fmt.Sprintf("%02d", i)
 		value := r.GetFieldByIndex(idx)
 
 		if buf == "" {
-			mask := r.GetRule().GetMask(idx, rules.MASK_OPTIONAL)
+			mask := r.GetRule().GetMask(idx, r.defaultMask())
 			if mask == rules.MASK_NOTUSED {
 				continue
 			}

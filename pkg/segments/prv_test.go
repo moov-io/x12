@@ -44,7 +44,7 @@ func TestForPRV(t *testing.T) {
 		require.Equal(t, "prv segment has not enough input data", err.Error())
 		require.Equal(t, 0, read)
 
-		in = "N3~"
+		in = "GTA~"
 		read, err = seg.Parse(in)
 		require.Error(t, err)
 		require.Equal(t, "prv segment contains invalid code", err.Error())
