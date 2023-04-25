@@ -222,10 +222,7 @@ type SegmentRule struct {
 }
 
 func (s SegmentRule) isRequired(isRequiredOnly bool) bool {
-	if !(isRequiredOnly && getMask(s.Mask, MASK_REQUIRED) != MASK_REQUIRED) {
-		return true
-	}
-	return false
+	return !(isRequiredOnly && getMask(s.Mask, MASK_REQUIRED) != MASK_REQUIRED)
 }
 
 func (s SegmentRule) dumpRuleInfo(level int) ruleInfo {
