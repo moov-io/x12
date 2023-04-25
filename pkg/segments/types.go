@@ -48,6 +48,9 @@ type SegmentInterface interface {
 	GetFieldByIndex(index string) any
 	SetFieldByIndex(index string, data any) error
 	Validate(rule *rules.ElementSetRule) error
+	// Args
+	// First arg: SegmentTerminator
+	// Second arg: ElementSeparator
 	Parse(data string, args ...string) (int, error)
 	String(args ...string) string
 }

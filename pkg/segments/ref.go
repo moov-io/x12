@@ -29,16 +29,21 @@ func NewREF(rule *rules.ElementSetRule) SegmentInterface {
 type REF struct {
 	ReferenceIdentificationQualifier string `index:"01" json:"01" xml:"01"`
 	ReferenceIdentification          string `index:"02" json:"02" xml:"02"`
+	Description                      string `index:"03" json:"03,omitempty" xml:"03,omitempty"`
 
 	Element
 }
 
-func (r REF) defaultMask() string {
-	return rules.MASK_REQUIRED
+func (r REF) defaultMask(index int) string {
+	mask := rules.MASK_REQUIRED
+	if index > 2 {
+		mask = rules.MASK_OPTIONAL
+	}
+	return mask
 }
 
 func (r REF) fieldCount() int {
-	return 2
+	return 3
 }
 
 func (r REF) Name() string {
@@ -62,7 +67,7 @@ func (r *REF) Validate(rule *rules.ElementSetRule) error {
 	for i := 1; i <= r.fieldCount(); i++ {
 
 		idx := fmt.Sprintf("%02d", i)
-		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask()); err != nil {
+		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask(i)); err != nil {
 			return fmt.Errorf("ref's element (%s) has invalid value, %s", idx, err.Error())
 		}
 	}
@@ -94,7 +99,7 @@ func (r *REF) Parse(data string, args ...string) (int, error) {
 
 		var value string
 		idx := fmt.Sprintf("%02d", i)
-		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), r.defaultMask()); err != nil {
+		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), r.defaultMask(i)); err != nil {
 			return 0, fmt.Errorf("unable to parse ref's element (%s), %s", idx, err.Error())
 		} else {
 			read += size
@@ -114,7 +119,7 @@ func (r REF) String(args ...string) string {
 		value := r.GetFieldByIndex(idx)
 
 		if buf == "" {
-			mask := r.GetRule().GetMask(idx, r.defaultMask())
+			mask := r.GetRule().GetMask(idx, r.defaultMask(i))
 			if mask == rules.MASK_NOTUSED {
 				continue
 			}
@@ -124,14 +129,14 @@ func (r REF) String(args ...string) string {
 		}
 
 		if buf == "" {
-			buf = fmt.Sprintf("%v%s", value, util.SegmentTerminator)
+			buf = fmt.Sprintf("%v%s", value, util.GetSegmentTerminator(args...))
 		} else {
 			buf = fmt.Sprintf("%v%s", value, util.DataElementSeparator) + buf
 		}
 	}
 
 	if buf == "" {
-		buf = fmt.Sprintf("%s%s", r.Name(), util.SegmentTerminator)
+		buf = fmt.Sprintf("%s%s", r.Name(), util.GetSegmentTerminator(args...))
 	} else {
 		buf = fmt.Sprintf("%s%s", r.Name(), util.DataElementSeparator) + buf
 	}

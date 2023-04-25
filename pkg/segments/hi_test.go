@@ -5,9 +5,10 @@
 package segments
 
 import (
-	"github.com/moov-io/x12/pkg/rules"
 	"testing"
 
+	"github.com/moov-io/x12/pkg/rules"
+	"github.com/moov-io/x12/pkg/util"
 	"github.com/stretchr/testify/require"
 )
 
@@ -59,7 +60,7 @@ func TestForHI(t *testing.T) {
 		require.Equal(t, 0, read)
 		require.Equal(t, "unable to parse hi's element (01), unable to parse health care code's element (02), doesn't enough input string", err.Error())
 
-		read, err = seg.Parse(in, "<")
+		read, err = seg.Parse(in, util.SegmentTerminator, "<")
 		require.NoError(t, err)
 		require.Equal(t, len(in), read)
 	})

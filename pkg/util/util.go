@@ -195,10 +195,7 @@ func ValidateField(data any, spec rules.ElementRule, mask string) error {
 func ReadCompositeField(input string, start int, spec rules.ElementRule, mask string, args ...string) (string, int, error) {
 
 	data := ""
-	separator := SubElementSeparator
-	if len(args) > 0 {
-		separator = args[0]
-	}
+	separator := GetElementSeparator(args...)
 
 	if start < len(input) {
 		data = input[start:]
@@ -256,4 +253,30 @@ func ReadField(input string, start int, spec rules.ElementRule, mask string) (st
 	}
 
 	return value, idx + 1, nil
+}
+
+func GetSegmentTerminator(args ...string) string {
+	if len(args) < 1 {
+		return SegmentTerminator
+	}
+
+	terminator := args[0]
+	if len(terminator) != 1 {
+		return SegmentTerminator
+	}
+
+	return terminator
+}
+
+func GetElementSeparator(args ...string) string {
+	if len(args) < 2 {
+		return SubElementSeparator
+	}
+
+	separator := args[1]
+	if len(separator) != 1 {
+		return SubElementSeparator
+	}
+
+	return separator
 }

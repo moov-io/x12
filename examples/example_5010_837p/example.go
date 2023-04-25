@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/moov-io/x12/pkg/file"
-	. "github.com/moov-io/x12/rule_5010_837p"
+	. "github.com/moov-io/x12/rules/rule_5010_837p"
 )
 
 func main() {

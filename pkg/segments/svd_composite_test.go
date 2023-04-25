@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/moov-io/x12/pkg/rules"
+	"github.com/moov-io/x12/pkg/util"
 	"github.com/stretchr/testify/require"
 )
 
@@ -36,10 +37,10 @@ func TestForProcedureIdentifier(t *testing.T) {
 		require.Equal(t, "composite:2:1", composite.String())
 
 		in = "composite<2<1"
-		read, err = composite.Parse(in, "<")
+		read, err = composite.Parse(in, util.SegmentTerminator, "<")
 		require.NoError(t, err)
 		require.Equal(t, len(in), read)
-		require.Equal(t, "composite<2<1", composite.String("<"))
+		require.Equal(t, "composite<2<1", composite.String(util.SegmentTerminator, "<"))
 
 		in = "composite:2:9"
 		read, err = composite.Parse(in)

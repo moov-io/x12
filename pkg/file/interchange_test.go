@@ -8,7 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	rule "github.com/moov-io/x12/rule_5010_837p"
+	"github.com/moov-io/x12/pkg/util"
+	rule "github.com/moov-io/x12/rules/rule_5010_837p"
 	"github.com/stretchr/testify/require"
 )
 
@@ -226,7 +227,7 @@ IEA*1*000002120~`
 		err = newChange.Validate(&rule.InterchangeRule)
 		require.NoError(t, err)
 
-		require.Equal(t, data, newChange.String("<"))
+		require.Equal(t, data, newChange.String(util.SegmentTerminator, "<"))
 	})
 
 }

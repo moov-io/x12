@@ -45,19 +45,19 @@ func (r Loop) Name() string {
 	return "loop"
 }
 
-func (r *Loop) Validate(loopRule *rules.SegmentSetRule) error {
+func (r *Loop) Validate(segRules *rules.SegmentSetRule) error {
 
-	if loopRule == nil && r.rule != nil {
-		loopRule = &r.rule.Segments
+	if segRules == nil && r.rule != nil {
+		segRules = &r.rule.Segments
 	}
 
-	if loopRule == nil {
+	if segRules == nil {
 		return errors.New("please specify rules for this loop")
 	}
 
 	index := 0
 	segIndex := 0
-	for rule := loopRule.Get(index); rule != nil; rule = loopRule.Get(index) {
+	for rule := segRules.Get(index); rule != nil; rule = segRules.Get(index) {
 
 		for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
 

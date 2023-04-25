@@ -6,10 +6,10 @@ package file
 
 import (
 	"bytes"
+	rule "github.com/moov-io/x12/rules/rule_5010_837p"
 	"strings"
 	"testing"
 
-	rule "github.com/moov-io/x12/rule_5010_837p"
 	"github.com/stretchr/testify/require"
 )
 
@@ -225,6 +225,7 @@ IEA*1*000002120~`
 
 		out := f.String()
 		stripRaw := strings.ReplaceAll(raw, "\n", "")
+
 		require.Equal(t, stripRaw, out)
 
 		buf := new(bytes.Buffer)

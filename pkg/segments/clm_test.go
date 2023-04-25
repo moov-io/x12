@@ -65,7 +65,7 @@ func TestForCLM(t *testing.T) {
 		require.Equal(t, 0, read)
 		require.Equal(t, "unable to parse clm's element (05), unable to parse service location's element (02), doesn't enough input string", err.Error())
 
-		read, err = seg.Parse(in, "<")
+		read, err = seg.Parse(in, util.SegmentTerminator, "<")
 		require.NoError(t, err)
 		require.Equal(t, len(in), read)
 	})

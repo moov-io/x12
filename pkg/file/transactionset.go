@@ -26,9 +26,10 @@ func NewTransactionSet(rule *rules.TransactionRule) *TransactionSet {
 
 type TransactionSet struct {
 	ST    segments.ST           `json:"ST" xml:"ST"`
-	BHT   *segments.BHT         `json:"BHT,omitempty" xml:"BHT,omitempty"`
 	Loops []loops.CompositeLoop `json:"loops" xml:"loops"`
 	SE    *segments.SE          `json:"SE,omitempty" xml:"SE,omitempty"`
+
+	Segments []segments.SegmentInterface
 
 	rule *rules.TransactionRule
 }
@@ -40,6 +41,7 @@ func (r *TransactionSet) Validate(transRule *rules.TransactionRule) error {
 	}
 
 	var err error
+	var segIndex, index int
 
 	// Validating ST Segment
 	stRule := transRule.ST
@@ -54,27 +56,55 @@ func (r *TransactionSet) Validate(transRule *rules.TransactionRule) error {
 		}
 	}
 
-	// Validating BHT Segment
-	bhtRule := transRule.BHT
-	if rules.IsMaskRequired(bhtRule.Mask) && r.BHT == nil {
-		return errors.New("bht segment is required segment")
-	}
+	// Validating segments (BHT, BPR, TRN, CUR, REF, ...)
+	{
+		index = 0
+		segIndex = 0
+		segRules := transRule.Segments
+		for rule := segRules.Get(index); rule != nil; rule = segRules.Get(index) {
 
-	if r.BHT != nil {
-		if bhtRule.Name != "BHT" {
-			return errors.New("invalid st rule")
+			for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
+
+				if segIndex+1 > len(r.Segments) {
+					if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
+						return fmt.Errorf("please add new %s segment", strings.ToUpper(rule.Name))
+					}
+					continue
+				}
+
+				if r.Segments[segIndex].Name() != rule.Name {
+					if rules.IsMaskRequired(rule.Mask) {
+						return fmt.Errorf("segment(%02d)'s name is not equal with rule's name (%s)", segIndex, strings.ToLower(rule.Name))
+					}
+					continue
+				}
+
+				if validateErr := r.Segments[segIndex].Validate(&rule.Elements); validateErr != nil {
+					if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
+						return fmt.Errorf("segment(%02d) should be valid %s segment", segIndex, strings.ToUpper(rule.Name))
+					}
+					continue
+				}
+
+				segIndex++
+			}
+
+			index++
 		}
 
-		err = r.BHT.Validate(&bhtRule.Elements)
-		if err != nil && rules.IsMaskRequired(bhtRule.Mask) {
-			return errors.New("unable to validate bht segment")
+		if len(r.Segments) > segIndex {
+			if segIndex == len(r.Segments)-1 {
+				return fmt.Errorf("unable to validate segment(%02d), rule is not specified", segIndex)
+			} else {
+				return fmt.Errorf("unable to validate segment(%02d~%02d), rule is not specified", segIndex, len(r.Segments)-1)
+			}
 		}
 	}
 
 	// Validating loops
 	{
-		segIndex := 0
-		for index := 0; index < len(transRule.Loops); index++ {
+		segIndex = 0
+		for index = 0; index < len(transRule.Loops); index++ {
 			rule := transRule.Loops[index]
 
 			for repeatCnt := 0; repeatCnt < rule.Repeat(); repeatCnt++ {
@@ -141,9 +171,9 @@ func (r *TransactionSet) Validate(transRule *rules.TransactionRule) error {
 
 		// getting segments count
 		segmentCnt := 2
-		if r.BHT != nil {
-			segmentCnt++
-		}
+
+		// segments
+		segmentCnt += len(r.Segments)
 
 		for _, loop := range r.Loops {
 			segs := loop.GetSegments()
@@ -171,10 +201,8 @@ func (r *TransactionSet) Parse(data string, args ...string) (int, error) {
 		return 0, errors.New("missing loops rules")
 	}
 
-	var size, read int
+	var size, read, index int
 	var err error
-
-	line := data[read:]
 
 	// Parsing ST Segment
 	stRule := r.rule.ST
@@ -184,57 +212,71 @@ func (r *TransactionSet) Parse(data string, args ...string) (int, error) {
 		}
 
 		r.ST.SetRule(&stRule.Elements)
-		size, err = r.ST.Parse(line, args...)
+		size, err = r.ST.Parse(data[read:], args...)
 		if err != nil {
 			return 0, errors.New("unable to parse st segment, (" + err.Error() + ")")
 		} else {
 			read += size
-			line = data[read:]
 		}
 	}
 
-	// Parsing BHT Segment
-	bhtRule := r.rule.BHT
-	if bhtRule.Name == "BHT" {
-		newBHT := segments.NewBHT(&bhtRule.Elements)
-		size, err = newBHT.Parse(line, args...)
-		if err != nil && rules.IsMaskRequired(bhtRule.Mask) {
-			return 0, errors.New("unable to parse bht segment")
-		} else if err == nil {
-			read += size
-			line = data[read:]
-			if s, ok := newBHT.(*segments.BHT); ok {
-				r.BHT = s
+	// Parsing Segments
+	{
+		segRules := r.rule.Segments
+		index = 0
+		for rule := segRules.Get(index); rule != nil; rule = segRules.Get(index) {
+			for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
+				newSegment, createErr := segments.CreateSegment(rule.Name, rule)
+				if createErr != nil {
+					if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
+						return 0, fmt.Errorf("unable to parse %s segment", strings.ToLower(rule.Name))
+					}
+					continue
+				}
+
+				readSize, parseErr := newSegment.Parse(data[read:], args...)
+				if parseErr != nil {
+					if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
+						return 0, fmt.Errorf("unable to parse %s segment (%s)", strings.ToLower(rule.Name), parseErr.Error())
+					}
+					continue
+				} else {
+					read += readSize
+					r.Segments = append(r.Segments, newSegment)
+				}
 			}
+
+			index++
 		}
 	}
 
 	// Parsing LOOPS
-	for index := 0; index < len(r.rule.Loops); index++ {
-		loopRule := r.rule.Loops[index]
+	{
+		for index = 0; index < len(r.rule.Loops); index++ {
+			loopRule := r.rule.Loops[index]
 
-		for repeatIdx := 0; repeatIdx < loopRule.Repeat(); repeatIdx++ {
-			newLoop := loops.NewCompositeLoop(&loopRule)
-			size, err = newLoop.Parse(line, args...)
-			if err == nil {
-				read += size
-				line = data[read:]
-				r.Loops = append(r.Loops, *newLoop)
-			} else {
-				if repeatIdx == 0 && rules.IsMaskRequired(loopRule.Mask) {
-					return 0, fmt.Errorf("unable to parse %s loop", strings.ToLower(loopRule.Name))
+			for repeatIdx := 0; repeatIdx < loopRule.Repeat(); repeatIdx++ {
+				newLoop := loops.NewCompositeLoop(&loopRule)
+				size, err = newLoop.Parse(data[read:], args...)
+				if err == nil {
+					read += size
+					r.Loops = append(r.Loops, *newLoop)
+				} else {
+					if repeatIdx == 0 && rules.IsMaskRequired(loopRule.Mask) {
+						return 0, fmt.Errorf("unable to parse %s loop", strings.ToLower(loopRule.Name))
+					}
+					break
 				}
-				break
 			}
-		}
 
+		}
 	}
 
 	// Parsing SE Segment
 	seRule := r.rule.SE
 	if seRule.Name == "SE" {
 		newSE := segments.NewSE(&seRule.Elements)
-		size, err = newSE.Parse(line, args...)
+		size, err = newSE.Parse(data[read:], args...)
 		if err != nil && rules.IsMaskRequired(seRule.Mask) {
 			return 0, errors.New("unable to parse se segment")
 		} else if err == nil {
@@ -252,8 +294,9 @@ func (r TransactionSet) String(args ...string) string {
 	var buf bytes.Buffer
 
 	buf.WriteString(r.ST.String(args...))
-	if r.BHT != nil {
-		buf.WriteString(r.BHT.String(args...))
+
+	for index := range r.Segments {
+		buf.WriteString(r.Segments[index].String(args...))
 	}
 	for index := range r.Loops {
 		buf.WriteString(r.Loops[index].String(args...))

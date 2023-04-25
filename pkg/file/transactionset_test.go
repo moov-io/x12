@@ -8,7 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	rule "github.com/moov-io/x12/rule_5010_837p"
+	"github.com/moov-io/x12/pkg/util"
+	rule "github.com/moov-io/x12/rules/rule_5010_837p"
 	"github.com/stretchr/testify/require"
 )
 
@@ -212,7 +213,7 @@ SE*191*000000533~`
 
 		newTransaction := NewTransactionSet(&rule.TransactionSetRule)
 
-		read, err := newTransaction.Parse(data, "<")
+		read, err := newTransaction.Parse(data, util.SegmentTerminator, "<")
 		require.NoError(t, err)
 		require.Equal(t, len(data), read)
 
@@ -222,7 +223,7 @@ SE*191*000000533~`
 		err = newTransaction.Validate(&rule.TransactionSetRule)
 		require.NoError(t, err)
 
-		require.Equal(t, data, newTransaction.String("<"))
+		require.Equal(t, data, newTransaction.String(util.SegmentTerminator, "<"))
 	})
 
 }

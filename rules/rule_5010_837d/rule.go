@@ -44,6 +44,7 @@ var L1000BRule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "NM1",
 		Description: "RECEIVER NAME-1000B",
+		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"01": {AcceptValues: []string{"40"}},
 			"02": {AcceptValues: []string{"2"}},
@@ -60,6 +61,7 @@ var L2000ARule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "HL",
 		Description: "HIERARCHICAL LEVEL",
+		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"02": {Mask: rules.MASK_NOTUSED},
 			"03": {AcceptValues: []string{"20"}},
@@ -89,6 +91,7 @@ var L2010AARule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "NM1",
 		Description: "BILLING PROVIDER NAME 2010AA",
+		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"01": {AcceptValues: []string{"85"}},
 			"02": {AcceptValues: []string{"1", "2"}},
@@ -101,6 +104,7 @@ var L2010AARule = rules.SegmentSetRule{
 	1: rules.SegmentRule{
 		Name:        "N3",
 		Description: "BILLING PROVIDER ADDRESS",
+		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"02": {Mask: rules.MASK_OPTIONAL},
 		},
@@ -108,6 +112,7 @@ var L2010AARule = rules.SegmentSetRule{
 	2: rules.SegmentRule{
 		Name:        "N4",
 		Description: "BILLING PROVIDER CITY, STATE, ZIP CODE",
+		Mask:        rules.MASK_REQUIRED,
 		Elements:    rules.ElementSetRule{},
 	},
 	3: rules.SegmentRule{
@@ -222,6 +227,7 @@ var L2000BRule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "HL",
 		Description: "SUBSCRIBER HIERARCHICAL LEVEL 2000B",
+		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"03": {AcceptValues: []string{"22"}},
 			"04": {AcceptValues: []string{"0", "1"}},
@@ -230,6 +236,7 @@ var L2000BRule = rules.SegmentSetRule{
 	1: rules.SegmentRule{
 		Name:        "SBR",
 		Description: "SUBSCRIBER INFORMATION 2000B",
+		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"01": {AcceptValues: []string{"A", "B", "C", "D", "E", "F", "G", "H", "P", "S", "T", "U"}},
 			"02": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"18"}},
@@ -248,6 +255,7 @@ var L2010BARule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "NM1",
 		Description: "SUBSCRIBER SECONDARY IDENTIFICATION 2010BA",
+		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"01": {AcceptValues: []string{"IL"}},
 			"02": {AcceptValues: []string{"1", "2"}},
@@ -1726,10 +1734,6 @@ var L2010CARule = rules.SegmentSetRule{
 	},
 }
 
-const (
-	MAXCOUNT = 200
-)
-
 var TransactionSetRule = rules.TransactionRule{
 	ST: rules.SegmentRule{
 		Name:        "ST",
@@ -1741,14 +1745,16 @@ var TransactionSetRule = rules.TransactionRule{
 			"03": {AcceptValues: []string{"005010X224A2"}, Mask: rules.MASK_REQUIRED},
 		},
 	},
-	BHT: rules.SegmentRule{
-		Name:        "BHT",
-		Description: "BEGINNING OF HIERARCHICAL TRANSACTION",
-		Mask:        rules.MASK_REQUIRED,
-		Elements: rules.ElementSetRule{
-			"01": {AcceptValues: []string{"0019"}},
-			"02": {AcceptValues: []string{"00", "18"}},
-			"06": {AcceptValues: []string{"31", "CH", "RP"}},
+	Segments: rules.SegmentSetRule{
+		0: rules.SegmentRule{
+			Name:        "BHT",
+			Description: "BEGINNING OF HIERARCHICAL TRANSACTION",
+			Mask:        rules.MASK_REQUIRED,
+			Elements: rules.ElementSetRule{
+				"01": {AcceptValues: []string{"0019"}},
+				"02": {AcceptValues: []string{"00", "18"}},
+				"06": {AcceptValues: []string{"31", "CH", "RP"}},
+			},
 		},
 	},
 	SE: rules.SegmentRule{
@@ -1771,7 +1777,7 @@ var TransactionSetRule = rules.TransactionRule{
 		2: {
 			Segments:    L2000ARule,
 			Mask:        rules.MASK_REQUIRED,
-			RepeatCount: MAXCOUNT,
+			RepeatCount: rules.MAXCOUNT,
 			Name:        "2000A",
 			Composite: rules.LoopSetRule{
 				0: {
@@ -1792,7 +1798,7 @@ var TransactionSetRule = rules.TransactionRule{
 				3: {
 					Segments:    L2000BRule,
 					Mask:        rules.MASK_REQUIRED,
-					RepeatCount: MAXCOUNT,
+					RepeatCount: rules.MAXCOUNT,
 					Name:        "2000B",
 					Composite: rules.LoopSetRule{
 						0: {

@@ -7,14 +7,19 @@ package file
 import (
 	"bytes"
 	"errors"
+	"github.com/moov-io/x12/pkg/util"
 	"io"
 
 	"github.com/moov-io/x12/pkg/rules"
 )
 
-func NewFile(rule *rules.InterchangeRule) *File {
+func NewFile(rule *rules.InterchangeRule, args ...string) *File {
 
 	f := File{rule: rule}
+
+	if len(args) > 0 && len(args[0]) == 1 {
+		f.terminator = args[0]
+	}
 
 	return &f
 }
@@ -22,7 +27,16 @@ func NewFile(rule *rules.InterchangeRule) *File {
 type File struct {
 	Interchanges []Interchange
 
-	rule *rules.InterchangeRule
+	terminator string
+	rule       *rules.InterchangeRule
+}
+
+func (f File) getTerminator() string {
+	if len(f.terminator) == 1 {
+		return f.terminator
+	}
+
+	return util.SegmentTerminator
 }
 
 func (f *File) Validate() error {
@@ -33,6 +47,10 @@ func (f *File) Validate() error {
 
 	if f.rule == nil {
 		return errors.New("unable to find valid rule")
+	}
+
+	if len(f.Interchanges) == 0 {
+		return errors.New("unable to find any interchange")
 	}
 
 	for _, change := range f.Interchanges {
@@ -82,10 +100,12 @@ func (f *File) Parse(scan Scanner) error {
 	}
 
 	for line := scan.GetInterchange(); line != ""; line = scan.GetInterchange() {
-		newChange := NewInterchange(f.rule)
+		newChange := NewInterchange(f.rule, f.getTerminator())
 		read, err := newChange.Parse(line)
 		if err == nil && read > 0 {
 			f.Interchanges = append(f.Interchanges, *newChange)
+		} else if err != nil {
+			return err
 		}
 	}
 
@@ -96,7 +116,7 @@ func (f File) String() string {
 	var buf bytes.Buffer
 
 	for index := range f.Interchanges {
-		buf.WriteString(f.Interchanges[index].String())
+		buf.WriteString(f.Interchanges[index].String(f.getTerminator()))
 	}
 
 	return buf.String()

@@ -84,10 +84,7 @@ func (r *HealthCareCode) Parse(data string, args ...string) (int, error) {
 func (r HealthCareCode) String(args ...string) string {
 	var buf string
 
-	separator := util.SubElementSeparator
-	if len(args) > 0 {
-		separator = args[0]
-	}
+	separator := util.GetElementSeparator(args...)
 
 	for i := 9; i > 0; i-- {
 
