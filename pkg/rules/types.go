@@ -174,10 +174,7 @@ func (l LoopRule) Repeat() int {
 }
 
 func (l LoopRule) isRequired(isRequiredOnly bool) bool {
-	if !(isRequiredOnly && getMask(l.Mask, MASK_REQUIRED) != MASK_REQUIRED) {
-		return true
-	}
-	return false
+	return !(isRequiredOnly && getMask(l.Mask, MASK_REQUIRED) != MASK_REQUIRED)
 }
 
 func (l LoopRule) dumpRuleInfo(level int, isRequiredOnly bool) []ruleInfo {
