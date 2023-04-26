@@ -1777,7 +1777,7 @@ var TransactionSetRule = rules.TransactionRule{
 		2: {
 			Segments:    L2000ARule,
 			Mask:        rules.MASK_REQUIRED,
-			RepeatCount: rules.MAXCOUNT,
+			RepeatCount: rules.GREATER_THAN_ONE,
 			Name:        "2000A",
 			Composite: rules.LoopSetRule{
 				0: {
@@ -1798,7 +1798,7 @@ var TransactionSetRule = rules.TransactionRule{
 				3: {
 					Segments:    L2000BRule,
 					Mask:        rules.MASK_REQUIRED,
-					RepeatCount: rules.MAXCOUNT,
+					RepeatCount: rules.GREATER_THAN_ONE,
 					Name:        "2000B",
 					Composite: rules.LoopSetRule{
 						0: {

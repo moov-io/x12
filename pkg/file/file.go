@@ -42,15 +42,11 @@ func (f File) getTerminator() string {
 func (f *File) Validate() error {
 
 	if len(f.Interchanges) == 0 {
-		return nil
+		return errors.New("unable to find any interchange")
 	}
 
 	if f.rule == nil {
 		return errors.New("unable to find valid rule")
-	}
-
-	if len(f.Interchanges) == 0 {
-		return errors.New("unable to find any interchange")
 	}
 
 	for _, change := range f.Interchanges {

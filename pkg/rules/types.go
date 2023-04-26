@@ -12,11 +12,11 @@ import (
 )
 
 const (
-	MASK_REQUIRED = "REQUIRED"
-	MASK_OPTIONAL = "OPTIONAL"
-	MASK_NOTUSED  = "NOTUSED"
-	MASK_NONE     = ""
-	MAXCOUNT      = 300
+	MASK_REQUIRED    = "REQUIRED"
+	MASK_OPTIONAL    = "OPTIONAL"
+	MASK_NOTUSED     = "NOTUSED"
+	MASK_NONE        = ""
+	GREATER_THAN_ONE = 0xFFFF
 )
 
 func IsMaskRequired(mask string) bool {
@@ -41,6 +41,7 @@ type ruleInfo struct {
 	Level       int
 }
 
+// Rule for interchange
 type InterchangeRule struct {
 	Name  string
 	ISA   SegmentRule
@@ -86,7 +87,7 @@ func (r InterchangeRule) Print(w io.Writer, isRequiredOnly bool) {
 
 		printStr := d.Name + "\t"
 		printStr = printStr + d.Mask + "\t"
-		if d.RepeatCount == MAXCOUNT {
+		if d.RepeatCount == GREATER_THAN_ONE {
 			printStr = printStr + ">1\t"
 		} else {
 			printStr = printStr + fmt.Sprintf("%v", d.RepeatCount) + "\t"
@@ -103,6 +104,7 @@ func (r InterchangeRule) Print(w io.Writer, isRequiredOnly bool) {
 	tw.Flush()
 }
 
+// Rule for group
 type GroupRule struct {
 	GS    SegmentRule
 	GE    SegmentRule
@@ -123,11 +125,11 @@ func (g GroupRule) dumpRuleInfo(level int, isRequiredOnly bool) []ruleInfo {
 	return infos
 }
 
+// Rule for transaction set
 type TransactionRule struct {
-	ST    SegmentRule
-	SE    SegmentRule
-	Loops LoopSetRule
-
+	ST       SegmentRule
+	SE       SegmentRule
+	Loops    LoopSetRule
 	Segments SegmentSetRule
 }
 
@@ -155,6 +157,7 @@ func (t TransactionRule) dumpRuleInfo(level int, isRequiredOnly bool) []ruleInfo
 	return infos
 }
 
+// Rule for loop
 type LoopSetRule map[int]LoopRule
 
 type LoopRule struct {

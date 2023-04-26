@@ -129,7 +129,7 @@ var TransactionSetRule = rules.TransactionRule{
 					Name:        "REF",
 					Description: "Reference Identification",
 					Mask:        rules.MASK_OPTIONAL,
-					RepeatCount: rules.MAXCOUNT,
+					RepeatCount: rules.GREATER_THAN_ONE,
 					Elements: rules.ElementSetRule{
 						"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"BM", "PO", "R7", "VV"}},
 						"02": {Mask: rules.MASK_REQUIRED},
@@ -162,7 +162,7 @@ var TransactionSetRule = rules.TransactionRule{
 			},
 			Mask:        rules.MASK_OPTIONAL,
 			Name:        "Detail",
-			RepeatCount: rules.MAXCOUNT,
+			RepeatCount: rules.GREATER_THAN_ONE,
 		},
 	},
 }

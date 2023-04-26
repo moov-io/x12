@@ -109,7 +109,7 @@ var L1000BRule = rules.SegmentSetRule{
 	4: rules.SegmentRule{
 		Name:        "PER",
 		Description: "PREMIUM PAYER'S ADMINISTRATIVE CONTACT",
-		RepeatCount: rules.MAXCOUNT,
+		RepeatCount: rules.GREATER_THAN_ONE,
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"IC"}},
@@ -329,7 +329,7 @@ var TransactionSetRule = rules.TransactionRule{
 			Name:        "REF",
 			Description: "PREMIUM RECEIVERS IDENTIFICATION KEY",
 			Mask:        rules.MASK_OPTIONAL,
-			RepeatCount: rules.MAXCOUNT,
+			RepeatCount: rules.GREATER_THAN_ONE,
 			Elements: rules.ElementSetRule{
 				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"14", "18", "2F", "38", "72"}},
 				"02": {Mask: rules.MASK_REQUIRED},
@@ -415,7 +415,7 @@ var TransactionSetRule = rules.TransactionRule{
 			Segments:    L2000BRule,
 			Mask:        rules.MASK_OPTIONAL,
 			Name:        "2000B",
-			RepeatCount: rules.MAXCOUNT,
+			RepeatCount: rules.GREATER_THAN_ONE,
 			Composite: rules.LoopSetRule{
 				0: {
 					Segments: L2100BRule,
@@ -431,7 +431,7 @@ var TransactionSetRule = rules.TransactionRule{
 							Segments:    L2320BRule,
 							Mask:        rules.MASK_OPTIONAL,
 							Name:        "2320B",
-							RepeatCount: rules.MAXCOUNT,
+							RepeatCount: rules.GREATER_THAN_ONE,
 						},
 					},
 				},
