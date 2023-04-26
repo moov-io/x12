@@ -50,7 +50,7 @@ type SegmentInterface interface {
 	Validate(rule *rules.ElementSetRule) error
 	// Args
 	// First arg: SegmentTerminator
-	// Second arg: ElementSeparator
+	// Second arg: SubElementSeparator
 	Parse(data string, args ...string) (int, error)
 	String(args ...string) string
 }

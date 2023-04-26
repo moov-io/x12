@@ -46,6 +46,8 @@ func NewScanner(fd io.Reader, args ...string) Scanner {
 	scanner := Scanner{scan: scan}
 	if len(args) > 0 && len(args[0]) == 1 {
 		scanner.terminator = args[0]
+	} else {
+		scanner.terminator = util.SegmentTerminator
 	}
 
 	// set split function
@@ -72,7 +74,7 @@ func (b *Scanner) getInterchangeTerminatorPosition(input string) int {
 		return 0
 	}
 
-	tPos := strings.Index(input[endPos:], util.SegmentTerminator)
+	tPos := strings.Index(input[endPos:], b.terminator)
 	if tPos == -1 {
 		return 0
 	}

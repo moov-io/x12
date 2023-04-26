@@ -5,9 +5,10 @@
 package segments
 
 import (
-	"github.com/moov-io/x12/pkg/rules"
 	"testing"
 
+	"github.com/moov-io/x12/pkg/rules"
+	"github.com/moov-io/x12/pkg/util"
 	"github.com/stretchr/testify/require"
 )
 
@@ -64,7 +65,7 @@ func TestForSVD(t *testing.T) {
 		require.Equal(t, 0, read)
 		require.Equal(t, "unable to parse svd's element (03), unable to parse procedure identifier's element (01), doesn't enough input string", err.Error())
 
-		read, err = seg.Parse(in, "<")
+		read, err = seg.Parse(in, util.SegmentTerminator, "<")
 		require.Error(t, err)
 		require.Equal(t, 0, read)
 		require.Equal(t, "unable to parse svd's element (03), unable to parse procedure identifier's element (01), doesn't enough input string", err.Error())

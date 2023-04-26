@@ -98,7 +98,7 @@ func (r *BPR) Parse(data string, args ...string) (int, error) {
 	var err error
 	var size int
 
-	length := util.GetRecordSize(data)
+	length := util.GetRecordSize(data, args...)
 	codeLen := len(r.Name())
 	read := codeLen + 1
 
@@ -117,7 +117,7 @@ func (r *BPR) Parse(data string, args ...string) (int, error) {
 		var value string
 		idx := fmt.Sprintf("%02d", i)
 
-		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), r.defaultMask(i)); err != nil {
+		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), r.defaultMask(i), args...); err != nil {
 			return 0, fmt.Errorf("unable to parse bpr's element (%s), %s", idx, err.Error())
 		} else {
 			read += size

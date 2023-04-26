@@ -103,7 +103,7 @@ func (r *SV3) Parse(data string, args ...string) (int, error) {
 	var err error
 	var size int
 
-	length := util.GetRecordSize(data)
+	length := util.GetRecordSize(data, args...)
 	codeLen := len(r.Name())
 	read := codeLen + 1
 
@@ -124,7 +124,7 @@ func (r *SV3) Parse(data string, args ...string) (int, error) {
 
 		rule := r.GetRule().Get(idx)
 
-		if value, size, err = util.ReadField(line, read, rule, r.defaultMask()); err != nil {
+		if value, size, err = util.ReadField(line, read, rule, r.defaultMask(), args...); err != nil {
 			return 0, fmt.Errorf("unable to parse sv3's element (%s), %s", idx, err.Error())
 		} else {
 			read += size

@@ -76,7 +76,7 @@ func (r *AMT) Parse(data string, args ...string) (int, error) {
 	var err error
 	var size int
 
-	length := util.GetRecordSize(data)
+	length := util.GetRecordSize(data, args...)
 	codeLen := len(r.Name())
 	read := codeLen + 1
 
@@ -93,10 +93,9 @@ func (r *AMT) Parse(data string, args ...string) (int, error) {
 	for i := 1; i <= r.fieldCount(); i++ {
 
 		var value string
-		mask := rules.MASK_REQUIRED
 		idx := fmt.Sprintf("%02d", i)
 
-		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), mask); err != nil {
+		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), r.defaultMask(), args...); err != nil {
 			return 0, fmt.Errorf("unable to parse amt's element (%s), %s", idx, err.Error())
 		} else {
 			read += size
