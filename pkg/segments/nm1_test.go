@@ -51,7 +51,7 @@ func TestForNM1(t *testing.T) {
 		require.Equal(t, 0, read)
 	})
 
-	t.Run("encoding of n4 segment", func(t *testing.T) {
+	t.Run("encoding of nm1 segment", func(t *testing.T) {
 
 		seg := NewNM1(nil)
 

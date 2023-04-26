@@ -10,7 +10,7 @@ import "github.com/moov-io/x12/pkg/rules"
 
 var L1000ARule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
-		Name:        "NM1",
+		Name:        "N1",
 		Description: "PREMIUM RECEIVER'S NAME",
 		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
@@ -20,13 +20,10 @@ var L1000ARule = rules.SegmentSetRule{
 			"04": {Mask: rules.MASK_OPTIONAL},
 			"05": {Mask: rules.MASK_NOTUSED},
 			"06": {Mask: rules.MASK_NOTUSED},
-			"07": {Mask: rules.MASK_NOTUSED},
-			"08": {Mask: rules.MASK_NOTUSED},
-			"09": {Mask: rules.MASK_NOTUSED},
 		},
 	},
 	1: rules.SegmentRule{
-		Name:        "NM2",
+		Name:        "N2",
 		Description: "PREMIUM RECEIVER ADDITIONAL NAME",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
@@ -35,7 +32,7 @@ var L1000ARule = rules.SegmentSetRule{
 		},
 	},
 	2: rules.SegmentRule{
-		Name:        "NM3",
+		Name:        "N3",
 		Description: "PREMIUM RECEIVER'S ADDRESS",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
@@ -44,7 +41,7 @@ var L1000ARule = rules.SegmentSetRule{
 		},
 	},
 	3: rules.SegmentRule{
-		Name:        "NM4",
+		Name:        "N4",
 		Description: "PREMIUM RECEIVER'S CITY",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
@@ -60,7 +57,7 @@ var L1000ARule = rules.SegmentSetRule{
 
 var L1000BRule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
-		Name:        "NM1",
+		Name:        "N1",
 		Description: "PREMIUM PAYER'S NAME",
 		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
@@ -70,13 +67,10 @@ var L1000BRule = rules.SegmentSetRule{
 			"04": {Mask: rules.MASK_OPTIONAL},
 			"05": {Mask: rules.MASK_NOTUSED},
 			"06": {Mask: rules.MASK_NOTUSED},
-			"07": {Mask: rules.MASK_NOTUSED},
-			"08": {Mask: rules.MASK_NOTUSED},
-			"09": {Mask: rules.MASK_NOTUSED},
 		},
 	},
 	1: rules.SegmentRule{
-		Name:        "NM2",
+		Name:        "N2",
 		Description: "PREMIUM PAYER ADDITIONAL NAME",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
@@ -85,7 +79,7 @@ var L1000BRule = rules.SegmentSetRule{
 		},
 	},
 	2: rules.SegmentRule{
-		Name:        "NM3",
+		Name:        "N3",
 		Description: "PREMIUM PAYER'S ADDRESS",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
@@ -94,7 +88,7 @@ var L1000BRule = rules.SegmentSetRule{
 		},
 	},
 	3: rules.SegmentRule{
-		Name:        "NM4",
+		Name:        "N4",
 		Description: "PREMIUM PAYER'S CITY",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{

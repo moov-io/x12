@@ -60,7 +60,7 @@ var TransactionSetRule = rules.TransactionRule{
 			},
 		},
 		2: rules.SegmentRule{
-			Name:        "NM1",
+			Name:        "N1",
 			Description: "Originator Name Identification",
 			Mask:        rules.MASK_REQUIRED,
 			Elements: rules.ElementSetRule{
@@ -70,13 +70,10 @@ var TransactionSetRule = rules.TransactionRule{
 				"04": {Mask: rules.MASK_OPTIONAL},
 				"05": {Mask: rules.MASK_NOTUSED},
 				"06": {Mask: rules.MASK_NOTUSED},
-				"07": {Mask: rules.MASK_NOTUSED},
-				"08": {Mask: rules.MASK_NOTUSED},
-				"09": {Mask: rules.MASK_NOTUSED},
 			},
 		},
 		3: rules.SegmentRule{
-			Name:        "NM1",
+			Name:        "N1",
 			Description: "Receiver Name Identification",
 			Mask:        rules.MASK_REQUIRED,
 			Elements: rules.ElementSetRule{
@@ -86,9 +83,6 @@ var TransactionSetRule = rules.TransactionRule{
 				"04": {Mask: rules.MASK_NOTUSED},
 				"05": {Mask: rules.MASK_NOTUSED},
 				"06": {Mask: rules.MASK_NOTUSED},
-				"07": {Mask: rules.MASK_NOTUSED},
-				"08": {Mask: rules.MASK_NOTUSED},
-				"09": {Mask: rules.MASK_NOTUSED},
 			},
 		},
 	},
