@@ -47,10 +47,15 @@ func (r Interchange) getTerminator() string {
 	return util.SegmentTerminator
 }
 
-func (r *Interchange) Validate(changeRule *rules.InterchangeRule) error {
+func (r *Interchange) Validate(validateRule *rules.InterchangeRule) error {
 
-	if changeRule == nil && r.rule != nil {
-		changeRule = r.rule
+	changeRule := r.rule
+	if validateRule != nil {
+		changeRule = validateRule
+	}
+
+	if changeRule == nil {
+		return errors.New("invalid interchange rule")
 	}
 
 	var err error

@@ -31,20 +31,21 @@ func main() {
 
 	segmentTerminator := "\\"
 
-	newChange := file.NewFile(&InterchangeRule, segmentTerminator)
+	newFile := file.NewFile(&copyRule, segmentTerminator)
 
-	if err = newChange.Parse(file.NewScanner(reader, segmentTerminator)); err != nil {
+	if err = newFile.Parse(file.NewScanner(reader, segmentTerminator)); err != nil {
 		log.Fatal(err.Error())
 		return
 	}
 
-	if err = newChange.Validate(); err != nil {
+	if err = newFile.Validate(); err != nil {
 		log.Fatal(err.Error())
 		return
 	}
 
 	fmt.Println("   REGENERATED FILE   ")
-	fmt.Println(strings.ReplaceAll(newChange.String(), segmentTerminator, segmentTerminator+"\n"))
+	fmt.Println(strings.ReplaceAll(newFile.String(), segmentTerminator, segmentTerminator+"\n"))
 
-	newChange.Print(os.Stdout)
+	newFile.Print(os.Stdout)
+
 }
