@@ -69,21 +69,21 @@ func (r *TransactionSet) Validate(transRule *rules.TransactionRule) error {
 					if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
 						return fmt.Errorf("please add new %s segment", strings.ToUpper(rule.Name))
 					}
-					continue
+					break
 				}
 
 				if r.Segments[segIndex].Name() != rule.Name {
 					if rules.IsMaskRequired(rule.Mask) {
 						return fmt.Errorf("segment(%02d)'s name is not equal with rule's name (%s)", segIndex, strings.ToLower(rule.Name))
 					}
-					continue
+					break
 				}
 
 				if validateErr := r.Segments[segIndex].Validate(&rule.Elements); validateErr != nil {
 					if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
 						return fmt.Errorf("segment(%02d) should be valid %s segment", segIndex, strings.ToUpper(rule.Name))
 					}
-					continue
+					break
 				}
 
 				segIndex++
@@ -107,27 +107,27 @@ func (r *TransactionSet) Validate(transRule *rules.TransactionRule) error {
 		for index = 0; index < len(transRule.Loops); index++ {
 			rule := transRule.Loops[index]
 
-			for repeatCnt := 0; repeatCnt < rule.Repeat(); repeatCnt++ {
+			for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
 
 				if segIndex+1 > len(r.Loops) {
-					if repeatCnt == 0 && rules.IsMaskRequired(rule.Mask) {
+					if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
 						return fmt.Errorf("please add new %s loop", strings.ToUpper(rule.Name))
 					}
-					continue
+					break
 				}
 
 				if r.Loops[segIndex].Name() != rule.Name {
 					if rules.IsMaskRequired(rule.Mask) {
 						return fmt.Errorf("loop(%02d)'s name is not equal with rule's name (%s)", segIndex, strings.ToLower(rule.Name))
 					}
-					continue
+					break
 				}
 
 				if err = r.Loops[segIndex].Validate(&rule); err != nil {
-					if rules.IsMaskRequired(rule.Mask) {
+					if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
 						return fmt.Errorf("loop(%02d) should have valid %s loop, %s", segIndex, strings.ToLower(rule.Name), err.Error())
 					}
-					continue
+					break
 				}
 
 				segIndex++
@@ -231,7 +231,7 @@ func (r *TransactionSet) Parse(data string, args ...string) (int, error) {
 					if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
 						return 0, fmt.Errorf("unable to parse %s segment", strings.ToLower(rule.Name))
 					}
-					continue
+					break
 				}
 
 				readSize, parseErr := newSegment.Parse(data[read:], args...)
@@ -239,7 +239,7 @@ func (r *TransactionSet) Parse(data string, args ...string) (int, error) {
 					if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
 						return 0, fmt.Errorf("unable to parse %s segment (%s)", strings.ToLower(rule.Name), parseErr.Error())
 					}
-					continue
+					break
 				} else {
 					read += readSize
 					r.Segments = append(r.Segments, newSegment)
