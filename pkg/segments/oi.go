@@ -85,7 +85,7 @@ func (r *OI) Parse(data string, args ...string) (int, error) {
 	var err error
 	var size int
 
-	length := util.GetRecordSize(data)
+	length := util.GetRecordSize(data, args...)
 	codeLen := len(r.Name())
 	read := codeLen + 1
 
@@ -104,7 +104,7 @@ func (r *OI) Parse(data string, args ...string) (int, error) {
 		var value string
 		idx := fmt.Sprintf("%02d", i)
 
-		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), r.defaultMask(i)); err != nil {
+		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), r.defaultMask(i), args...); err != nil {
 			return 0, fmt.Errorf("unable to parse oi's element (%s), %s", idx, err.Error())
 		} else {
 			read += size
@@ -134,14 +134,14 @@ func (r OI) String(args ...string) string {
 		}
 
 		if buf == "" {
-			buf = fmt.Sprintf("%v%s", value, util.SegmentTerminator)
+			buf = fmt.Sprintf("%v%s", value, util.GetSegmentTerminator(args...))
 		} else {
 			buf = fmt.Sprintf("%v%s", value, util.DataElementSeparator) + buf
 		}
 	}
 
 	if buf == "" {
-		buf = fmt.Sprintf("%s%s", r.Name(), util.SegmentTerminator)
+		buf = fmt.Sprintf("%s%s", r.Name(), util.GetSegmentTerminator(args...))
 	} else {
 		buf = fmt.Sprintf("%s%s", r.Name(), util.DataElementSeparator) + buf
 	}

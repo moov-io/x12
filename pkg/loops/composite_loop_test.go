@@ -5,7 +5,7 @@
 package loops
 
 import (
-	rule_5010_837p "github.com/moov-io/x12/rule_5010_837d"
+	rule_5010_837p "github.com/moov-io/x12/rules/rule_5010_837d"
 	"testing"
 
 	"github.com/moov-io/x12/pkg/rules"

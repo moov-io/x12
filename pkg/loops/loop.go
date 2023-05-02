@@ -45,41 +45,42 @@ func (r Loop) Name() string {
 	return "loop"
 }
 
-func (r *Loop) Validate(loopRule *rules.SegmentSetRule) error {
+func (r *Loop) Validate(segRules *rules.SegmentSetRule) error {
 
-	if loopRule == nil && r.rule != nil {
-		loopRule = &r.rule.Segments
+	if segRules == nil && r.rule != nil {
+		segRules = &r.rule.Segments
 	}
 
-	if loopRule == nil {
+	if segRules == nil {
 		return errors.New("please specify rules for this loop")
 	}
 
 	index := 0
 	segIndex := 0
-	for rule := loopRule.Get(index); rule != nil; rule = loopRule.Get(index) {
+	for rule := segRules.Get(index); rule != nil; rule = segRules.Get(index) {
 
 		for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
 
 			if segIndex+1 > len(r.Segments) {
+				// there isn't segments although rule has required segments
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
 					return fmt.Errorf("please add new %s segment", strings.ToUpper(rule.Name))
 				}
-				continue
+				break
 			}
 
 			if r.Segments[segIndex].Name() != rule.Name {
 				if rules.IsMaskRequired(rule.Mask) {
 					return fmt.Errorf("segment(%02d)'s name is not equal with rule's name (%s)", segIndex, strings.ToLower(rule.Name))
 				}
-				continue
+				break
 			}
 
 			if err := r.Segments[segIndex].Validate(&rule.Elements); err != nil {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
 					return fmt.Errorf("segment(%02d) should be valid %s segment", segIndex, strings.ToUpper(rule.Name))
 				}
-				continue
+				break
 			}
 
 			segIndex++
@@ -118,7 +119,7 @@ func (r *Loop) Parse(data string, args ...string) (int, error) {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
 					return 0, fmt.Errorf("unable to parse %s segment", strings.ToLower(rule.Name))
 				}
-				continue
+				break
 			}
 
 			size, err := segment.Parse(data[read:], args...)
@@ -126,7 +127,7 @@ func (r *Loop) Parse(data string, args ...string) (int, error) {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
 					return 0, fmt.Errorf("unable to parse %s segment (%s)", strings.ToLower(rule.Name), err.Error())
 				}
-				continue
+				break
 			} else {
 				read += size
 				newSegments = append(newSegments, segment)

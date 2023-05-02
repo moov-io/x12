@@ -53,6 +53,10 @@ func (r *FunctionalGroup) Validate(groupRule *rules.GroupRule) error {
 
 	// Validating transaction sets
 	{
+		if len(r.TransactionSets) == 0 {
+			return errors.New("unable to find any transaction set")
+		}
+
 		for index := 0; index < len(r.TransactionSets); index++ {
 			set := r.TransactionSets[index]
 			if err = set.Validate(&groupRule.Trans); err != nil {
@@ -107,8 +111,6 @@ func (r *FunctionalGroup) Parse(data string, args ...string) (int, error) {
 	var size, read int
 	var err error
 
-	line := data[read:]
-
 	// Parsing GS Segment
 	gsRule := r.rule.GS
 	{
@@ -117,12 +119,11 @@ func (r *FunctionalGroup) Parse(data string, args ...string) (int, error) {
 		}
 
 		r.GS.SetRule(&gsRule.Elements)
-		size, err = r.GS.Parse(line, args...)
+		size, err = r.GS.Parse(data[read:], args...)
 		if err != nil {
 			return 0, errors.New("unable to parse gs segment")
 		} else {
 			read += size
-			line = data[read:]
 		}
 	}
 
@@ -130,14 +131,14 @@ func (r *FunctionalGroup) Parse(data string, args ...string) (int, error) {
 	trRule := r.rule.Trans
 	for err == nil {
 		newTrans := NewTransactionSet(&trRule)
-		size, err = newTrans.Parse(line, args...)
+		size, err = newTrans.Parse(data[read:], args...)
 		if err == nil {
 			read += size
-			line = data[read:]
 			r.TransactionSets = append(r.TransactionSets, *newTrans)
 		} else {
+			line := data[read:]
 			if len(r.TransactionSets) == 0 && (len(line) > 2 && line[0:2] == "ST") {
-				return 0, errors.New("unable to parse transaction set")
+				return 0, err
 			}
 		}
 	}
@@ -146,7 +147,7 @@ func (r *FunctionalGroup) Parse(data string, args ...string) (int, error) {
 	geRule := r.rule.GE
 	if geRule.Name == "GE" {
 		newGE := segments.NewGE(&geRule.Elements)
-		size, err = newGE.Parse(line, args...)
+		size, err = newGE.Parse(data[read:], args...)
 		if err != nil && rules.IsMaskRequired(geRule.Mask) {
 			return 0, errors.New("unable to parse ge segment")
 		} else if err == nil {

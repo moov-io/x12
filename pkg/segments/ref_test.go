@@ -25,7 +25,7 @@ func TestForREF(t *testing.T) {
 		in = "REF*3*8*~"
 		read, err = seg.Parse(in)
 		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Equal(t, len(in), read)
 
 		in = "REF*3*~"
 		read, err = seg.Parse(in)

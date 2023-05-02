@@ -82,10 +82,7 @@ func (r *ProcedureIdentifier) Parse(data string, args ...string) (int, error) {
 func (r ProcedureIdentifier) String(args ...string) string {
 	var buf string
 
-	separator := util.SubElementSeparator
-	if len(args) > 0 {
-		separator = args[0]
-	}
+	separator := util.GetElementSeparator(args...)
 
 	for i := 7; i > 0; i-- {
 

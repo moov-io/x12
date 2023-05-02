@@ -103,7 +103,7 @@ func (r *SV3) Parse(data string, args ...string) (int, error) {
 	var err error
 	var size int
 
-	length := util.GetRecordSize(data)
+	length := util.GetRecordSize(data, args...)
 	codeLen := len(r.Name())
 	read := codeLen + 1
 
@@ -124,7 +124,7 @@ func (r *SV3) Parse(data string, args ...string) (int, error) {
 
 		rule := r.GetRule().Get(idx)
 
-		if value, size, err = util.ReadField(line, read, rule, r.defaultMask()); err != nil {
+		if value, size, err = util.ReadField(line, read, rule, r.defaultMask(), args...); err != nil {
 			return 0, fmt.Errorf("unable to parse sv3's element (%s), %s", idx, err.Error())
 		} else {
 			read += size
@@ -200,14 +200,14 @@ func (r SV3) String(args ...string) string {
 		}
 
 		if buf == "" {
-			buf = fmt.Sprintf("%v%s", value, util.SegmentTerminator)
+			buf = fmt.Sprintf("%v%s", value, util.GetSegmentTerminator(args...))
 		} else {
 			buf = fmt.Sprintf("%v%s", value, util.DataElementSeparator) + buf
 		}
 	}
 
 	if buf == "" {
-		buf = fmt.Sprintf("%s%s", r.Name(), util.SegmentTerminator)
+		buf = fmt.Sprintf("%s%s", r.Name(), util.GetSegmentTerminator(args...))
 	} else {
 		buf = fmt.Sprintf("%s%s", r.Name(), util.DataElementSeparator) + buf
 	}

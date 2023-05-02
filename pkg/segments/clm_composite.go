@@ -78,10 +78,7 @@ func (r *HealthCareServiceLocation) Parse(data string, args ...string) (int, err
 func (r HealthCareServiceLocation) String(args ...string) string {
 	var buf string
 
-	separator := util.SubElementSeparator
-	if len(args) > 0 {
-		separator = args[0]
-	}
+	separator := util.GetElementSeparator(args...)
 
 	for i := r.fieldCount(); i > 0; i-- {
 
@@ -180,10 +177,7 @@ func (r *RelatedCausesInformation) Parse(data string, args ...string) (int, erro
 func (r RelatedCausesInformation) String(args ...string) string {
 	var buf string
 
-	separator := util.SubElementSeparator
-	if len(args) > 0 {
-		separator = args[0]
-	}
+	separator := util.GetElementSeparator(args...)
 
 	for i := r.fieldCount(); i > 0; i-- {
 

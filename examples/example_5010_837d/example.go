@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/moov-io/x12/pkg/file"
-	. "github.com/moov-io/x12/rule_5010_837d"
+	. "github.com/moov-io/x12/rules/rule_5010_837d"
 )
 
 func main() {
@@ -39,4 +39,6 @@ func main() {
 	fmt.Println(strings.ReplaceAll(newChange.String(), "~", "~\n"))
 
 	newChange.Print(os.Stdout)
+
+	InterchangeRule.Print(os.Stdout, true)
 }

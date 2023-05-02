@@ -8,7 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	rule "github.com/moov-io/x12/rule_5010_837p"
+	"github.com/moov-io/x12/pkg/util"
+	rule "github.com/moov-io/x12/rules/rule_5010_837p"
 	"github.com/stretchr/testify/require"
 )
 
@@ -214,7 +215,7 @@ GE*1*2120~`
 
 		newGroup := NewGroup(&rule.GroupRule)
 
-		read, err := newGroup.Parse(data, "<")
+		read, err := newGroup.Parse(data, util.SegmentTerminator, "<")
 		require.NoError(t, err)
 		require.Equal(t, len(data), read)
 
@@ -224,7 +225,7 @@ GE*1*2120~`
 		err = newGroup.Validate(&rule.GroupRule)
 		require.NoError(t, err)
 
-		require.Equal(t, data, newGroup.String("<"))
+		require.Equal(t, data, newGroup.String(util.SegmentTerminator, "<"))
 	})
 
 }

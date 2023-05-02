@@ -83,10 +83,7 @@ func (r *DentalServiceProcedure) Parse(data string, args ...string) (int, error)
 func (r DentalServiceProcedure) String(args ...string) string {
 	var buf string
 
-	separator := util.SubElementSeparator
-	if len(args) > 0 {
-		separator = args[0]
-	}
+	separator := util.GetElementSeparator(args...)
 
 	for i := r.fieldCount(); i > 0; i-- {
 
@@ -182,10 +179,7 @@ func (r *DentalServiceCode) Parse(data string, args ...string) (int, error) {
 func (r DentalServiceCode) String(args ...string) string {
 	var buf string
 
-	separator := util.SubElementSeparator
-	if len(args) > 0 {
-		separator = args[0]
-	}
+	separator := util.GetElementSeparator(args...)
 
 	for i := r.fieldCount(); i > 0; i-- {
 
@@ -280,10 +274,7 @@ func (r *DentalServiceCodePointer) Parse(data string, args ...string) (int, erro
 func (r DentalServiceCodePointer) String(args ...string) string {
 	var buf string
 
-	separator := util.SubElementSeparator
-	if len(args) > 0 {
-		separator = args[0]
-	}
+	separator := util.GetElementSeparator(args...)
 
 	for i := r.fieldCount(); i > 0; i-- {
 

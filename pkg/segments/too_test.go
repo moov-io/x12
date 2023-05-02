@@ -7,6 +7,7 @@ package segments
 import (
 	"testing"
 
+	"github.com/moov-io/x12/pkg/util"
 	"github.com/stretchr/testify/require"
 )
 
@@ -50,7 +51,7 @@ func TestForTOO(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, len(in), read)
 
-		read, err = seg.Parse(in, "<")
+		read, err = seg.Parse(in, util.SegmentTerminator, "<")
 		require.NoError(t, err)
 		require.Equal(t, len(in), read)
 	})

@@ -123,10 +123,10 @@ func DumpStructInfo(r any, level int) ElementInfo {
 	return info
 }
 
-func getIndex(input string) int {
+func getIndex(input string, args ...string) int {
 
 	idx1 := strings.Index(input, DataElementSeparator)
-	idx2 := strings.Index(input, SegmentTerminator)
+	idx2 := strings.Index(input, GetSegmentTerminator(args...))
 
 	if idx1 == -1 {
 		return idx2
@@ -139,9 +139,9 @@ func getIndex(input string) int {
 	return idx1
 }
 
-func GetRecordSize(line string) int64 {
+func GetRecordSize(line string, args ...string) int64 {
 
-	size := strings.Index(line, SegmentTerminator)
+	size := strings.Index(line, GetSegmentTerminator(args...))
 	if size >= 0 {
 		return int64(size + 1)
 	}
@@ -195,10 +195,7 @@ func ValidateField(data any, spec rules.ElementRule, mask string) error {
 func ReadCompositeField(input string, start int, spec rules.ElementRule, mask string, args ...string) (string, int, error) {
 
 	data := ""
-	separator := SubElementSeparator
-	if len(args) > 0 {
-		separator = args[0]
-	}
+	separator := GetElementSeparator(args...)
 
 	if start < len(input) {
 		data = input[start:]
@@ -230,7 +227,7 @@ func ReadCompositeField(input string, start int, spec rules.ElementRule, mask st
 	return value, idx + 1, nil
 }
 
-func ReadField(input string, start int, spec rules.ElementRule, mask string) (string, int, error) {
+func ReadField(input string, start int, spec rules.ElementRule, mask string, args ...string) (string, int, error) {
 
 	data := ""
 
@@ -245,7 +242,7 @@ func ReadField(input string, start int, spec rules.ElementRule, mask string) (st
 		return "", 0, fmt.Errorf("doesn't enough input string")
 	}
 
-	idx := getIndex(data)
+	idx := getIndex(data, args...)
 	if idx == -1 {
 		return "", 0, fmt.Errorf("doesn't have valid delimiter")
 	}
@@ -256,4 +253,30 @@ func ReadField(input string, start int, spec rules.ElementRule, mask string) (st
 	}
 
 	return value, idx + 1, nil
+}
+
+func GetSegmentTerminator(args ...string) string {
+	if len(args) < 1 {
+		return SegmentTerminator
+	}
+
+	terminator := args[0]
+	if len(terminator) != 1 {
+		return SegmentTerminator
+	}
+
+	return terminator
+}
+
+func GetElementSeparator(args ...string) string {
+	if len(args) < 2 {
+		return SubElementSeparator
+	}
+
+	separator := args[1]
+	if len(separator) != 1 {
+		return SubElementSeparator
+	}
+
+	return separator
 }

@@ -11,39 +11,50 @@ import (
 	"path/filepath"
 	"strings"
 
+	rule837d "github.com/moov-io/x12/rules/rule_5010_837d"
+	rule837p "github.com/moov-io/x12/rules/rule_5010_837p"
+
 	"github.com/moov-io/x12"
 	"github.com/moov-io/x12/pkg/file"
 	"github.com/moov-io/x12/pkg/rules"
-
-	rule837d "github.com/moov-io/x12/rule_5010_837d"
-	rule837p "github.com/moov-io/x12/rule_5010_837p"
 )
 
 var (
-	programName = filepath.Base(os.Args[0])
-	describeCmd = "describe"
+	programName     = filepath.Base(os.Args[0])
+	describeFileCmd = "describe_file"
+	describeRuleCmd = "describe_rule"
 )
 
 var availableRules = map[string]rules.InterchangeRule{
-	"837d": rule837d.InterchangeRule,
-	"837p": rule837p.InterchangeRule,
+	"5010_837d": rule837d.InterchangeRule,
+	"5010_837p": rule837p.InterchangeRule,
 }
 
 func main() {
 	versionFlag := flag.Bool("version", false, "show version")
-	describeCommand := flag.NewFlagSet("describe", flag.ExitOnError)
+	describeFileCommand := flag.NewFlagSet(describeFileCmd, flag.ExitOnError)
+	describeRuleCommand := flag.NewFlagSet(describeRuleCmd, flag.ExitOnError)
+
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stdout, "Work seamlessly with EDI from the command line.\n\nUsage:\n  %s <command> [flags]\n\n", programName)
 		fmt.Fprintf(os.Stdout, "Available commands:\n")
 
-		fmt.Fprintf(os.Stdout, "  %s: display EDI file in a human-readable format\n", describeCmd)
+		fmt.Fprintf(os.Stdout, "  %s: display EDI file in a human-readable format\n", describeFileCmd)
+		fmt.Fprintf(os.Stdout, "  %s: display Rule in a human-readable format\n", describeRuleCmd)
 		fmt.Fprintf(os.Stdout, "\n")
 	}
 
-	describeCommand.Usage = func() {
-		fmt.Fprintf(os.Stdout, "Display EDI in a human-readable format.\n\nUsage:\n  %s %s [flags] <files> \n\n", programName, describeCmd)
+	describeFileCommand.Usage = func() {
+		fmt.Fprintf(os.Stdout, "Display EDI in a human-readable format.\n\nUsage:\n  %s %s [flags] <files> \n\n", programName, describeFileCmd)
 		fmt.Fprintf(os.Stdout, "Flags: \n")
-		describeCommand.PrintDefaults()
+		describeFileCommand.PrintDefaults()
+		fmt.Fprintf(os.Stdout, "\n")
+	}
+
+	describeRuleCommand.Usage = func() {
+		fmt.Fprintf(os.Stdout, "Display rule in a human-readable format.\n\nUsage:\n  %s %s [flags] <files> \n\n", programName, describeRuleCmd)
+		fmt.Fprintf(os.Stdout, "Flags: \n")
+		describeRuleCommand.PrintDefaults()
 		fmt.Fprintf(os.Stdout, "\n")
 	}
 
@@ -52,9 +63,6 @@ func main() {
 		ruleNames = append(ruleNames, name)
 	}
 	availableRuleNames := strings.Join(ruleNames, ", ")
-
-	ruleName := describeCommand.String("rule", "837d", fmt.Sprintf("name of built-in rule: %s", availableRuleNames))
-	validateFlag := describeCommand.Bool("validate", false, "running validation check")
 
 	flag.Parse()
 
@@ -71,18 +79,22 @@ func main() {
 	command := flag.Arg(0)
 
 	switch command {
-	case describeCmd:
+	case describeFileCmd:
+
+		ruleName := describeFileCommand.String("rule", "5010_837d", fmt.Sprintf("name of built-in rule: %s", availableRuleNames))
+		validateFlag := describeFileCommand.Bool("validate", false, "running validation check")
+
 		describeArgs := os.Args[2:]
 		if len(describeArgs) == 0 {
-			describeCommand.Usage()
+			describeFileCommand.Usage()
 			os.Exit(1)
 		}
 
-		describeCommand.Parse(os.Args[2:])
+		describeFileCommand.Parse(os.Args[2:])
 
 		var err error
 		if rule, ok := availableRules[*ruleName]; ok {
-			err = describe(describeCommand.Args(), rule, *validateFlag)
+			err = describeFile(describeFileCommand.Args(), rule, *validateFlag)
 		} else {
 			fmt.Fprintf(os.Stdout, "Unknown rule: %s\n\n", *ruleName)
 			fmt.Fprintf(os.Stdout, "Supported rules: %s\n\n", availableRuleNames)
@@ -93,22 +105,50 @@ func main() {
 			fmt.Fprintf(os.Stdout, "Error describing files: %s\n", err)
 			os.Exit(1)
 		}
+
+	case describeRuleCmd:
+
+		ruleName := describeRuleCommand.String("rule", "5010_837d", fmt.Sprintf("name of built-in rule: %s", availableRuleNames))
+		isRequiredOnly := describeRuleCommand.Bool("required", false, "display required segments & rule only")
+
+		describeArgs := os.Args[2:]
+		if len(describeArgs) == 0 {
+			describeRuleCommand.Usage()
+			os.Exit(1)
+		}
+
+		describeRuleCommand.Parse(os.Args[2:])
+
+		var err error
+		if rule, ok := availableRules[*ruleName]; ok {
+			err = describeRule(rule, *isRequiredOnly)
+		} else {
+			fmt.Fprintf(os.Stdout, "Unknown rule: %s\n\n", *ruleName)
+			fmt.Fprintf(os.Stdout, "Supported rules: %s\n\n", availableRuleNames)
+			os.Exit(1)
+		}
+
+		if err != nil {
+			fmt.Fprintf(os.Stdout, "Error describing files: %s\n", err)
+			os.Exit(1)
+		}
+
 	default:
 		fmt.Fprintf(os.Stdout, "Uknown command: %s\n\n", command)
 		flag.Usage()
 		os.Exit(1)
 	}
 
-	if describeCommand.Parsed() {
-		files := describeCommand.Args()
+	if describeFileCommand.Parsed() {
+		files := describeFileCommand.Args()
 		if len(files) == 0 {
-			describeCommand.Usage()
+			describeFileCommand.Usage()
 			os.Exit(1)
 		}
 	}
 }
 
-func describe(paths []string, rule rules.InterchangeRule, validateFlag bool) error {
+func describeFile(paths []string, rule rules.InterchangeRule, validateFlag bool) error {
 
 	for _, path := range paths {
 		reader, err := os.Open(path)
@@ -136,6 +176,13 @@ func describe(paths []string, rule rules.InterchangeRule, validateFlag bool) err
 
 		reader.Close()
 	}
+
+	return nil
+}
+
+func describeRule(rule rules.InterchangeRule, isRequiredOnly bool) error {
+
+	rule.Print(os.Stdout, isRequiredOnly)
 
 	return nil
 }

@@ -18,9 +18,13 @@ import (
 	"github.com/moov-io/x12/pkg/util"
 )
 
-func NewInterchange(rule *rules.InterchangeRule) *Interchange {
+func NewInterchange(rule *rules.InterchangeRule, args ...string) *Interchange {
 
 	newChange := Interchange{rule: rule}
+
+	if len(args) > 0 && len(args[0]) == 1 {
+		newChange.terminator = args[0]
+	}
 
 	return &newChange
 }
@@ -30,13 +34,28 @@ type Interchange struct {
 	FunctionalGroups []FunctionalGroup
 	IEA              *segments.IEA `json:"IEA,omitempty" xml:"IEA,omitempty"`
 
+	terminator string
+
 	rule *rules.InterchangeRule
 }
 
-func (r *Interchange) Validate(changeRule *rules.InterchangeRule) error {
+func (r Interchange) getTerminator() string {
+	if len(r.terminator) == 1 {
+		return r.terminator
+	}
 
-	if changeRule == nil && r.rule != nil {
-		changeRule = r.rule
+	return util.SegmentTerminator
+}
+
+func (r *Interchange) Validate(validateRule *rules.InterchangeRule) error {
+
+	changeRule := r.rule
+	if validateRule != nil {
+		changeRule = validateRule
+	}
+
+	if changeRule == nil {
+		return errors.New("invalid interchange rule")
 	}
 
 	var err error
@@ -56,6 +75,10 @@ func (r *Interchange) Validate(changeRule *rules.InterchangeRule) error {
 
 	// Validating groups
 	{
+		if len(r.FunctionalGroups) == 0 {
+			return errors.New("unable to find any group")
+		}
+
 		for index := 0; index < len(r.FunctionalGroups); index++ {
 			group := r.FunctionalGroups[index]
 			if err = group.Validate(&changeRule.Group); err != nil {
@@ -110,8 +133,6 @@ func (r *Interchange) Parse(data string) (int, error) {
 	var size, read int
 	var err error
 
-	line := data[read:]
-
 	// Parsing ISA Segment
 	isaRule := r.rule.ISA
 	{
@@ -120,12 +141,11 @@ func (r *Interchange) Parse(data string) (int, error) {
 		}
 
 		r.ISA.SetRule(&isaRule.Elements)
-		size, err = r.ISA.Parse(line)
+		size, err = r.ISA.Parse(data[read:], r.getTerminator())
 		if err != nil {
 			return 0, errors.New("unable to parse isa segment")
 		} else {
 			read += size
-			line = data[read:]
 		}
 	}
 
@@ -133,14 +153,14 @@ func (r *Interchange) Parse(data string) (int, error) {
 	grRule := r.rule.Group
 	for err == nil {
 		newTrans := NewGroup(&grRule)
-		size, err = newTrans.Parse(line, r.ISA.ComponentElementSeparator)
+		size, err = newTrans.Parse(data[read:], r.getTerminator(), r.ISA.ComponentElementSeparator)
 		if err == nil {
 			read += size
-			line = data[read:]
 			r.FunctionalGroups = append(r.FunctionalGroups, *newTrans)
 		} else {
+			line := data[read:]
 			if len(r.FunctionalGroups) == 0 && (len(line) > 2 && line[0:2] == "GS") {
-				return 0, errors.New("unable to parse group section")
+				return 0, err
 			}
 		}
 	}
@@ -149,7 +169,7 @@ func (r *Interchange) Parse(data string) (int, error) {
 	ieaRule := r.rule.IEA
 	if ieaRule.Name == "IEA" {
 		newIEA := segments.NewIEA(&ieaRule.Elements)
-		size, err = newIEA.Parse(line)
+		size, err = newIEA.Parse(data[read:], r.getTerminator())
 		if err != nil && rules.IsMaskRequired(ieaRule.Mask) {
 			return 0, errors.New("unable to parse iea segment")
 		} else if err == nil {
@@ -167,6 +187,8 @@ func (r Interchange) String(args ...string) string {
 	var buf bytes.Buffer
 
 	if len(args) == 0 {
+		args = append(args, r.getTerminator(), r.ISA.ComponentElementSeparator)
+	} else if len(args) == 1 {
 		args = append(args, r.ISA.ComponentElementSeparator)
 	}
 
@@ -244,7 +266,7 @@ func (r Interchange) Print(w io.Writer) {
 		}
 
 		if len(d.Items) > 0 {
-			printStr = printStr + util.SegmentTerminator + "\t"
+			printStr = printStr + r.getTerminator() + "\t"
 		} else {
 			printStr = printStr + "\t"
 		}

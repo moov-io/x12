@@ -81,7 +81,7 @@ func (r *HL) Parse(data string, args ...string) (int, error) {
 	var err error
 	var size int
 
-	length := util.GetRecordSize(data)
+	length := util.GetRecordSize(data, args...)
 	codeLen := len(r.Name())
 	read := codeLen + 1
 
@@ -98,14 +98,9 @@ func (r *HL) Parse(data string, args ...string) (int, error) {
 	for i := 1; i <= r.fieldCount(); i++ {
 
 		var value string
-		mask := rules.MASK_REQUIRED
 		idx := fmt.Sprintf("%02d", i)
 
-		if i == 2 {
-			mask = rules.MASK_OPTIONAL
-		}
-
-		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), mask); err != nil {
+		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), r.defaultMask(i), args...); err != nil {
 			return 0, fmt.Errorf("unable to parse hl's element (%s), %s", idx, err.Error())
 		} else {
 			read += size
@@ -135,14 +130,14 @@ func (r HL) String(args ...string) string {
 		}
 
 		if buf == "" {
-			buf = fmt.Sprintf("%v%s", value, util.SegmentTerminator)
+			buf = fmt.Sprintf("%v%s", value, util.GetSegmentTerminator(args...))
 		} else {
 			buf = fmt.Sprintf("%v%s", value, util.DataElementSeparator) + buf
 		}
 	}
 
 	if buf == "" {
-		buf = fmt.Sprintf("%s%s", r.Name(), util.SegmentTerminator)
+		buf = fmt.Sprintf("%s%s", r.Name(), util.GetSegmentTerminator(args...))
 	} else {
 		buf = fmt.Sprintf("%s%s", r.Name(), util.DataElementSeparator) + buf
 	}

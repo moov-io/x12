@@ -94,7 +94,7 @@ func (r *SVD) Parse(data string, args ...string) (int, error) {
 	var err error
 	var size int
 
-	length := util.GetRecordSize(data)
+	length := util.GetRecordSize(data, args...)
 	codeLen := len(r.Name())
 	read := codeLen + 1
 
@@ -115,7 +115,7 @@ func (r *SVD) Parse(data string, args ...string) (int, error) {
 
 		rule := r.GetRule().Get(idx)
 
-		if value, size, err = util.ReadField(line, read, rule, r.defaultMask(i)); err != nil {
+		if value, size, err = util.ReadField(line, read, rule, r.defaultMask(i), args...); err != nil {
 			return 0, fmt.Errorf("unable to parse svd's element (%s), %s", idx, err.Error())
 		} else {
 			read += size
@@ -171,14 +171,14 @@ func (r SVD) String(args ...string) string {
 		}
 
 		if buf == "" {
-			buf = fmt.Sprintf("%v%s", value, util.SegmentTerminator)
+			buf = fmt.Sprintf("%v%s", value, util.GetSegmentTerminator(args...))
 		} else {
 			buf = fmt.Sprintf("%v%s", value, util.DataElementSeparator) + buf
 		}
 	}
 
 	if buf == "" {
-		buf = fmt.Sprintf("%s%s", r.Name(), util.SegmentTerminator)
+		buf = fmt.Sprintf("%s%s", r.Name(), util.GetSegmentTerminator(args...))
 	} else {
 		buf = fmt.Sprintf("%s%s", r.Name(), util.DataElementSeparator) + buf
 	}

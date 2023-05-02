@@ -72,27 +72,27 @@ func (r *CompositeLoop) Validate(loopRule *rules.LoopRule) error {
 	segIndex := 0
 	for index := 0; index < len(loopRule.Composite); index++ {
 		rule := loopRule.Composite[index]
-		for repeatCnt := 0; repeatCnt < rule.Repeat(); repeatCnt++ {
+		for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
 
 			if segIndex+1 > len(r.SubLoops) {
-				if repeatCnt == 0 && rules.IsMaskRequired(rule.Mask) {
+				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
 					return fmt.Errorf("please add new %s loop", strings.ToUpper(rule.Name))
 				}
-				continue
+				break
 			}
 
 			if r.SubLoops[segIndex].Name() != rule.Name {
 				if rules.IsMaskRequired(rule.Mask) {
 					return fmt.Errorf("loop(%02d)'s name is not equal with rule's name (%s)", segIndex, strings.ToLower(rule.Name))
 				}
-				continue
+				break
 			}
 
 			if err = r.SubLoops[segIndex].Validate(&rule); err != nil {
-				if rules.IsMaskRequired(rule.Mask) {
+				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
 					return fmt.Errorf("loop(%02d) should be valid %s loop, %s", segIndex, strings.ToLower(rule.Name), err.Error())
 				}
-				continue
+				break
 			}
 
 			segIndex++

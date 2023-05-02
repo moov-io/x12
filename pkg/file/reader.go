@@ -13,7 +13,8 @@ import (
 )
 
 type Scanner struct {
-	scan *bufio.Scanner
+	scan       *bufio.Scanner
+	terminator string
 }
 
 func (b *Scanner) GetInterchange() string {
@@ -36,13 +37,26 @@ func (b *Scanner) GetInterchange() string {
 	return strings.TrimSpace(raw)
 }
 
-func NewScanner(fd io.Reader) Scanner {
+func NewScanner(fd io.Reader, args ...string) Scanner {
+
+	// init scan
 	scan := bufio.NewScanner(fd)
-	scan.Split(scanInterChange)
-	return Scanner{scan: scan}
+
+	// init object
+	scanner := Scanner{scan: scan}
+	if len(args) > 0 && len(args[0]) == 1 {
+		scanner.terminator = args[0]
+	} else {
+		scanner.terminator = util.SegmentTerminator
+	}
+
+	// set split function
+	scan.Split(scanner.scanInterChange)
+
+	return scanner
 }
 
-func getInterchangeTerminatorPosition(input string) int {
+func (b *Scanner) getInterchangeTerminatorPosition(input string) int {
 
 	startPos1 := strings.Index(input, "ISA")
 	startPos2 := strings.LastIndex(input, "ISA")
@@ -60,7 +74,7 @@ func getInterchangeTerminatorPosition(input string) int {
 		return 0
 	}
 
-	tPos := strings.Index(input[endPos:], util.SegmentTerminator)
+	tPos := strings.Index(input[endPos:], b.terminator)
 	if tPos == -1 {
 		return 0
 	}
@@ -68,15 +82,15 @@ func getInterchangeTerminatorPosition(input string) int {
 	return tPos + endPos + 1
 }
 
-func scanInterChange(data []byte, atEOF bool) (advance int, token []byte, err error) {
+func (b *Scanner) scanInterChange(data []byte, atEOF bool) (advance int, token []byte, err error) {
 
 	if atEOF && len(data) == 0 {
 		return 0, nil, nil
 	}
 
 	line := string(data)
-	pos := getInterchangeTerminatorPosition(line)
-	if getInterchangeTerminatorPosition(line) < 0 || !atEOF {
+	pos := b.getInterchangeTerminatorPosition(line)
+	if b.getInterchangeTerminatorPosition(line) < 0 || !atEOF {
 		// need more data
 		return 0, nil, nil
 	}

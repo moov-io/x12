@@ -2320,10 +2320,6 @@ var L2010CARule = rules.SegmentSetRule{
 	},
 }
 
-const (
-	MAXCOUNT = 200
-)
-
 var TransactionSetRule = rules.TransactionRule{
 	ST: rules.SegmentRule{
 		Name:        "ST",
@@ -2335,14 +2331,16 @@ var TransactionSetRule = rules.TransactionRule{
 			"03": {AcceptValues: []string{"005010X222A1"}, Mask: rules.MASK_REQUIRED},
 		},
 	},
-	BHT: rules.SegmentRule{
-		Name:        "BHT",
-		Description: "BEGINNING OF HIERARCHICAL TRANSACTION",
-		Mask:        rules.MASK_REQUIRED,
-		Elements: rules.ElementSetRule{
-			"01": {AcceptValues: []string{"0019"}},
-			"02": {AcceptValues: []string{"00", "18"}},
-			"06": {AcceptValues: []string{"31", "CH", "RP"}},
+	Segments: rules.SegmentSetRule{
+		0: rules.SegmentRule{
+			Name:        "BHT",
+			Description: "BEGINNING OF HIERARCHICAL TRANSACTION",
+			Mask:        rules.MASK_REQUIRED,
+			Elements: rules.ElementSetRule{
+				"01": {AcceptValues: []string{"0019"}},
+				"02": {AcceptValues: []string{"00", "18"}},
+				"06": {AcceptValues: []string{"31", "CH", "RP"}},
+			},
 		},
 	},
 	SE: rules.SegmentRule{
@@ -2365,7 +2363,7 @@ var TransactionSetRule = rules.TransactionRule{
 		2: {
 			Segments:    L2000ARule,
 			Mask:        rules.MASK_REQUIRED,
-			RepeatCount: MAXCOUNT,
+			RepeatCount: rules.GREATER_THAN_ONE,
 			Name:        "2000A",
 			Composite: rules.LoopSetRule{
 				0: {
@@ -2386,7 +2384,7 @@ var TransactionSetRule = rules.TransactionRule{
 				3: {
 					Segments:    L2000BRule,
 					Mask:        rules.MASK_REQUIRED,
-					RepeatCount: MAXCOUNT,
+					RepeatCount: rules.GREATER_THAN_ONE,
 					Name:        "2000B",
 					Composite: rules.LoopSetRule{
 						0: {
