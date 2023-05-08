@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestForDentalServiceProcedure(t *testing.T) {
+func TestForServiceProcedure(t *testing.T) {
 
 	rule := rules.ElementSetRule{
 		"01": {AcceptValues: []string{"composite"}},
@@ -20,7 +20,7 @@ func TestForDentalServiceProcedure(t *testing.T) {
 
 	t.Run("parsing of dental service procedure", func(t *testing.T) {
 
-		composite := DentalServiceProcedure{}
+		composite := ServiceProcedure{}
 		composite.SetRule(&rule)
 
 		in := "composite:1"

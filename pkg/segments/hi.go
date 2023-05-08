@@ -76,34 +76,42 @@ func (r *HI) Validate(rule *rules.ElementSetRule) error {
 
 		switch i {
 		case 1:
-			err = r.HealthCareCodeInformation1.Validate(rule)
+			cRule := rule.Get(idx).Composite
+			err = r.HealthCareCodeInformation1.Validate(&cRule)
 		case 2:
 			if r.HealthCareCodeInformation2 != nil {
-				err = r.HealthCareCodeInformation2.Validate(rule)
+				cRule := rule.Get(idx).Composite
+				err = r.HealthCareCodeInformation2.Validate(&cRule)
 			}
 		case 3:
 			if r.HealthCareCodeInformation3 != nil {
-				err = r.HealthCareCodeInformation3.Validate(rule)
+				cRule := rule.Get(idx).Composite
+				err = r.HealthCareCodeInformation3.Validate(&cRule)
 			}
 		case 4:
 			if r.HealthCareCodeInformation4 != nil {
-				err = r.HealthCareCodeInformation4.Validate(rule)
+				cRule := rule.Get(idx).Composite
+				err = r.HealthCareCodeInformation4.Validate(&cRule)
 			}
 		case 5:
 			if r.HealthCareCodeInformation5 != nil {
-				err = r.HealthCareCodeInformation5.Validate(rule)
+				cRule := rule.Get(idx).Composite
+				err = r.HealthCareCodeInformation5.Validate(&cRule)
 			}
 		case 6:
 			if r.HealthCareCodeInformation6 != nil {
-				err = r.HealthCareCodeInformation6.Validate(rule)
+				cRule := rule.Get(idx).Composite
+				err = r.HealthCareCodeInformation6.Validate(&cRule)
 			}
 		case 7:
 			if r.HealthCareCodeInformation7 != nil {
-				err = r.HealthCareCodeInformation7.Validate(rule)
+				cRule := rule.Get(idx).Composite
+				err = r.HealthCareCodeInformation7.Validate(&cRule)
 			}
 		case 8:
 			if r.HealthCareCodeInformation8 != nil {
-				err = r.HealthCareCodeInformation8.Validate(rule)
+				cRule := rule.Get(idx).Composite
+				err = r.HealthCareCodeInformation8.Validate(&cRule)
 			}
 		}
 
@@ -161,36 +169,64 @@ func (r *HI) Parse(data string, args ...string) (int, error) {
 					r.HealthCareCodeInformation1 = composite
 				}
 
-				if rules.IsMaskRequired(util.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
 					return 0, fmt.Errorf("unable to parse hi's element (%s), %s", idx, parseErr.Error())
 				}
 			case 2:
 				if parseErr == nil {
 					r.HealthCareCodeInformation2 = &composite
 				}
+
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
+					return 0, fmt.Errorf("unable to parse hi's element (%s), %s", idx, parseErr.Error())
+				}
 			case 3:
 				if parseErr == nil {
 					r.HealthCareCodeInformation3 = &composite
+				}
+
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
+					return 0, fmt.Errorf("unable to parse hi's element (%s), %s", idx, parseErr.Error())
 				}
 			case 4:
 				if parseErr == nil {
 					r.HealthCareCodeInformation4 = &composite
 				}
+
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
+					return 0, fmt.Errorf("unable to parse hi's element (%s), %s", idx, parseErr.Error())
+				}
 			case 5:
 				if parseErr == nil {
 					r.HealthCareCodeInformation5 = &composite
+				}
+
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
+					return 0, fmt.Errorf("unable to parse hi's element (%s), %s", idx, parseErr.Error())
 				}
 			case 6:
 				if parseErr == nil {
 					r.HealthCareCodeInformation6 = &composite
 				}
+
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
+					return 0, fmt.Errorf("unable to parse hi's element (%s), %s", idx, parseErr.Error())
+				}
 			case 7:
 				if parseErr == nil {
 					r.HealthCareCodeInformation7 = &composite
 				}
+
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
+					return 0, fmt.Errorf("unable to parse hi's element (%s), %s", idx, parseErr.Error())
+				}
 			case 8:
 				if parseErr == nil {
 					r.HealthCareCodeInformation8 = &composite
+				}
+
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
+					return 0, fmt.Errorf("unable to parse hi's element (%s), %s", idx, parseErr.Error())
 				}
 			}
 

@@ -11,7 +11,7 @@ import (
 	"github.com/moov-io/x12/pkg/util"
 )
 
-type DentalServiceProcedure struct {
+type ServiceProcedure struct {
 	ProductIdQualifier string `index:"01" json:"01,omitempty" xml:"01,omitempty"`
 	ProductId1         string `index:"02" json:"02,omitempty" xml:"02,omitempty"`
 	ProcedureModifier1 string `index:"03" json:"03,omitempty" xml:"03,omitempty"`
@@ -24,23 +24,23 @@ type DentalServiceProcedure struct {
 	Element
 }
 
-func (r DentalServiceProcedure) defaultMask() string {
+func (r ServiceProcedure) defaultMask() string {
 	return rules.MASK_OPTIONAL
 }
 
-func (r DentalServiceProcedure) fieldCount() int {
+func (r ServiceProcedure) fieldCount() int {
 	return 8
 }
 
-func (r *DentalServiceProcedure) SetFieldByIndex(index string, data any) error {
+func (r *ServiceProcedure) SetFieldByIndex(index string, data any) error {
 	return util.SetFieldByIndex(r, index, data)
 }
 
-func (r DentalServiceProcedure) GetFieldByIndex(index string) any {
+func (r ServiceProcedure) GetFieldByIndex(index string) any {
 	return util.GetFieldByIndex(r, index)
 }
 
-func (r *DentalServiceProcedure) Validate(rule *rules.ElementSetRule) error {
+func (r *ServiceProcedure) Validate(rule *rules.ElementSetRule) error {
 
 	if rule == nil {
 		rule = r.GetRule()
@@ -58,7 +58,7 @@ func (r *DentalServiceProcedure) Validate(rule *rules.ElementSetRule) error {
 	return nil
 }
 
-func (r *DentalServiceProcedure) Parse(data string, args ...string) (int, error) {
+func (r *ServiceProcedure) Parse(data string, args ...string) (int, error) {
 
 	var err error
 	var size, read int
@@ -80,7 +80,7 @@ func (r *DentalServiceProcedure) Parse(data string, args ...string) (int, error)
 	return read, nil
 }
 
-func (r DentalServiceProcedure) String(args ...string) string {
+func (r ServiceProcedure) String(args ...string) string {
 	var buf string
 
 	separator := util.GetElementSeparator(args...)

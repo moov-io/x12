@@ -86,11 +86,13 @@ func (r *CLM) Validate(rule *rules.ElementSetRule) error {
 		var err error
 		idx := fmt.Sprintf("%02d", i)
 
-		if i == 5 { // HealthCareServiceLocation
-			err = r.HealthCareServiceLocation.Validate(nil)
+		if i == 5 {
+			cRule := rule.Get(idx).Composite
+			err = r.HealthCareServiceLocation.Validate(&cRule)
 		} else if i == 11 { // RelatedCausesInformation
 			if r.RelatedCausesInformation != nil {
-				err = r.RelatedCausesInformation.Validate(nil)
+				cRule := rule.Get(idx).Composite
+				err = r.RelatedCausesInformation.Validate(&cRule)
 			}
 		} else {
 			err = util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask(i))
@@ -139,10 +141,10 @@ func (r *CLM) Parse(data string, args ...string) (int, error) {
 
 			compositeRule := rule.Composite
 
-			if i == 5 { // HealthCareServiceLocation
+			if i == 5 {
 				var composite HealthCareServiceLocation
 				if compositeRule != nil {
-					composite.SetRule((*rules.ElementSetRule)(&compositeRule))
+					composite.SetRule(&compositeRule)
 				}
 
 				_, parseErr := composite.Parse(value, args...)
@@ -150,18 +152,25 @@ func (r *CLM) Parse(data string, args ...string) (int, error) {
 					r.HealthCareServiceLocation = composite
 				}
 
-				if rules.IsMaskRequired(util.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
 					return 0, fmt.Errorf("unable to parse clm's element (%s), %s", idx, parseErr.Error())
 				}
 
-			} else if i == 11 { // RelatedCausesInformation
+			} else if i == 11 {
 				var composite RelatedCausesInformation
 				if compositeRule != nil {
 					composite.SetRule(&compositeRule)
 				}
-				if _, parseErr := composite.Parse(value, args...); parseErr == nil {
+
+				_, parseErr := composite.Parse(value, args...)
+				if parseErr == nil {
 					r.RelatedCausesInformation = &composite
 				}
+
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
+					return 0, fmt.Errorf("unable to parse clm's element (%s), %s", idx, parseErr.Error())
+				}
+
 			} else {
 				r.SetFieldByIndex(idx, value)
 			}
@@ -180,9 +189,9 @@ func (r CLM) String(args ...string) string {
 		var value any
 		idx := fmt.Sprintf("%02d", i)
 
-		if i == 5 { // HealthCareServiceLocation
+		if i == 5 {
 			value = r.HealthCareServiceLocation.String(args...)
-		} else if i == 11 { // RelatedCausesInformation
+		} else if i == 11 {
 			if r.RelatedCausesInformation != nil {
 				value = r.RelatedCausesInformation.String(args...)
 			}

@@ -27,9 +27,9 @@ func NewTOO(rule *rules.ElementSetRule) SegmentInterface {
 }
 
 type TOO struct {
-	CodeListQualCode string `index:"01" json:"01,omitempty" xml:"01,omitempty"`
-	IndustryCode     string `index:"02" json:"02,omitempty" xml:"02,omitempty"`
-	Identification1  string `index:"03" json:"03,omitempty" xml:"03,omitempty"`
+	CodeListQualCode string            `index:"01" json:"01,omitempty" xml:"01,omitempty"`
+	IndustryCode     string            `index:"02" json:"02,omitempty" xml:"02,omitempty"`
+	ToothSurfaceCode *ToothSurfaceCode `index:"03" json:"03,omitempty" xml:"03,omitempty"`
 
 	Element
 }
@@ -62,9 +62,20 @@ func (r *TOO) Validate(rule *rules.ElementSetRule) error {
 
 	for i := 1; i <= r.fieldCount(); i++ {
 
+		var err error
 		idx := fmt.Sprintf("%02d", i)
-		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask()); err != nil {
-			return fmt.Errorf("too's element (%s) has invalid value, %s", idx, err.Error())
+		cRule := rule.Get(idx).Composite
+
+		if i == 3 {
+			if r.ToothSurfaceCode != nil {
+				err = r.ToothSurfaceCode.Validate(&cRule)
+			}
+		} else {
+			err = util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask())
+		}
+
+		if err != nil {
+			return fmt.Errorf("sv3's element (%s) has invalid value, %s", idx, err.Error())
 		}
 	}
 
@@ -96,11 +107,34 @@ func (r *TOO) Parse(data string, args ...string) (int, error) {
 		var value string
 		idx := fmt.Sprintf("%02d", i)
 
+		rule := r.GetRule().Get(idx)
+
 		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), r.defaultMask(), args...); err != nil {
 			return 0, fmt.Errorf("unable to parse too's element (%s), %s", idx, err.Error())
 		} else {
 			read += size
 			r.SetFieldByIndex(idx, value)
+
+			compositeRule := rule.Composite
+
+			if i == 3 {
+				var composite ToothSurfaceCode
+				if compositeRule != nil {
+					composite.SetRule(&compositeRule)
+				}
+
+				_, parseErr := composite.Parse(value, args...)
+				if parseErr == nil {
+					r.ToothSurfaceCode = &composite
+				}
+
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask())) && parseErr != nil {
+					return 0, fmt.Errorf("unable to parse plb's element (%s), %s", idx, parseErr.Error())
+				}
+
+			} else {
+				r.SetFieldByIndex(idx, value)
+			}
 		}
 	}
 
@@ -113,7 +147,15 @@ func (r TOO) String(args ...string) string {
 	for i := r.fieldCount(); i > 0; i-- {
 
 		idx := fmt.Sprintf("%02d", i)
-		value := r.GetFieldByIndex(idx)
+		var value any
+
+		if i == 3 {
+			if r.ToothSurfaceCode != nil {
+				value = r.ToothSurfaceCode.String(args...)
+			}
+		} else {
+			value = r.GetFieldByIndex(idx)
+		}
 
 		if buf == "" {
 			mask := r.GetRule().GetMask(idx, r.defaultMask())

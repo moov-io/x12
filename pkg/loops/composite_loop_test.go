@@ -101,6 +101,7 @@ var testSegRule3 = rules.SegmentSetRule{
 
 var testComplexRule = rules.LoopRule{
 	Name:     "1000A",
+	Mask:     rules.MASK_REQUIRED,
 	Segments: testSegRule1,
 	Composite: rules.LoopSetRule{
 		0: {

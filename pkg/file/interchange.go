@@ -82,7 +82,7 @@ func (r *Interchange) Validate(validateRule *rules.InterchangeRule) error {
 		for index := 0; index < len(r.FunctionalGroups); index++ {
 			group := r.FunctionalGroups[index]
 			if err = group.Validate(&changeRule.Group); err != nil {
-				return fmt.Errorf("group(%02d) is not invalid", index)
+				return err
 			}
 		}
 
