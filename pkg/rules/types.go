@@ -19,18 +19,24 @@ const (
 	GREATER_THAN_ONE = 0xFFFF
 )
 
-func IsMaskRequired(mask string) bool {
-	if mask == MASK_REQUIRED || mask == MASK_NONE {
-		return true
+func GetMask(mask, defaultMask string) string {
+	if mask != MASK_NONE {
+		return mask
 	}
-	return false
+
+	if defaultMask != MASK_NONE {
+		return defaultMask
+	}
+
+	return MASK_OPTIONAL
 }
 
-func getMask(mask1, mask2 string) string {
-	if mask1 == MASK_NONE {
-		return mask2
+func IsMaskRequired(mask string) bool {
+	if mask == MASK_NONE {
+		// default mask is required
+		return true
 	}
-	return mask1
+	return mask == MASK_REQUIRED
 }
 
 type ruleInfo struct {
@@ -177,7 +183,7 @@ func (l LoopRule) Repeat() int {
 }
 
 func (l LoopRule) isRequired(isRequiredOnly bool) bool {
-	return !(isRequiredOnly && getMask(l.Mask, MASK_REQUIRED) != MASK_REQUIRED)
+	return !(isRequiredOnly && GetMask(l.Mask, MASK_REQUIRED) != MASK_REQUIRED)
 }
 
 func (l LoopRule) dumpRuleInfo(level int, isRequiredOnly bool) []ruleInfo {
@@ -186,7 +192,7 @@ func (l LoopRule) dumpRuleInfo(level int, isRequiredOnly bool) []ruleInfo {
 	if l.isRequired(isRequiredOnly) {
 		info := ruleInfo{
 			Name:        l.Name,
-			Mask:        getMask(l.Mask, MASK_REQUIRED),
+			Mask:        GetMask(l.Mask, MASK_REQUIRED),
 			RepeatCount: l.Repeat(),
 			Level:       level,
 		}
@@ -222,13 +228,13 @@ type SegmentRule struct {
 }
 
 func (s SegmentRule) isRequired(isRequiredOnly bool) bool {
-	return !(isRequiredOnly && getMask(s.Mask, MASK_REQUIRED) != MASK_REQUIRED)
+	return !(isRequiredOnly && GetMask(s.Mask, MASK_REQUIRED) != MASK_REQUIRED)
 }
 
 func (s SegmentRule) dumpRuleInfo(level int) ruleInfo {
 	return ruleInfo{
 		Name:        s.Name,
-		Mask:        getMask(s.Mask, MASK_REQUIRED),
+		Mask:        GetMask(s.Mask, MASK_REQUIRED),
 		RepeatCount: s.Repeat(),
 		Description: s.Description,
 		Level:       level,
@@ -279,10 +285,5 @@ func (e ElementSetRule) GetMask(name, defaultMask string) string {
 		element = ElementRule{}
 	}
 
-	mask := element.Mask
-	if mask == MASK_NONE {
-		mask = defaultMask
-	}
-
-	return mask
+	return GetMask(element.Mask, defaultMask)
 }

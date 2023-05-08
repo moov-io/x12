@@ -12,9 +12,9 @@ import (
 	"github.com/moov-io/x12/pkg/util"
 )
 
-func NewN1(rule *rules.ElementSetRule) SegmentInterface {
+func NewRDM(rule *rules.ElementSetRule) SegmentInterface {
 
-	newSegment := N1{}
+	newSegment := RDM{}
 
 	if rule == nil {
 		newRule := make(rules.ElementSetRule)
@@ -26,41 +26,38 @@ func NewN1(rule *rules.ElementSetRule) SegmentInterface {
 	return &newSegment
 }
 
-type N1 struct {
-	EntityIdentifierCode1       string `index:"01" json:"01" xml:"01"`
-	OriginalName                string `index:"02" json:"02,omitempty" xml:"02,omitempty"`
-	IdentificationCodeQualifier string `index:"03" json:"03,omitempty" xml:"03,omitempty"`
-	IdentificationCodeUniqueID  string `index:"04" json:"04,omitempty" xml:"04,omitempty"`
-	EntityRelationshipCode      string `index:"05" json:"05,omitempty" xml:"05,omitempty"`
-	EntityIdentifierCode2       string `index:"06" json:"06,omitempty" xml:"06,omitempty"`
+type RDM struct {
+	ReportTransmissionCode string `index:"01" json:"01" xml:"01"`
+	MethodName             string `index:"02" json:"02,omitempty" xml:"02,omitempty"`
+	CommunicationNumber    string `index:"03" json:"03,omitempty" xml:"03,omitempty"`
 
 	Element
 }
 
-func (r N1) defaultMask(index int) string {
+func (r RDM) defaultMask(index int) string {
 	if index > 2 {
 		return rules.MASK_OPTIONAL
 	}
 	return rules.MASK_REQUIRED
 }
 
-func (r N1) fieldCount() int {
-	return 6
+func (r RDM) fieldCount() int {
+	return 3
 }
 
-func (r N1) Name() string {
-	return "N1"
+func (r RDM) Name() string {
+	return "RDM"
 }
 
-func (r *N1) SetFieldByIndex(index string, data any) error {
+func (r *RDM) SetFieldByIndex(index string, data any) error {
 	return util.SetFieldByIndex(r, index, data)
 }
 
-func (r N1) GetFieldByIndex(index string) any {
+func (r RDM) GetFieldByIndex(index string) any {
 	return util.GetFieldByIndex(r, index)
 }
 
-func (r *N1) Validate(rule *rules.ElementSetRule) error {
+func (r *RDM) Validate(rule *rules.ElementSetRule) error {
 
 	if rule == nil {
 		rule = r.GetRule()
@@ -71,14 +68,14 @@ func (r *N1) Validate(rule *rules.ElementSetRule) error {
 		idx := fmt.Sprintf("%02d", i)
 
 		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask(i)); err != nil {
-			return fmt.Errorf("n1's element (%s) has invalid value, %s", idx, err.Error())
+			return fmt.Errorf("rdm's element (%s) has invalid value, %s", idx, err.Error())
 		}
 	}
 
 	return nil
 }
 
-func (r *N1) Parse(data string, args ...string) (int, error) {
+func (r *RDM) Parse(data string, args ...string) (int, error) {
 
 	var line string
 	var err error
@@ -89,13 +86,13 @@ func (r *N1) Parse(data string, args ...string) (int, error) {
 	read := codeLen + 1
 
 	if length < int64(read) {
-		return 0, errors.New("n1 segment has not enough input data")
+		return 0, errors.New("rdm segment has not enough input data")
 	} else {
 		line = data[:length]
 	}
 
 	if r.Name() != data[:codeLen] {
-		return 0, errors.New("n1 segment contains invalid code")
+		return 0, errors.New("rdm segment contains invalid code")
 	}
 
 	for i := 1; i <= r.fieldCount(); i++ {
@@ -104,7 +101,7 @@ func (r *N1) Parse(data string, args ...string) (int, error) {
 		idx := fmt.Sprintf("%02d", i)
 
 		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), r.defaultMask(i), args...); err != nil {
-			return 0, fmt.Errorf("unable to parse n1's element (%s), %s", idx, err.Error())
+			return 0, fmt.Errorf("unable to parse rdm's element (%s), %s", idx, err.Error())
 		} else {
 			read += size
 			r.SetFieldByIndex(idx, value)
@@ -114,7 +111,7 @@ func (r *N1) Parse(data string, args ...string) (int, error) {
 	return read, nil
 }
 
-func (r N1) String(args ...string) string {
+func (r RDM) String(args ...string) string {
 	var buf string
 
 	for i := r.fieldCount(); i > 0; i-- {

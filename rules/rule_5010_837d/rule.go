@@ -118,6 +118,7 @@ var L2010AARule = rules.SegmentSetRule{
 	3: rules.SegmentRule{
 		Name:        "REF",
 		Description: "BILLING PROVIDER SECONDARY IDENTIFICATION",
+		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"01": {AcceptValues: []string{"EI", "SY"}},
 		},
@@ -166,6 +167,7 @@ var L2010ABRule = rules.SegmentSetRule{
 	1: rules.SegmentRule{
 		Name:        "N3",
 		Description: "PAY-TO ADDRESS 2010AB",
+		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"02": {Mask: rules.MASK_OPTIONAL},
 		},
@@ -173,6 +175,7 @@ var L2010ABRule = rules.SegmentSetRule{
 	2: rules.SegmentRule{
 		Name:        "N4",
 		Description: "PAY-TO ADDRESS 2010AB",
+		Mask:        rules.MASK_REQUIRED,
 		Elements:    rules.ElementSetRule{},
 	},
 }
@@ -195,19 +198,22 @@ var L2010ACRule = rules.SegmentSetRule{
 	},
 	1: rules.SegmentRule{
 		Name:        "N3",
-		Description: "PAY-TO ADDRESS 2010AB",
+		Description: "PAY-TO ADDRESS 2010AC",
+		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"02": {Mask: rules.MASK_OPTIONAL},
 		},
 	},
 	2: rules.SegmentRule{
 		Name:        "N4",
-		Description: "PAY-TO ADDRESS 2010AB",
+		Description: "PAY-TO ADDRESS 2010AC",
+		Mask:        rules.MASK_REQUIRED,
 		Elements:    rules.ElementSetRule{},
 	},
 	3: rules.SegmentRule{
 		Name:        "REF",
-		Description: "PAY-TO ADDRESS 2010AB",
+		Description: "PAY-TO ADDRESS 2010AC",
+		Mask:        rules.MASK_OPTIONAL,
 		RepeatCount: 1,
 		Elements: rules.ElementSetRule{
 			"01": {AcceptValues: []string{"2U", "FY", "NF"}},
@@ -215,7 +221,8 @@ var L2010ACRule = rules.SegmentSetRule{
 	},
 	4: rules.SegmentRule{
 		Name:        "REF",
-		Description: "PAY-TO ADDRESS 2010AB",
+		Description: "PAY-TO ADDRESS 2010AC",
+		Mask:        rules.MASK_REQUIRED,
 		RepeatCount: 1,
 		Elements: rules.ElementSetRule{
 			"01": {AcceptValues: []string{"EI"}},
@@ -312,6 +319,7 @@ var L2010BBRule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "NM1",
 		Description: "PAYER NAME",
+		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"01": {AcceptValues: []string{"PR"}},
 			"02": {AcceptValues: []string{"2"}},
@@ -565,6 +573,7 @@ var L2300Rule = rules.SegmentSetRule{
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {
+				Mask: rules.MASK_REQUIRED,
 				Composite: rules.ElementSetRule{
 					"01": {AcceptValues: []string{"ABK", "BK", "TQ"}},
 					"03": {Mask: rules.MASK_NOTUSED},
@@ -603,7 +612,7 @@ var L2300Rule = rules.SegmentSetRule{
 			"04": {
 				Mask: rules.MASK_OPTIONAL,
 				Composite: rules.ElementSetRule{
-					"01": {AcceptValues: []string{"ABF", "BF", "TQ"}},
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"ABF", "BF", "TQ"}},
 					"03": {Mask: rules.MASK_NOTUSED},
 					"04": {Mask: rules.MASK_NOTUSED},
 					"05": {Mask: rules.MASK_NOTUSED},
@@ -797,6 +806,7 @@ var L2310CRule = rules.SegmentSetRule{
 	},
 	1: rules.SegmentRule{
 		Name:        "N3",
+		Mask:        rules.MASK_REQUIRED,
 		Description: "FACILITY LOCATION ADDRESS",
 		Elements: rules.ElementSetRule{
 			"02": {Mask: rules.MASK_OPTIONAL},
@@ -805,6 +815,7 @@ var L2310CRule = rules.SegmentSetRule{
 	2: rules.SegmentRule{
 		Name:        "N4",
 		Description: "FACILITY LOCATION CITY/STATE/ZIP",
+		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"02": {Mask: rules.MASK_OPTIONAL},
 			"03": {Mask: rules.MASK_OPTIONAL},
@@ -912,6 +923,7 @@ var L2320Rule = rules.SegmentSetRule{
 	2: rules.SegmentRule{
 		Name:        "AMT",
 		Description: "COB PAYER PAID AMOUNT 2320",
+		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {AcceptValues: []string{"D"}},
 		},
@@ -919,6 +931,7 @@ var L2320Rule = rules.SegmentSetRule{
 	3: rules.SegmentRule{
 		Name:        "AMT",
 		Description: "REMAINING PATIENT LIABILITY 2320",
+		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {AcceptValues: []string{"EAF"}},
 		},
@@ -926,6 +939,7 @@ var L2320Rule = rules.SegmentSetRule{
 	4: rules.SegmentRule{
 		Name:        "AMT",
 		Description: "COD TOTAL NON COVERED 2320",
+		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {AcceptValues: []string{"A8"}},
 		},
@@ -933,6 +947,7 @@ var L2320Rule = rules.SegmentSetRule{
 	5: rules.SegmentRule{
 		Name:        "OI",
 		Description: "OTHER INSURANCE COVERAGE INFORMATION 2320",
+		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_NOTUSED},
 			"02": {Mask: rules.MASK_NOTUSED},
@@ -945,6 +960,7 @@ var L2320Rule = rules.SegmentSetRule{
 	6: rules.SegmentRule{
 		Name:        "MOA",
 		Description: "MEDICARE OUTPAIENT ADJUDICATION INFORMATION 2320",
+		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"08": {Mask: rules.MASK_NOTUSED},
 		},

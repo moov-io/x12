@@ -149,16 +149,9 @@ func GetRecordSize(line string, args ...string) int64 {
 	return int64(size)
 }
 
-func GetMask(mask, defaultMask string) string {
-	if mask == rules.MASK_NONE {
-		mask = defaultMask
-	}
-	return mask
-}
-
 func ValidateField(data any, spec rules.ElementRule, mask string) error {
 
-	mask = GetMask(spec.Mask, mask)
+	mask = rules.GetMask(spec.Mask, mask)
 	dataStr := strings.TrimSpace(fmt.Sprintf("%v", data))
 
 	switch mask {
@@ -202,7 +195,7 @@ func ReadCompositeField(input string, start int, spec rules.ElementRule, mask st
 	}
 
 	if data == "" {
-		if GetMask(spec.Mask, mask) == rules.MASK_NOTUSED || GetMask(spec.Mask, mask) == rules.MASK_OPTIONAL {
+		if rules.GetMask(spec.Mask, mask) == rules.MASK_NOTUSED || rules.GetMask(spec.Mask, mask) == rules.MASK_OPTIONAL {
 			return "", 0, nil
 		}
 		return "", 0, fmt.Errorf("doesn't enough input string")
@@ -236,7 +229,7 @@ func ReadField(input string, start int, spec rules.ElementRule, mask string, arg
 	}
 
 	if data == "" {
-		if GetMask(spec.Mask, mask) == rules.MASK_NOTUSED || GetMask(spec.Mask, mask) == rules.MASK_OPTIONAL {
+		if rules.GetMask(spec.Mask, mask) == rules.MASK_NOTUSED || rules.GetMask(spec.Mask, mask) == rules.MASK_OPTIONAL {
 			return "", 0, nil
 		}
 		return "", 0, fmt.Errorf("doesn't enough input string")

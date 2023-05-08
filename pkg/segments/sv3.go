@@ -27,7 +27,7 @@ func NewSV3(rule *rules.ElementSetRule) SegmentInterface {
 }
 
 type SV3 struct {
-	Field1  *DentalServiceProcedure   `index:"01" json:"01,omitempty" xml:"01,omitempty"`
+	Field1  *ServiceProcedure         `index:"01" json:"01,omitempty" xml:"01,omitempty"`
 	Field2  string                    `index:"02" json:"02,omitempty" xml:"02,omitempty"`
 	Field3  string                    `index:"03" json:"03,omitempty" xml:"03,omitempty"`
 	Field4  *DentalServiceCode        `index:"04" json:"04,omitempty" xml:"04,omitempty"`
@@ -75,15 +75,18 @@ func (r *SV3) Validate(rule *rules.ElementSetRule) error {
 
 		if i == 1 {
 			if r.Field1 != nil {
-				err = r.Field1.Validate(nil)
+				cRule := rule.Get(idx).Composite
+				err = r.Field1.Validate(&cRule)
 			}
 		} else if i == 4 {
 			if r.Field4 != nil {
-				err = r.Field4.Validate(nil)
+				cRule := rule.Get(idx).Composite
+				err = r.Field4.Validate(&cRule)
 			}
 		} else if i == 11 {
 			if r.Field11 != nil {
-				err = r.Field11.Validate(nil)
+				cRule := rule.Get(idx).Composite
+				err = r.Field11.Validate(&cRule)
 			}
 		} else {
 			err = util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask())
@@ -132,28 +135,47 @@ func (r *SV3) Parse(data string, args ...string) (int, error) {
 			compositeRule := rule.Composite
 
 			if i == 1 {
-				var composite DentalServiceProcedure
+				var composite ServiceProcedure
 				if compositeRule != nil {
 					composite.SetRule(&compositeRule)
 				}
-				if _, parseErr := composite.Parse(value, args...); parseErr == nil {
+
+				_, parseErr := composite.Parse(value, args...)
+				if parseErr == nil {
 					r.Field1 = &composite
 				}
+
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask())) && parseErr != nil {
+					return 0, fmt.Errorf("unable to parse plb's element (%s), %s", idx, parseErr.Error())
+				}
+
 			} else if i == 4 {
 				var composite DentalServiceCode
 				if compositeRule != nil {
 					composite.SetRule(&compositeRule)
 				}
-				if _, parseErr := composite.Parse(value, args...); parseErr == nil {
+
+				_, parseErr := composite.Parse(value, args...)
+				if parseErr == nil {
 					r.Field4 = &composite
+				}
+
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask())) && parseErr != nil {
+					return 0, fmt.Errorf("unable to parse plb's element (%s), %s", idx, parseErr.Error())
 				}
 			} else if i == 11 {
 				var composite DentalServiceCodePointer
 				if compositeRule != nil {
 					composite.SetRule(&compositeRule)
 				}
-				if _, parseErr := composite.Parse(value, args...); parseErr == nil {
+
+				_, parseErr := composite.Parse(value, args...)
+				if parseErr == nil {
 					r.Field11 = &composite
+				}
+
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask())) && parseErr != nil {
+					return 0, fmt.Errorf("unable to parse plb's element (%s), %s", idx, parseErr.Error())
 				}
 			} else {
 				r.SetFieldByIndex(idx, value)

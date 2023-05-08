@@ -644,6 +644,7 @@ var L2300Rule = rules.SegmentSetRule{
 		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"01": {
+				Mask: rules.MASK_REQUIRED,
 				Composite: rules.ElementSetRule{
 					"01": {AcceptValues: []string{"ABK", "BK"}},
 					"03": {Mask: rules.MASK_NOTUSED},
@@ -918,6 +919,7 @@ var L2300Rule = rules.SegmentSetRule{
 		RepeatCount: 2,
 		Elements: rules.ElementSetRule{
 			"01": {
+				Mask: rules.MASK_REQUIRED,
 				Composite: rules.ElementSetRule{
 					"01": {AcceptValues: []string{"BG"}},
 					"03": {Mask: rules.MASK_NOTUSED},
@@ -2308,6 +2310,7 @@ var L2010CARule = rules.SegmentSetRule{
 	6: rules.SegmentRule{
 		Name:        "PER",
 		Description: "CLAIM INFORMATION",
+		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"01": {AcceptValues: []string{"IC"}},
 			"02": {Mask: rules.MASK_OPTIONAL},

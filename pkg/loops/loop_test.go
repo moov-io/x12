@@ -16,6 +16,7 @@ var testSegRule = rules.SegmentSetRule{
 		Name:        "NM1",
 		Description: "SUBMITTER NAME-1000A",
 		RepeatCount: 1,
+		Mask:        rules.MASK_REQUIRED,
 		Elements: map[string]rules.ElementRule{
 			"01": {AcceptValues: []string{"41"}},
 			"02": {AcceptValues: []string{"1", "2"}},
@@ -30,6 +31,7 @@ var testSegRule = rules.SegmentSetRule{
 		Name:        "PER",
 		Description: "SUBMITTER EDI CONTACT INFORMATION-1000A",
 		RepeatCount: 1,
+		Mask:        rules.MASK_REQUIRED,
 		Elements: map[string]rules.ElementRule{
 			"01": {AcceptValues: []string{"IC"}},
 			"03": {AcceptValues: []string{"TE"}},
@@ -43,6 +45,7 @@ var testSegRule = rules.SegmentSetRule{
 
 var testRule = rules.LoopRule{
 	Name:     "1000A",
+	Mask:     rules.MASK_REQUIRED,
 	Segments: testSegRule,
 }
 
@@ -290,11 +293,13 @@ func TestLoop100A(t *testing.T) {
 
 		var rule = rules.LoopRule{
 			Name: "1000A",
+			Mask: rules.MASK_REQUIRED,
 			Segments: rules.SegmentSetRule{
 				0: rules.SegmentRule{
 					Name:        "NM1",
 					Description: "SUBMITTER NAME-1000A",
 					RepeatCount: 2,
+					Mask:        rules.MASK_REQUIRED,
 					Elements: map[string]rules.ElementRule{
 						"01": {AcceptValues: []string{"41"}},
 						"02": {AcceptValues: []string{"1", "2"}},
@@ -309,6 +314,7 @@ func TestLoop100A(t *testing.T) {
 					Name:        "PER",
 					Description: "SUBMITTER EDI CONTACT INFORMATION-1000A",
 					RepeatCount: 1,
+					Mask:        rules.MASK_REQUIRED,
 					Elements: map[string]rules.ElementRule{
 						"01": {AcceptValues: []string{"IC"}},
 						"03": {AcceptValues: []string{"TE"}},

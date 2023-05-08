@@ -17,7 +17,7 @@ import (
 
 func main() {
 
-	reader, err := os.Open(path.Join("examples", "example_5010_837d", "sample.txt"))
+	reader, err := os.Open(path.Join("examples", "example_5010_837d", "sample1.txt"))
 	if err != nil {
 		log.Fatal(err)
 	}
