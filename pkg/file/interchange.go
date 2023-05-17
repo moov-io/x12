@@ -47,6 +47,22 @@ func (r Interchange) getTerminator() string {
 	return util.SegmentTerminator
 }
 
+func (r *Interchange) GetTransactionControlNumbers() []string {
+	var numbers []string
+	for _, t := range r.FunctionalGroups {
+		numbers = append(numbers, t.GetTransactionControlNumbers()...)
+	}
+	return numbers
+}
+
+func (r *Interchange) GetGroupControlNumbers() []string {
+	var numbers []string
+	for _, t := range r.FunctionalGroups {
+		numbers = append(numbers, t.GetGroupControlNumber())
+	}
+	return numbers
+}
+
 func (r *Interchange) Validate(validateRule *rules.InterchangeRule) error {
 
 	changeRule := r.rule
@@ -119,6 +135,16 @@ func (r *Interchange) Validate(validateRule *rules.InterchangeRule) error {
 				return errors.New("has invalid number of functional groups")
 			}
 		}
+	}
+
+	// Validating transaction control numbers
+	if exist, number := util.GetDuplicateControlNumber(r.GetTransactionControlNumbers()); exist {
+		return fmt.Errorf("transaction control number(%s) should be unique per interchange", number)
+	}
+
+	// Validating group control numbers
+	if exist, number := util.GetDuplicateControlNumber(r.GetGroupControlNumbers()); exist {
+		return fmt.Errorf("group control number(%s) should be unique per interchange", number)
 	}
 
 	return nil

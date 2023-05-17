@@ -273,3 +273,15 @@ func GetElementSeparator(args ...string) string {
 
 	return separator
 }
+
+func GetDuplicateControlNumber(strSlice []string) (bool, string) {
+	keys := make(map[string]bool)
+	for _, item := range strSlice {
+		if _, value := keys[item]; !value {
+			keys[item] = true
+		} else {
+			return true, item
+		}
+	}
+	return false, ""
+}
