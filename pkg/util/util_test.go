@@ -77,4 +77,22 @@ func TestManageFieldByIndex(t *testing.T) {
 		got = GetFieldByIndex(&sample, "INDEX2")
 		require.Equal(t, 111, got)
 	})
+
+	t.Run("Checking duplicated control number", func(t *testing.T) {
+
+		numbers := []string{
+			"number1",
+			"number2",
+			"number3",
+		}
+
+		exist, got := GetDuplicateControlNumber(numbers)
+		require.Equal(t, false, exist)
+		require.Equal(t, "", got)
+
+		numbers = append(numbers, "number1")
+		exist, got = GetDuplicateControlNumber(numbers)
+		require.Equal(t, true, exist)
+		require.Equal(t, "number1", got)
+	})
 }
