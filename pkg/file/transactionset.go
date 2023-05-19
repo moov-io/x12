@@ -34,6 +34,10 @@ type TransactionSet struct {
 	rule *rules.TransactionRule
 }
 
+func (r *TransactionSet) GetTransactionControlNumber() string {
+	return r.ST.TransactionSetControlNumber
+}
+
 func (r *TransactionSet) Validate(transRule *rules.TransactionRule) error {
 
 	if transRule == nil && r.rule != nil {

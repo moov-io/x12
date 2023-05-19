@@ -30,6 +30,18 @@ type FunctionalGroup struct {
 	rule *rules.GroupRule
 }
 
+func (r *FunctionalGroup) GetTransactionControlNumbers() []string {
+	var numbers []string
+	for _, t := range r.TransactionSets {
+		numbers = append(numbers, t.GetTransactionControlNumber())
+	}
+	return numbers
+}
+
+func (r *FunctionalGroup) GetGroupControlNumber() string {
+	return r.GS.GroupControlNumber
+}
+
 func (r *FunctionalGroup) Validate(groupRule *rules.GroupRule) error {
 
 	if groupRule == nil && r.rule != nil {
