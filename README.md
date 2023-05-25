@@ -77,6 +77,8 @@ Each interchange will perform validation check based on specified rule
 Currently, we support following rules for :
 
 * [4010 820](./specs/rule_4010_820/rule.go) - ASC X12F 4010 820 (004010X061A1)
+* [4010 835](./specs/rule_4010_835/rule.go) - ASC X12F 4010 825 (004010X091A1)
+* [5010 835](./specs/rule_5010_835/rule.go) - ASC X12N 5010 835 (005010X221A1)
 * [5010 837d](./specs/rule_5010_837d/rule.go) - ASC X12N 5010 837 (005010X224A2)
 * [5010 837p](./specs/rule_5010_8837p/rule.go) - ASC X12N 5010 837 (005010X222A1)
 * [STP 820](./specs/rule_stp_820/rule.go) - ASC X12F STP 820 (004010STP820)
