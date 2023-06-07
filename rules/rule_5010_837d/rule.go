@@ -1619,11 +1619,22 @@ var L2430Rule = rules.SegmentSetRule{
 		Description: "LINE ADJUDICATION INFORMATION 2430",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
-			"01": {Mask: rules.MASK_REQUIRED},
-			"02": {Mask: rules.MASK_REQUIRED},
-			"03": {Mask: rules.MASK_REQUIRED},
-			"04": {Mask: rules.MASK_NOTUSED},
-			"05": {Mask: rules.MASK_REQUIRED},
+			"01": {Mask: rules.MASK_OPTIONAL},
+			"02": {Mask: rules.MASK_OPTIONAL},
+			"03": {
+				Mask: rules.MASK_OPTIONAL,
+				Composite: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"AD", "ER"}},
+					"02": {Mask: rules.MASK_OPTIONAL},
+					"03": {Mask: rules.MASK_OPTIONAL},
+					"04": {Mask: rules.MASK_OPTIONAL},
+					"05": {Mask: rules.MASK_OPTIONAL},
+					"06": {Mask: rules.MASK_OPTIONAL},
+					"07": {Mask: rules.MASK_OPTIONAL},
+				},
+			},
+			"04": {Mask: rules.MASK_OPTIONAL},
+			"05": {Mask: rules.MASK_OPTIONAL},
 			"06": {Mask: rules.MASK_OPTIONAL},
 		},
 	},
@@ -1750,6 +1761,118 @@ var L2010CARule = rules.SegmentSetRule{
 	},
 }
 
+var L2300Composite = rules.LoopSetRule{
+	0: {
+		Segments:    L2310ARule,
+		Mask:        rules.MASK_OPTIONAL,
+		RepeatCount: 2,
+		Name:        "2310A",
+	},
+	1: {
+		Segments: L2310BRule,
+		Mask:     rules.MASK_OPTIONAL,
+		Name:     "2310B",
+	},
+	2: {
+		Segments: L2310CRule,
+		Mask:     rules.MASK_OPTIONAL,
+		Name:     "2310C",
+	},
+	3: {
+		Segments: L2310DRule,
+		Mask:     rules.MASK_OPTIONAL,
+		Name:     "2310D",
+	},
+	4: {
+		Segments: L2310ERule,
+		Mask:     rules.MASK_OPTIONAL,
+		Name:     "2310E",
+	},
+	5: {
+		Segments:    L2320Rule,
+		Mask:        rules.MASK_OPTIONAL,
+		RepeatCount: 10,
+		Name:        "2320",
+		Composite: rules.LoopSetRule{
+			0: {
+				Segments: L2330ARule,
+				Mask:     rules.MASK_REQUIRED,
+				Name:     "2330A",
+			},
+			1: {
+				Segments: L2330BRule,
+				Mask:     rules.MASK_REQUIRED,
+				Name:     "2330B",
+			},
+			2: {
+				Segments:    L2330CRule,
+				Mask:        rules.MASK_OPTIONAL,
+				RepeatCount: 2,
+				Name:        "2330C",
+			},
+			3: {
+				Segments: L2330DRule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "2330D",
+			},
+			4: {
+				Segments: L2330ERule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "2330E",
+			},
+			5: {
+				Segments: L2330FRule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "2330F",
+			},
+			6: {
+				Segments: L2330GRule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "2330G",
+			},
+			7: {
+				Segments: L2330HRule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "2330H",
+			},
+		},
+	},
+	6: {
+		Segments:    L2400Rule,
+		Mask:        rules.MASK_OPTIONAL,
+		RepeatCount: 50,
+		Name:        "2400",
+		Composite: rules.LoopSetRule{
+			0: {
+				Segments: L2420ARule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "2420A",
+			},
+			1: {
+				Segments: L2420BRule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "2420B",
+			},
+			2: {
+				Segments: L2420CRule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "2420C",
+			},
+			3: {
+				Segments: L2420DRule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "2420D",
+			},
+			4: {
+				Segments:    L2430Rule,
+				Mask:        rules.MASK_OPTIONAL,
+				RepeatCount: 15,
+				Name:        "2430",
+			},
+		},
+	},
+}
+
 var TransactionSetRule = rules.TransactionRule{
 	ST: rules.SegmentRule{
 		Name:        "ST",
@@ -1832,117 +1955,7 @@ var TransactionSetRule = rules.TransactionRule{
 							Mask:        rules.MASK_OPTIONAL,
 							RepeatCount: 100,
 							Name:        "2300",
-							Composite: rules.LoopSetRule{
-								0: {
-									Segments:    L2310ARule,
-									Mask:        rules.MASK_OPTIONAL,
-									RepeatCount: 2,
-									Name:        "2310A",
-								},
-								1: {
-									Segments: L2310BRule,
-									Mask:     rules.MASK_OPTIONAL,
-									Name:     "2310B",
-								},
-								2: {
-									Segments: L2310CRule,
-									Mask:     rules.MASK_OPTIONAL,
-									Name:     "2310C",
-								},
-								3: {
-									Segments: L2310DRule,
-									Mask:     rules.MASK_OPTIONAL,
-									Name:     "2310D",
-								},
-								4: {
-									Segments: L2310ERule,
-									Mask:     rules.MASK_OPTIONAL,
-									Name:     "2310E",
-								},
-								5: {
-									Segments:    L2320Rule,
-									Mask:        rules.MASK_OPTIONAL,
-									RepeatCount: 10,
-									Name:        "2320",
-									Composite: rules.LoopSetRule{
-										0: {
-											Segments: L2330ARule,
-											Mask:     rules.MASK_REQUIRED,
-											Name:     "2330A",
-										},
-										1: {
-											Segments: L2330BRule,
-											Mask:     rules.MASK_REQUIRED,
-											Name:     "2330B",
-										},
-										2: {
-											Segments:    L2330CRule,
-											Mask:        rules.MASK_OPTIONAL,
-											RepeatCount: 2,
-											Name:        "2330C",
-										},
-										3: {
-											Segments: L2330DRule,
-											Mask:     rules.MASK_OPTIONAL,
-											Name:     "2330D",
-										},
-										4: {
-											Segments: L2330ERule,
-											Mask:     rules.MASK_OPTIONAL,
-											Name:     "2330E",
-										},
-										5: {
-											Segments: L2330FRule,
-											Mask:     rules.MASK_OPTIONAL,
-											Name:     "2330F",
-										},
-										6: {
-											Segments: L2330GRule,
-											Mask:     rules.MASK_OPTIONAL,
-											Name:     "2330G",
-										},
-										7: {
-											Segments: L2330HRule,
-											Mask:     rules.MASK_OPTIONAL,
-											Name:     "2330H",
-										},
-									},
-								},
-								6: {
-									Segments:    L2400Rule,
-									Mask:        rules.MASK_OPTIONAL,
-									RepeatCount: 50,
-									Name:        "2400",
-									Composite: rules.LoopSetRule{
-										0: {
-											Segments: L2420ARule,
-											Mask:     rules.MASK_OPTIONAL,
-											Name:     "2420A",
-										},
-										1: {
-											Segments: L2420BRule,
-											Mask:     rules.MASK_OPTIONAL,
-											Name:     "2420B",
-										},
-										2: {
-											Segments: L2420CRule,
-											Mask:     rules.MASK_OPTIONAL,
-											Name:     "2420C",
-										},
-										3: {
-											Segments: L2420DRule,
-											Mask:     rules.MASK_OPTIONAL,
-											Name:     "2420D",
-										},
-										4: {
-											Segments:    L2430Rule,
-											Mask:        rules.MASK_OPTIONAL,
-											RepeatCount: 15,
-											Name:        "2430",
-										},
-									},
-								},
-							},
+							Composite:   L2300Composite,
 						},
 						3: {
 							Segments: L2000CRule,
@@ -1959,117 +1972,7 @@ var TransactionSetRule = rules.TransactionRule{
 									Mask:        rules.MASK_REQUIRED,
 									RepeatCount: 100,
 									Name:        "2300",
-									Composite: rules.LoopSetRule{
-										0: {
-											Segments:    L2310ARule,
-											Mask:        rules.MASK_OPTIONAL,
-											RepeatCount: 2,
-											Name:        "2310A",
-										},
-										1: {
-											Segments: L2310BRule,
-											Mask:     rules.MASK_OPTIONAL,
-											Name:     "2310B",
-										},
-										2: {
-											Segments: L2310CRule,
-											Mask:     rules.MASK_OPTIONAL,
-											Name:     "2310C",
-										},
-										3: {
-											Segments: L2310DRule,
-											Mask:     rules.MASK_OPTIONAL,
-											Name:     "2310D",
-										},
-										4: {
-											Segments: L2310ERule,
-											Mask:     rules.MASK_OPTIONAL,
-											Name:     "2310E",
-										},
-										5: {
-											Segments:    L2320Rule,
-											Mask:        rules.MASK_OPTIONAL,
-											RepeatCount: 10,
-											Name:        "2320",
-											Composite: rules.LoopSetRule{
-												0: {
-													Segments: L2330ARule,
-													Mask:     rules.MASK_REQUIRED,
-													Name:     "2330A",
-												},
-												1: {
-													Segments: L2330BRule,
-													Mask:     rules.MASK_REQUIRED,
-													Name:     "2330B",
-												},
-												2: {
-													Segments:    L2330CRule,
-													Mask:        rules.MASK_OPTIONAL,
-													RepeatCount: 2,
-													Name:        "2330C",
-												},
-												3: {
-													Segments: L2330DRule,
-													Mask:     rules.MASK_OPTIONAL,
-													Name:     "2330D",
-												},
-												4: {
-													Segments: L2330ERule,
-													Mask:     rules.MASK_OPTIONAL,
-													Name:     "2330E",
-												},
-												5: {
-													Segments: L2330FRule,
-													Mask:     rules.MASK_OPTIONAL,
-													Name:     "2330F",
-												},
-												6: {
-													Segments: L2330GRule,
-													Mask:     rules.MASK_OPTIONAL,
-													Name:     "2330G",
-												},
-												7: {
-													Segments: L2330HRule,
-													Mask:     rules.MASK_OPTIONAL,
-													Name:     "2330H",
-												},
-											},
-										},
-										6: {
-											Segments:    L2400Rule,
-											Mask:        rules.MASK_OPTIONAL,
-											RepeatCount: 50,
-											Name:        "2400",
-											Composite: rules.LoopSetRule{
-												0: {
-													Segments: L2420ARule,
-													Mask:     rules.MASK_OPTIONAL,
-													Name:     "2420A",
-												},
-												1: {
-													Segments: L2420BRule,
-													Mask:     rules.MASK_OPTIONAL,
-													Name:     "2420B",
-												},
-												2: {
-													Segments: L2420CRule,
-													Mask:     rules.MASK_OPTIONAL,
-													Name:     "2420C",
-												},
-												3: {
-													Segments: L2420DRule,
-													Mask:     rules.MASK_OPTIONAL,
-													Name:     "2420D",
-												},
-												4: {
-													Segments:    L2430Rule,
-													Mask:        rules.MASK_OPTIONAL,
-													RepeatCount: 15,
-													Name:        "2430",
-												},
-											},
-										},
-									},
+									Composite:   L2300Composite,
 								},
 							},
 						},
@@ -2107,13 +2010,22 @@ var InterchangeRule = rules.InterchangeRule{
 		Description: "INTERCHANGE CONTROL HEADER",
 		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
-			"01": {AcceptValues: []string{"00", "03"}},
-			"03": {AcceptValues: []string{"00", "01"}},
-			"05": {AcceptValues: []string{"01", "14", "20", "27", "28", "29", "30", "33", "ZZ"}},
-			"07": {AcceptValues: []string{"01", "14", "20", "27", "28", "29", "30", "33", "ZZ"}},
-			"12": {AcceptValues: []string{"00501"}},
-			"14": {AcceptValues: []string{"0", "1"}},
-			"15": {AcceptValues: []string{"P", "T"}},
+			"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"00", "03"}},
+			"02": {Mask: rules.MASK_REQUIRED},
+			"03": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"00", "01"}},
+			"04": {Mask: rules.MASK_REQUIRED},
+			"05": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"01", "14", "20", "27", "28", "29", "30", "33", "ZZ"}},
+			"06": {Mask: rules.MASK_REQUIRED},
+			"07": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"01", "14", "20", "27", "28", "29", "30", "33", "ZZ"}},
+			"08": {Mask: rules.MASK_REQUIRED},
+			"09": {Mask: rules.MASK_REQUIRED},
+			"10": {Mask: rules.MASK_REQUIRED},
+			"11": {Mask: rules.MASK_REQUIRED},
+			"12": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"00501"}},
+			"13": {Mask: rules.MASK_REQUIRED},
+			"14": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"0", "1"}},
+			"15": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"P", "T"}},
+			"16": {Mask: rules.MASK_REQUIRED},
 		},
 	},
 	IEA: rules.SegmentRule{

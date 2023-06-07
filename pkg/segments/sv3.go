@@ -146,7 +146,7 @@ func (r *SV3) Parse(data string, args ...string) (int, error) {
 				}
 
 				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask())) && parseErr != nil {
-					return 0, fmt.Errorf("unable to parse plb's element (%s), %s", idx, parseErr.Error())
+					return 0, fmt.Errorf("unable to parse sv3's element (%s), %s", idx, parseErr.Error())
 				}
 
 			} else if i == 4 {
@@ -161,7 +161,7 @@ func (r *SV3) Parse(data string, args ...string) (int, error) {
 				}
 
 				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask())) && parseErr != nil {
-					return 0, fmt.Errorf("unable to parse plb's element (%s), %s", idx, parseErr.Error())
+					return 0, fmt.Errorf("unable to parse sv3's element (%s), %s", idx, parseErr.Error())
 				}
 			} else if i == 11 {
 				var composite DentalServiceCodePointer
@@ -175,7 +175,7 @@ func (r *SV3) Parse(data string, args ...string) (int, error) {
 				}
 
 				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask())) && parseErr != nil {
-					return 0, fmt.Errorf("unable to parse plb's element (%s), %s", idx, parseErr.Error())
+					return 0, fmt.Errorf("unable to parse sv3's element (%s), %s", idx, parseErr.Error())
 				}
 			} else {
 				r.SetFieldByIndex(idx, value)

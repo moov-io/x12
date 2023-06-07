@@ -47,6 +47,16 @@ func TestForCreateSegment(t *testing.T) {
 	require.NotNil(t, seg)
 	require.Equal(t, "CR1", seg.Name())
 
+	seg, err = CreateSegment("CR6", nil)
+	require.NoError(t, err)
+	require.NotNil(t, seg)
+	require.Equal(t, "CR6", seg.Name())
+
+	seg, err = CreateSegment("CRC", nil)
+	require.NoError(t, err)
+	require.NotNil(t, seg)
+	require.Equal(t, "CRC", seg.Name())
+
 	seg, err = CreateSegment("DMG", nil)
 	require.NoError(t, err)
 	require.NotNil(t, seg)
@@ -217,6 +227,16 @@ func TestForCreateSegment(t *testing.T) {
 	require.NotNil(t, seg)
 	require.Equal(t, "SV1", seg.Name())
 
+	seg, err = CreateSegment("SV2", nil)
+	require.NoError(t, err)
+	require.NotNil(t, seg)
+	require.Equal(t, "SV2", seg.Name())
+
+	seg, err = CreateSegment("SV3", nil)
+	require.NoError(t, err)
+	require.NotNil(t, seg)
+	require.Equal(t, "SV3", seg.Name())
+
 	seg, err = CreateSegment("SV5", nil)
 	require.NoError(t, err)
 	require.NotNil(t, seg)
@@ -251,11 +271,6 @@ func TestForCreateSegment(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, seg)
 	require.Equal(t, "DN2", seg.Name())
-
-	seg, err = CreateSegment("SV3", nil)
-	require.NoError(t, err)
-	require.NotNil(t, seg)
-	require.Equal(t, "SV3", seg.Name())
 
 	seg, err = CreateSegment("TOO", nil)
 	require.NoError(t, err)

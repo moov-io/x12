@@ -11,7 +11,7 @@ import "github.com/moov-io/x12/pkg/rules"
 var L1000ARule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "N1",
-		Description: "PREMIUM RECEIVER'S NAME",
+		Description: "PREMIUM RECEIVER'S NAME - 1000A",
 		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"PE"}},
@@ -24,7 +24,7 @@ var L1000ARule = rules.SegmentSetRule{
 	},
 	1: rules.SegmentRule{
 		Name:        "N2",
-		Description: "PREMIUM RECEIVER ADDITIONAL NAME",
+		Description: "PREMIUM RECEIVER ADDITIONAL NAME - 1000A",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED},
@@ -33,7 +33,7 @@ var L1000ARule = rules.SegmentSetRule{
 	},
 	2: rules.SegmentRule{
 		Name:        "N3",
-		Description: "PREMIUM RECEIVER'S ADDRESS",
+		Description: "PREMIUM RECEIVER'S ADDRESS - 1000A",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED},
@@ -42,7 +42,7 @@ var L1000ARule = rules.SegmentSetRule{
 	},
 	3: rules.SegmentRule{
 		Name:        "N4",
-		Description: "PREMIUM RECEIVER'S CITY",
+		Description: "PREMIUM RECEIVER'S CITY - 1000A",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_OPTIONAL},
@@ -58,7 +58,7 @@ var L1000ARule = rules.SegmentSetRule{
 var L1000BRule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "N1",
-		Description: "PREMIUM PAYER'S NAME",
+		Description: "PREMIUM PAYER'S NAME - 1000A",
 		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"PR"}},
@@ -71,7 +71,7 @@ var L1000BRule = rules.SegmentSetRule{
 	},
 	1: rules.SegmentRule{
 		Name:        "N2",
-		Description: "PREMIUM PAYER ADDITIONAL NAME",
+		Description: "PREMIUM PAYER ADDITIONAL NAME - 1000A",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED},
@@ -80,7 +80,7 @@ var L1000BRule = rules.SegmentSetRule{
 	},
 	2: rules.SegmentRule{
 		Name:        "N3",
-		Description: "PREMIUM PAYER'S ADDRESS",
+		Description: "PREMIUM PAYER'S ADDRESS - 1000A",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED},
@@ -89,7 +89,7 @@ var L1000BRule = rules.SegmentSetRule{
 	},
 	3: rules.SegmentRule{
 		Name:        "N4",
-		Description: "PREMIUM PAYER'S CITY",
+		Description: "PREMIUM PAYER'S CITY - 1000A",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_OPTIONAL},
@@ -102,7 +102,7 @@ var L1000BRule = rules.SegmentSetRule{
 	},
 	4: rules.SegmentRule{
 		Name:        "PER",
-		Description: "PREMIUM PAYER'S ADMINISTRATIVE CONTACT",
+		Description: "PREMIUM PAYER'S ADMINISTRATIVE CONTACT - 1000A",
 		RepeatCount: rules.GREATER_THAN_ONE,
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
@@ -121,7 +121,7 @@ var L1000BRule = rules.SegmentSetRule{
 var L2000ARule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "ENT",
-		Description: "ORGANIZATION SUMMARY REMITTANCE",
+		Description: "ORGANIZATION SUMMARY REMITTANCE - 2000A",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_OPTIONAL},
@@ -135,7 +135,7 @@ var L2000ARule = rules.SegmentSetRule{
 var L2300ARule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "RMR",
-		Description: "ORGANIZATION SUMMARY REMITTANCE DETAIL",
+		Description: "ORGANIZATION SUMMARY REMITTANCE DETAIL - 2300A",
 		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"11", "1L", "CT", "IK"}},
@@ -150,7 +150,7 @@ var L2300ARule = rules.SegmentSetRule{
 var L2310ARule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "IT1",
-		Description: "SUMMARY LINE ITEM",
+		Description: "SUMMARY LINE ITEM - 2310A",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED},
@@ -161,7 +161,7 @@ var L2310ARule = rules.SegmentSetRule{
 var L2315ARule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "SLN",
-		Description: "MEMBER COUNT",
+		Description: "MEMBER COUNT - 2315A",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED},
@@ -176,7 +176,7 @@ var L2315ARule = rules.SegmentSetRule{
 var L2320ARule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "ADX",
-		Description: "ORGANIZATION SUMMARY REMITTANCE LEVEL ADJUSTMENT",
+		Description: "ORGANIZATION SUMMARY REMITTANCE LEVEL ADJUSTMENT - 2320A",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED},
@@ -188,7 +188,7 @@ var L2320ARule = rules.SegmentSetRule{
 var L2320BRule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "ADX",
-		Description: "ORGANIZATION SUMMARY REMITTANCE LEVEL ADJUSTMENT",
+		Description: "ORGANIZATION SUMMARY REMITTANCE LEVEL ADJUSTMENT - 2320B",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED},
@@ -200,7 +200,7 @@ var L2320BRule = rules.SegmentSetRule{
 var L2000BRule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "ENT",
-		Description: "INDIVIDUAL REMITTANCE",
+		Description: "INDIVIDUAL REMITTANCE - 2000B",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_OPTIONAL},
@@ -214,7 +214,7 @@ var L2000BRule = rules.SegmentSetRule{
 var L2100BRule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "NM1",
-		Description: "INDIVIDUAL NAME",
+		Description: "INDIVIDUAL NAME - 2100B",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"EY", "QE"}},
@@ -233,7 +233,7 @@ var L2100BRule = rules.SegmentSetRule{
 var L2300BRule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "RMR",
-		Description: "ORGANIZATION SUMMARY REMITTANCE DETAIL",
+		Description: "ORGANIZATION SUMMARY REMITTANCE DETAIL - 2300B",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"11", "9J", "AZ", "B7", "CT", "ID", "IG", "IK", "KW"}},
@@ -245,7 +245,7 @@ var L2300BRule = rules.SegmentSetRule{
 	},
 	1: rules.SegmentRule{
 		Name:        "DTM",
-		Description: "INDIVIDUAL COVERAGE PERIOD",
+		Description: "INDIVIDUAL COVERAGE PERIOD - 2300B",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"582"}},
@@ -440,16 +440,24 @@ var GroupRule = rules.GroupRule{
 		Description: "FUNCTIONAL GROUP HEADER",
 		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
-			"01": {AcceptValues: []string{"RA"}},
-			"07": {AcceptValues: []string{"X"}},
-			"08": {AcceptValues: []string{"004010X061A1"}},
+			"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"RA"}},
+			"02": {Mask: rules.MASK_REQUIRED},
+			"03": {Mask: rules.MASK_REQUIRED},
+			"04": {Mask: rules.MASK_REQUIRED},
+			"05": {Mask: rules.MASK_REQUIRED},
+			"06": {Mask: rules.MASK_REQUIRED},
+			"07": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"X"}},
+			"08": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"004010X061A1"}},
 		},
 	},
 	GE: rules.SegmentRule{
 		Name:        "GE",
 		Description: "FUNCTIONAL GROUP TRAILER",
 		Mask:        rules.MASK_REQUIRED,
-		Elements:    rules.ElementSetRule{},
+		Elements: rules.ElementSetRule{
+			"01": {Mask: rules.MASK_REQUIRED},
+			"02": {Mask: rules.MASK_REQUIRED},
+		},
 	},
 	Trans: TransactionSetRule,
 }
@@ -461,21 +469,32 @@ var InterchangeRule = rules.InterchangeRule{
 		Description: "INTERCHANGE CONTROL HEADER",
 		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
-			"01": {AcceptValues: []string{"00", "03"}},
-			"03": {AcceptValues: []string{"00", "01"}},
-			"05": {AcceptValues: []string{"01", "14", "20", "27", "28", "29", "30", "33", "ZZ"}},
-			"07": {AcceptValues: []string{"01", "14", "20", "27", "28", "29", "30", "33", "ZZ"}},
-			"11": {AcceptValues: []string{"U"}},
-			"12": {AcceptValues: []string{"00401"}},
-			"14": {AcceptValues: []string{"0", "1"}},
-			"15": {AcceptValues: []string{"P", "T"}},
+			"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"00", "03"}},
+			"02": {Mask: rules.MASK_REQUIRED},
+			"03": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"00", "01"}},
+			"04": {Mask: rules.MASK_REQUIRED},
+			"05": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"01", "14", "20", "27", "28", "29", "30", "33", "ZZ"}},
+			"06": {Mask: rules.MASK_REQUIRED},
+			"07": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"01", "14", "20", "27", "28", "29", "30", "33", "ZZ"}},
+			"08": {Mask: rules.MASK_REQUIRED},
+			"09": {Mask: rules.MASK_REQUIRED},
+			"10": {Mask: rules.MASK_REQUIRED},
+			"11": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"U"}},
+			"12": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"00401"}},
+			"13": {Mask: rules.MASK_REQUIRED},
+			"14": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"0", "1"}},
+			"15": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"P", "T"}},
+			"16": {Mask: rules.MASK_REQUIRED},
 		},
 	},
 	IEA: rules.SegmentRule{
 		Name:        "IEA",
 		Description: "INTERCHANGE CONTROL TRAILER",
 		Mask:        rules.MASK_REQUIRED,
-		Elements:    rules.ElementSetRule{},
+		Elements: rules.ElementSetRule{
+			"01": {Mask: rules.MASK_REQUIRED},
+			"02": {Mask: rules.MASK_REQUIRED},
+		},
 	},
 	Group: GroupRule,
 }
