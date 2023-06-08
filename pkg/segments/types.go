@@ -64,6 +64,8 @@ var (
 	_ SegmentInterface = (*CLP)(nil)
 	_ SegmentInterface = (*CN1)(nil)
 	_ SegmentInterface = (*CR1)(nil)
+	_ SegmentInterface = (*CR6)(nil)
+	_ SegmentInterface = (*CRC)(nil)
 	_ SegmentInterface = (*CUR)(nil)
 	_ SegmentInterface = (*DMG)(nil)
 	_ SegmentInterface = (*DN1)(nil)
@@ -102,6 +104,7 @@ var (
 	_ SegmentInterface = (*SE)(nil)
 	_ SegmentInterface = (*ST)(nil)
 	_ SegmentInterface = (*SV1)(nil)
+	_ SegmentInterface = (*SV2)(nil)
 	_ SegmentInterface = (*SV3)(nil)
 	_ SegmentInterface = (*SV5)(nil)
 	_ SegmentInterface = (*SVC)(nil)
@@ -124,6 +127,8 @@ var (
 		"CLP": func(rule *rules.ElementSetRule) SegmentInterface { return NewCLP(rule) },
 		"CN1": func(rule *rules.ElementSetRule) SegmentInterface { return NewCN1(rule) },
 		"CR1": func(rule *rules.ElementSetRule) SegmentInterface { return NewCR1(rule) },
+		"CR6": func(rule *rules.ElementSetRule) SegmentInterface { return NewCR6(rule) },
+		"CRC": func(rule *rules.ElementSetRule) SegmentInterface { return NewCRC(rule) },
 		"CUR": func(rule *rules.ElementSetRule) SegmentInterface { return NewCUR(rule) },
 		"DMG": func(rule *rules.ElementSetRule) SegmentInterface { return NewDMG(rule) },
 		"DN1": func(rule *rules.ElementSetRule) SegmentInterface { return NewDN1(rule) },
@@ -162,6 +167,7 @@ var (
 		"SE":  func(rule *rules.ElementSetRule) SegmentInterface { return NewSE(rule) },
 		"ST":  func(rule *rules.ElementSetRule) SegmentInterface { return NewST(rule) },
 		"SV1": func(rule *rules.ElementSetRule) SegmentInterface { return NewSV1(rule) },
+		"SV2": func(rule *rules.ElementSetRule) SegmentInterface { return NewSV2(rule) },
 		"SV3": func(rule *rules.ElementSetRule) SegmentInterface { return NewSV3(rule) },
 		"SV5": func(rule *rules.ElementSetRule) SegmentInterface { return NewSV5(rule) },
 		"SVC": func(rule *rules.ElementSetRule) SegmentInterface { return NewSVC(rule) },

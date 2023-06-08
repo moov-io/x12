@@ -11,7 +11,7 @@ import "github.com/moov-io/x12/pkg/rules"
 var L1000ARule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "N1",
-		Description: "PAYER IDENTIFICATION",
+		Description: "PAYER IDENTIFICATION - 1000A",
 		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"PR"}},
@@ -24,7 +24,7 @@ var L1000ARule = rules.SegmentSetRule{
 	},
 	1: rules.SegmentRule{
 		Name:        "N3",
-		Description: "PAYER ADDRESS",
+		Description: "PAYER ADDRESS - 1000A",
 		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED},
@@ -33,7 +33,7 @@ var L1000ARule = rules.SegmentSetRule{
 	},
 	2: rules.SegmentRule{
 		Name:        "N4",
-		Description: "PAYER CITY",
+		Description: "PAYER CITY - 1000A",
 		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED},
@@ -46,7 +46,7 @@ var L1000ARule = rules.SegmentSetRule{
 	},
 	3: rules.SegmentRule{
 		Name:        "REF",
-		Description: "ADDITIONAL PAYER IDENTIFICATION",
+		Description: "ADDITIONAL PAYER IDENTIFICATION - 1000A",
 		Mask:        rules.MASK_OPTIONAL,
 		RepeatCount: 4,
 		Elements: rules.ElementSetRule{
@@ -57,7 +57,7 @@ var L1000ARule = rules.SegmentSetRule{
 	},
 	4: rules.SegmentRule{
 		Name:        "PER",
-		Description: "PAYER CONTACT INFORMATION",
+		Description: "PAYER CONTACT INFORMATION - 1000A",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"CX"}},
@@ -75,7 +75,7 @@ var L1000ARule = rules.SegmentSetRule{
 var L1000BRule = rules.SegmentSetRule{
 	0: rules.SegmentRule{
 		Name:        "N1",
-		Description: "PAYEE IDENTIFICATION",
+		Description: "PAYEE IDENTIFICATION - 1000B",
 		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"PE"}},
@@ -88,7 +88,7 @@ var L1000BRule = rules.SegmentSetRule{
 	},
 	1: rules.SegmentRule{
 		Name:        "N3",
-		Description: "PAYEE ADDRESS",
+		Description: "PAYEE ADDRESS - 1000B",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED},
@@ -97,7 +97,7 @@ var L1000BRule = rules.SegmentSetRule{
 	},
 	2: rules.SegmentRule{
 		Name:        "N4",
-		Description: "PAYEE CITY",
+		Description: "PAYEE CITY - 1000B",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED},
@@ -110,7 +110,7 @@ var L1000BRule = rules.SegmentSetRule{
 	},
 	3: rules.SegmentRule{
 		Name:        "REF",
-		Description: "ADDITIONAL PAYER IDENTIFICATION",
+		Description: "ADDITIONAL PAYER IDENTIFICATION - 1000B",
 		Mask:        rules.MASK_OPTIONAL,
 		RepeatCount: rules.GREATER_THAN_ONE,
 		Elements: rules.ElementSetRule{
@@ -510,7 +510,7 @@ var L2110Rule = rules.SegmentSetRule{
 	},
 	1: rules.SegmentRule{
 		Name:        "DTM",
-		Description: "SERVICE DATE - 2100",
+		Description: "SERVICE DATE - 2110",
 		Mask:        rules.MASK_OPTIONAL,
 		RepeatCount: 3,
 		Elements: rules.ElementSetRule{
@@ -747,16 +747,24 @@ var GroupRule = rules.GroupRule{
 		Description: "FUNCTIONAL GROUP HEADER",
 		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
-			"01": {AcceptValues: []string{"HP"}},
-			"07": {AcceptValues: []string{"X"}},
-			"08": {AcceptValues: []string{"004010X091A1"}},
+			"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"HP"}},
+			"02": {Mask: rules.MASK_REQUIRED},
+			"03": {Mask: rules.MASK_REQUIRED},
+			"04": {Mask: rules.MASK_REQUIRED},
+			"05": {Mask: rules.MASK_REQUIRED},
+			"06": {Mask: rules.MASK_REQUIRED},
+			"07": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"X"}},
+			"08": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"004010X091A1"}},
 		},
 	},
 	GE: rules.SegmentRule{
 		Name:        "GE",
 		Description: "FUNCTIONAL GROUP TRAILER",
 		Mask:        rules.MASK_REQUIRED,
-		Elements:    rules.ElementSetRule{},
+		Elements: rules.ElementSetRule{
+			"01": {Mask: rules.MASK_REQUIRED},
+			"02": {Mask: rules.MASK_REQUIRED},
+		},
 	},
 	Trans: TransactionSetRule,
 }
@@ -768,21 +776,32 @@ var InterchangeRule = rules.InterchangeRule{
 		Description: "INTERCHANGE CONTROL HEADER",
 		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
-			"01": {AcceptValues: []string{"00", "03"}},
-			"03": {AcceptValues: []string{"00", "01"}},
-			"05": {AcceptValues: []string{"01", "14", "20", "27", "28", "29", "30", "33", "ZZ"}},
-			"07": {AcceptValues: []string{"01", "14", "20", "27", "28", "29", "30", "33", "ZZ"}},
-			"11": {AcceptValues: []string{"U"}},
-			"12": {AcceptValues: []string{"00401"}},
-			"14": {AcceptValues: []string{"0", "1"}},
-			"15": {AcceptValues: []string{"P", "T"}},
+			"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"00", "03"}},
+			"02": {Mask: rules.MASK_REQUIRED},
+			"03": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"00", "01"}},
+			"04": {Mask: rules.MASK_REQUIRED},
+			"05": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"01", "14", "20", "27", "28", "29", "30", "33", "ZZ"}},
+			"06": {Mask: rules.MASK_REQUIRED},
+			"07": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"01", "14", "20", "27", "28", "29", "30", "33", "ZZ"}},
+			"08": {Mask: rules.MASK_REQUIRED},
+			"09": {Mask: rules.MASK_REQUIRED},
+			"10": {Mask: rules.MASK_REQUIRED},
+			"11": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"U"}},
+			"12": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"00401"}},
+			"13": {Mask: rules.MASK_REQUIRED},
+			"14": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"0", "1"}},
+			"15": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"P", "T"}},
+			"16": {Mask: rules.MASK_REQUIRED},
 		},
 	},
 	IEA: rules.SegmentRule{
 		Name:        "IEA",
 		Description: "INTERCHANGE CONTROL TRAILER",
 		Mask:        rules.MASK_REQUIRED,
-		Elements:    rules.ElementSetRule{},
+		Elements: rules.ElementSetRule{
+			"01": {Mask: rules.MASK_REQUIRED},
+			"02": {Mask: rules.MASK_REQUIRED},
+		},
 	},
 	Group: GroupRule,
 }
