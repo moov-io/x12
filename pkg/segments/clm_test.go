@@ -13,9 +13,7 @@ import (
 )
 
 func TestForCLM(t *testing.T) {
-
 	t.Run("parsing of clm segment", func(t *testing.T) {
-
 		seg := NewCLM(nil)
 
 		in := "CLM*1-1180*174***11:B:1*Y*A*Y*Y*P~"
@@ -54,7 +52,6 @@ func TestForCLM(t *testing.T) {
 	})
 
 	t.Run("encoding of clm segment", func(t *testing.T) {
-
 		seg := NewCLM(nil)
 
 		require.Equal(t, "CLM*********~", seg.String())
@@ -71,7 +68,6 @@ func TestForCLM(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of clm segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"03": {Mask: rules.MASK_NOTUSED},
 			"04": {Mask: rules.MASK_NOTUSED},
@@ -141,7 +137,6 @@ func TestForCLM(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of clm segment with specified rule (837d)", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"03": {Mask: rules.MASK_NOTUSED},
 			"04": {Mask: rules.MASK_NOTUSED},

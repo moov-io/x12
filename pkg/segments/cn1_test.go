@@ -12,9 +12,7 @@ import (
 )
 
 func TestForCN1(t *testing.T) {
-
 	t.Run("parsing of cn1 segment", func(t *testing.T) {
-
 		seg := NewCN1(nil)
 
 		in := "CN1*0019*00~"
@@ -46,7 +44,6 @@ func TestForCN1(t *testing.T) {
 	})
 
 	t.Run("encoding of cn1 segment", func(t *testing.T) {
-
 		seg := NewCN1(nil)
 
 		require.Equal(t, "CN1*~", seg.String())
@@ -61,7 +58,6 @@ func TestForCN1(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of cn1 segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"0019"}},
 			"02": {Mask: rules.MASK_OPTIONAL},

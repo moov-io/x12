@@ -11,9 +11,7 @@ import (
 )
 
 func TestScanner(t *testing.T) {
-
 	t.Run("testing scanner 1", func(t *testing.T) {
-
 		raw := `ISA SECTION1 IEA*~`
 
 		f := strings.NewReader(raw)
@@ -24,7 +22,6 @@ func TestScanner(t *testing.T) {
 	})
 
 	t.Run("testing scanner 2", func(t *testing.T) {
-
 		raw := `ISA SECTION1 
 ~ISA SECTION1*~`
 
@@ -36,7 +33,6 @@ func TestScanner(t *testing.T) {
 	})
 
 	t.Run("testing scanner 3", func(t *testing.T) {
-
 		raw := `ISA SECTION1 
 ~IEA SECTION1*~`
 
@@ -48,7 +44,6 @@ func TestScanner(t *testing.T) {
 	})
 
 	t.Run("testing scanner 4", func(t *testing.T) {
-
 		raw := `ERROR ISA SECTION1 
 ~IEA SECTION1*~`
 

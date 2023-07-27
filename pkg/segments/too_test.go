@@ -12,9 +12,7 @@ import (
 )
 
 func TestForTOO(t *testing.T) {
-
 	t.Run("parsing of too segment", func(t *testing.T) {
-
 		seg := NewTOO(nil)
 
 		in := "TOO***11:B:1~"
@@ -41,7 +39,6 @@ func TestForTOO(t *testing.T) {
 	})
 
 	t.Run("encoding of too segment", func(t *testing.T) {
-
 		seg := NewTOO(nil)
 
 		require.Equal(t, "TOO~", seg.String())

@@ -12,9 +12,7 @@ import (
 )
 
 func TestForSE(t *testing.T) {
-
 	t.Run("parsing of se segment", func(t *testing.T) {
-
 		seg := NewSE(nil)
 
 		in := "SE*3*8~"
@@ -52,7 +50,6 @@ func TestForSE(t *testing.T) {
 	})
 
 	t.Run("encoding of SE segment", func(t *testing.T) {
-
 		seg := NewSE(nil)
 
 		require.Equal(t, "SE**~", seg.String())
@@ -67,7 +64,6 @@ func TestForSE(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of se segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"5"}, Mask: rules.MASK_OPTIONAL},
 			"02": {Mask: rules.MASK_NOTUSED},

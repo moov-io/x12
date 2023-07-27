@@ -12,9 +12,7 @@ import (
 )
 
 func TestForSBR(t *testing.T) {
-
 	t.Run("parsing of sbr segment", func(t *testing.T) {
-
 		seg := NewSBR(nil)
 
 		in := "SBR*P*18*******MC~"
@@ -52,7 +50,6 @@ func TestForSBR(t *testing.T) {
 	})
 
 	t.Run("encoding of sbr segment", func(t *testing.T) {
-
 		seg := NewSBR(nil)
 
 		require.Equal(t, "SBR*~", seg.String())
@@ -67,7 +64,6 @@ func TestForSBR(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of sbr segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"P"}, Mask: rules.MASK_OPTIONAL},
 			"02": {Mask: rules.MASK_NOTUSED},

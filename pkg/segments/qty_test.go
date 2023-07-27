@@ -12,9 +12,7 @@ import (
 )
 
 func TestForQTY(t *testing.T) {
-
 	t.Run("parsing of QTY segment", func(t *testing.T) {
-
 		seg := NewQTY(nil)
 
 		in := "QTY**~"
@@ -22,10 +20,10 @@ func TestForQTY(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, len(in), read)
 
-		in = "QTY***~"
+		in = "QTY****~"
 		read, err = seg.Parse(in)
 		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Equal(t, len(in), read)
 
 		in = "DMT~"
 		read, err = seg.Parse(in)
@@ -36,7 +34,6 @@ func TestForQTY(t *testing.T) {
 	})
 
 	t.Run("encoding of QTY segment", func(t *testing.T) {
-
 		seg := NewQTY(nil)
 
 		require.Equal(t, "QTY**~", seg.String())

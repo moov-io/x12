@@ -12,9 +12,7 @@ import (
 )
 
 func TestForCR6(t *testing.T) {
-
 	t.Run("parsing of cr6 segment", func(t *testing.T) {
-
 		seg := NewCR6(nil)
 
 		in := "CR6*19~"
@@ -46,7 +44,6 @@ func TestForCR6(t *testing.T) {
 	})
 
 	t.Run("encoding of cr6 segment", func(t *testing.T) {
-
 		seg := NewCR6(nil)
 
 		require.Equal(t, "CR6~", seg.String())
@@ -60,7 +57,6 @@ func TestForCR6(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of cr6 segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"19"}, Mask: rules.MASK_REQUIRED},
 			"08": {Mask: rules.MASK_OPTIONAL},

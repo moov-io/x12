@@ -12,9 +12,7 @@ import (
 )
 
 func TestForOI(t *testing.T) {
-
 	t.Run("parsing of oi segment", func(t *testing.T) {
-
 		seg := NewOI(nil)
 
 		in := "OI***0019***00~"
@@ -47,7 +45,6 @@ func TestForOI(t *testing.T) {
 	})
 
 	t.Run("encoding of oi segment", func(t *testing.T) {
-
 		seg := NewOI(nil)
 
 		require.Equal(t, "OI******~", seg.String())
@@ -62,7 +59,6 @@ func TestForOI(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of oi segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"03": {AcceptValues: []string{"0019"}},
 			"06": {AcceptValues: []string{"00"}},

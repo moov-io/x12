@@ -16,7 +16,6 @@ import (
 )
 
 func NewGroup(rule *rules.GroupRule) *FunctionalGroup {
-
 	newTransaction := FunctionalGroup{rule: rule}
 
 	return &newTransaction
@@ -43,7 +42,6 @@ func (r *FunctionalGroup) GetGroupControlNumber() string {
 }
 
 func (r *FunctionalGroup) Validate(groupRule *rules.GroupRule) error {
-
 	if groupRule == nil && r.rule != nil {
 		groupRule = r.rule
 	}
@@ -96,9 +94,7 @@ func (r *FunctionalGroup) Validate(groupRule *rules.GroupRule) error {
 	}
 
 	// Validating Group
-	if r.GE != nil {
-
-		// compare control set number
+	if r.GE != nil { // compare control set number
 		if r.GE.GroupControlNumber != r.GS.GroupControlNumber {
 			return errors.New("has invalid group control number")
 		}
@@ -115,7 +111,6 @@ func (r *FunctionalGroup) Validate(groupRule *rules.GroupRule) error {
 }
 
 func (r *FunctionalGroup) Parse(data string, args ...string) (int, error) {
-
 	if r.rule == nil {
 		return 0, errors.New("please specify rules for this group")
 	}

@@ -12,9 +12,7 @@ import (
 )
 
 func TestForNM1(t *testing.T) {
-
 	t.Run("parsing of nm1 segment", func(t *testing.T) {
-
 		seg := NewNM1(nil)
 
 		in := "NM1*85*2*INDIAN HEALTH HOSPITAL*****XX*7745613100~"
@@ -52,7 +50,6 @@ func TestForNM1(t *testing.T) {
 	})
 
 	t.Run("encoding of nm1 segment", func(t *testing.T) {
-
 		seg := NewNM1(nil)
 
 		require.Equal(t, "NM1*********~", seg.String())
@@ -67,7 +64,6 @@ func TestForNM1(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of nm1 segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"85"}},
 			"08": {Mask: rules.MASK_OPTIONAL},

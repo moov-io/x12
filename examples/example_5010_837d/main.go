@@ -12,12 +12,11 @@ import (
 	"strings"
 
 	"github.com/moov-io/x12/pkg/file"
-	. "github.com/moov-io/x12/rules/rule_5010_835"
+	. "github.com/moov-io/x12/rules/rule_5010_837d"
 )
 
 func main() {
-
-	reader, err := os.Open(path.Join("examples", "example_5010_835", "sample2.txt"))
+	reader, err := os.Open(path.Join("examples", "example_5010_837d", "sample.txt"))
 	if err != nil {
 		log.Fatal(err)
 	}

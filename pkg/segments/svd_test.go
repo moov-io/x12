@@ -13,9 +13,7 @@ import (
 )
 
 func TestForSVD(t *testing.T) {
-
 	t.Run("parsing of svd segment", func(t *testing.T) {
-
 		seg := NewSVD(nil)
 
 		in := "SVD*CODE*AMOUNT*AA:B**A*~"
@@ -54,7 +52,6 @@ func TestForSVD(t *testing.T) {
 	})
 
 	t.Run("encoding of SVD segment", func(t *testing.T) {
-
 		seg := NewSVD(nil)
 
 		require.Equal(t, "SVD*****~", seg.String())
@@ -72,7 +69,6 @@ func TestForSVD(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of svd segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"03": {
 				Mask: rules.MASK_REQUIRED,

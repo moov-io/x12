@@ -16,8 +16,7 @@ import (
 )
 
 func main() {
-
-	reader, err := os.Open(path.Join("examples", "example_stp_820", "sample1.txt"))
+	reader, err := os.Open(path.Join("examples", "example_stp_820", "sample.txt"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -47,5 +46,4 @@ func main() {
 	fmt.Println(strings.ReplaceAll(newFile.String(), segmentTerminator, segmentTerminator+"\n"))
 
 	newFile.Print(os.Stdout)
-
 }

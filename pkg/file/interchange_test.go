@@ -14,7 +14,6 @@ import (
 )
 
 func TestInterchangeFor837P(t *testing.T) {
-
 	raw := `ISA*00*          *00*          *ZZ*133052274      *ZZ*311279999      *120419*2125*^*00501*000002120*0*P*<~
 GS*HC*133052274*311279999*20120419*212549*2120*X*005010X222A1~
 ST*837*000000533*005010X222A1~
@@ -212,7 +211,6 @@ GE*1*2120~
 IEA*1*000002120~`
 
 	t.Run("testing interchange for edi 837p", func(t *testing.T) {
-
 		data := strings.ReplaceAll(raw, "\n", "")
 
 		newChange := NewInterchange(&rule.InterchangeRule)

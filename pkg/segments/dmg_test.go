@@ -12,9 +12,7 @@ import (
 )
 
 func TestForDMG(t *testing.T) {
-
 	t.Run("parsing of dmg segment", func(t *testing.T) {
-
 		seg := NewDMG(nil)
 
 		in := "DMG*0019*00*101654~"
@@ -52,7 +50,6 @@ func TestForDMG(t *testing.T) {
 	})
 
 	t.Run("encoding of dmg segment", func(t *testing.T) {
-
 		seg := NewDMG(nil)
 
 		require.Equal(t, "DMG***~", seg.String())
@@ -67,7 +64,6 @@ func TestForDMG(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of dmg segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"0019"}},
 			"02": {Mask: rules.MASK_OPTIONAL},

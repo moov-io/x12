@@ -12,9 +12,7 @@ import (
 )
 
 func TestForSV2(t *testing.T) {
-
 	t.Run("parsing of sv2 segment", func(t *testing.T) {
-
 		seg := NewSV2(nil)
 
 		in := "SV2*1-1180*174***11:B:1*Y*A*Y*Y*P~"
@@ -41,7 +39,6 @@ func TestForSV2(t *testing.T) {
 	})
 
 	t.Run("encoding of SV2 segment", func(t *testing.T) {
-
 		seg := NewSV2(nil)
 
 		require.Equal(t, "SV2~", seg.String())

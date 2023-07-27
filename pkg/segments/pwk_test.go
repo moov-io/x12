@@ -12,9 +12,7 @@ import (
 )
 
 func TestForPWK(t *testing.T) {
-
 	t.Run("parsing of pwk segment", func(t *testing.T) {
-
 		seg := NewPWK(nil)
 
 		in := "PWK*IC*BUSINESS OFFICE*TE*5052484349~"
@@ -52,7 +50,6 @@ func TestForPWK(t *testing.T) {
 	})
 
 	t.Run("encoding of pwk segment", func(t *testing.T) {
-
 		seg := NewPWK(nil)
 
 		require.Equal(t, "PWK**~", seg.String())
@@ -67,7 +64,6 @@ func TestForPWK(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of pwk segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"IC"}},
 			"03": {Mask: rules.MASK_OPTIONAL},

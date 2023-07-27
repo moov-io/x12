@@ -12,9 +12,7 @@ import (
 )
 
 func TestForPRV(t *testing.T) {
-
 	t.Run("parsing of prv segment", func(t *testing.T) {
-
 		seg := NewPRV(nil)
 
 		in := "PRV*ALBUQUERQUE*NM*871201234~"
@@ -52,7 +50,6 @@ func TestForPRV(t *testing.T) {
 	})
 
 	t.Run("encoding of prv segment", func(t *testing.T) {
-
 		seg := NewPRV(nil)
 
 		require.Equal(t, "PRV***~", seg.String())
@@ -67,7 +64,6 @@ func TestForPRV(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of prv segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"ALBUQUERQUE"}},
 			"02": {Mask: rules.MASK_OPTIONAL},

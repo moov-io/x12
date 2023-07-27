@@ -12,14 +12,12 @@ import (
 )
 
 func TestForToothSurfaceCode(t *testing.T) {
-
 	rule := rules.ElementSetRule{
 		"01": {AcceptValues: []string{"composite"}},
 		"02": {AcceptValues: []string{"1", "2", "3", "4", "5", "7", "8"}},
 	}
 
 	t.Run("parsing of tooth surface code", func(t *testing.T) {
-
 		composite := ToothSurfaceCode{}
 		composite.SetRule(&rule)
 

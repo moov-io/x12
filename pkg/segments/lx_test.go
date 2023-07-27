@@ -12,9 +12,7 @@ import (
 )
 
 func TestForLX(t *testing.T) {
-
 	t.Run("parsing of lx segment", func(t *testing.T) {
-
 		seg := NewLX(nil)
 
 		in := "LX*3~"
@@ -52,7 +50,6 @@ func TestForLX(t *testing.T) {
 	})
 
 	t.Run("encoding of lx segment", func(t *testing.T) {
-
 		seg := NewLX(nil)
 
 		require.Equal(t, "LX*~", seg.String())
@@ -67,7 +64,6 @@ func TestForLX(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of lx segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"5"}, Mask: rules.MASK_OPTIONAL},
 		}

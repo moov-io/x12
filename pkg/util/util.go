@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"regexp"
 	"strings"
 
 	"github.com/moov-io/x12/pkg/rules"
@@ -27,7 +28,6 @@ type ElementInfo struct {
 }
 
 func SetFieldByIndex(r any, index string, data any) error {
-
 	var dataStruct reflect.Value
 	if reflect.ValueOf(r).Kind() == reflect.Ptr {
 		dataStruct = reflect.ValueOf(r).Elem()
@@ -39,7 +39,6 @@ func SetFieldByIndex(r any, index string, data any) error {
 		field := dataStruct.Type().Field(i)
 
 		if field.Tag.Get("index") == index {
-
 			org := dataStruct.Field(i)
 			value := reflect.ValueOf(data)
 
@@ -59,7 +58,6 @@ func SetFieldByIndex(r any, index string, data any) error {
 }
 
 func GetFieldByIndex(r any, index string) any {
-
 	var dataStruct reflect.Value
 	if reflect.ValueOf(r).Kind() == reflect.Ptr {
 		dataStruct = reflect.ValueOf(r).Elem()
@@ -79,7 +77,6 @@ func GetFieldByIndex(r any, index string) any {
 }
 
 func DumpStructInfo(r any, level int) ElementInfo {
-
 	info := ElementInfo{
 		Level: level,
 	}
@@ -97,7 +94,6 @@ func DumpStructInfo(r any, level int) ElementInfo {
 		field := dataStruct.Type().Field(i)
 
 		if len(field.Tag.Get("index")) > 0 {
-
 			elm := dataStruct.Field(i)
 			if elm.Kind() == reflect.String {
 				inf := elm.Interface()
@@ -124,7 +120,6 @@ func DumpStructInfo(r any, level int) ElementInfo {
 }
 
 func getIndex(input string, args ...string) int {
-
 	idx1 := strings.Index(input, DataElementSeparator)
 	idx2 := strings.Index(input, GetSegmentTerminator(args...))
 
@@ -139,18 +134,16 @@ func getIndex(input string, args ...string) int {
 	return idx1
 }
 
-func GetRecordSize(line string, args ...string) int64 {
-
+func GetRecordSize(line string, args ...string) int {
 	size := strings.Index(line, GetSegmentTerminator(args...))
 	if size >= 0 {
-		return int64(size + 1)
+		return size + 1
 	}
 
-	return int64(size)
+	return size
 }
 
 func ValidateField(data any, spec rules.ElementRule, mask string) error {
-
 	mask = rules.GetMask(spec.Mask, mask)
 	dataStr := strings.TrimSpace(fmt.Sprintf("%v", data))
 
@@ -173,6 +166,13 @@ func ValidateField(data any, spec rules.ElementRule, mask string) error {
 		}
 	}
 
+	if len(spec.AcceptRegex) > 0 {
+		re, _ := regexp.Compile(spec.AcceptRegex)
+		if !re.MatchString(dataStr) {
+			return errors.New("the element contains unexpected value")
+		}
+	}
+
 	if len(spec.AcceptValues) > 0 {
 		for _, value := range spec.AcceptValues {
 			if dataStr == strings.TrimSpace(value) {
@@ -186,7 +186,6 @@ func ValidateField(data any, spec rules.ElementRule, mask string) error {
 }
 
 func ReadCompositeField(input string, start int, spec rules.ElementRule, mask string, args ...string) (string, int, error) {
-
 	data := ""
 	separator := GetElementSeparator(args...)
 
@@ -220,16 +219,16 @@ func ReadCompositeField(input string, start int, spec rules.ElementRule, mask st
 	return value, idx + 1, nil
 }
 
-func ReadField(input string, start int, spec rules.ElementRule, mask string, args ...string) (string, int, error) {
-
+func ReadField(input string, start int, spec rules.ElementRule, defaultMask string, args ...string) (string, int, error) {
 	data := ""
+	mask := rules.GetMask(spec.Mask, defaultMask)
 
 	if start < len(input) {
 		data = input[start:]
 	}
 
 	if data == "" {
-		if rules.GetMask(spec.Mask, mask) == rules.MASK_NOTUSED || rules.GetMask(spec.Mask, mask) == rules.MASK_OPTIONAL {
+		if mask == rules.MASK_NOTUSED || mask == rules.MASK_OPTIONAL {
 			return "", 0, nil
 		}
 		return "", 0, fmt.Errorf("doesn't enough input string")
@@ -254,7 +253,7 @@ func GetSegmentTerminator(args ...string) string {
 	}
 
 	terminator := args[0]
-	if len(terminator) != 1 {
+	if terminator == "" {
 		return SegmentTerminator
 	}
 

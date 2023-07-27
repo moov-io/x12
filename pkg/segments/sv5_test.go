@@ -12,9 +12,7 @@ import (
 )
 
 func TestForSV5(t *testing.T) {
-
 	t.Run("parsing of sv5 segment", func(t *testing.T) {
-
 		seg := NewSV5(nil)
 
 		in := "SV5*85*2*INDIAN HEALTH HOSPITAL****~"
@@ -47,7 +45,6 @@ func TestForSV5(t *testing.T) {
 	})
 
 	t.Run("encoding of sv5 segment", func(t *testing.T) {
-
 		seg := NewSV5(nil)
 
 		require.Equal(t, "SV5******~", seg.String())
@@ -62,7 +59,6 @@ func TestForSV5(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of sv5 segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"85"}},
 		}

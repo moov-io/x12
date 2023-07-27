@@ -12,9 +12,7 @@ import (
 )
 
 func TestForGE(t *testing.T) {
-
 	t.Run("parsing of ge segment", func(t *testing.T) {
-
 		seg := NewGE(nil)
 
 		in := "GE*3*8~"
@@ -52,7 +50,6 @@ func TestForGE(t *testing.T) {
 	})
 
 	t.Run("encoding of ge segment", func(t *testing.T) {
-
 		seg := NewGE(nil)
 
 		require.Equal(t, "GE**~", seg.String())
@@ -67,7 +64,6 @@ func TestForGE(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of ge segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"5"}, Mask: rules.MASK_OPTIONAL},
 			"02": {Mask: rules.MASK_NOTUSED},

@@ -12,9 +12,7 @@ import (
 )
 
 func TestForSV1(t *testing.T) {
-
 	t.Run("parsing of sv1 segment", func(t *testing.T) {
-
 		seg := NewSV1(nil)
 
 		in := "SV1*0019*00~"
@@ -46,7 +44,6 @@ func TestForSV1(t *testing.T) {
 	})
 
 	t.Run("encoding of sv1 segment", func(t *testing.T) {
-
 		seg := NewSV1(nil)
 
 		require.Equal(t, "SV1~", seg.String())
@@ -61,7 +58,6 @@ func TestForSV1(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of sv1 segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"0019"}},
 			"02": {Mask: rules.MASK_OPTIONAL},

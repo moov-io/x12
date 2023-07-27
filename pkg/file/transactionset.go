@@ -18,7 +18,6 @@ import (
 )
 
 func NewTransactionSet(rule *rules.TransactionRule) *TransactionSet {
-
 	newTransaction := TransactionSet{rule: rule}
 
 	return &newTransaction
@@ -39,7 +38,6 @@ func (r *TransactionSet) GetTransactionControlNumber() string {
 }
 
 func (r *TransactionSet) Validate(transRule *rules.TransactionRule) error {
-
 	if transRule == nil && r.rule != nil {
 		transRule = r.rule
 	}
@@ -66,9 +64,7 @@ func (r *TransactionSet) Validate(transRule *rules.TransactionRule) error {
 		segIndex = 0
 		segRules := transRule.Segments
 		for rule := segRules.Get(index); rule != nil; rule = segRules.Get(index) {
-
 			for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
-
 				if segIndex+1 > len(r.Segments) {
 					if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
 						return fmt.Errorf("please add new %s segment", strings.ToUpper(rule.Name))
@@ -112,7 +108,6 @@ func (r *TransactionSet) Validate(transRule *rules.TransactionRule) error {
 			rule := transRule.Loops[index]
 
 			for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
-
 				if segIndex+1 > len(r.Loops) {
 					if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
 						return fmt.Errorf("please add new %s loop", strings.ToUpper(rule.Name))
@@ -166,9 +161,7 @@ func (r *TransactionSet) Validate(transRule *rules.TransactionRule) error {
 	}
 
 	// Validating Transaction Set
-	if r.SE != nil {
-
-		// compare control set number
+	if r.SE != nil { // compare control set number
 		if r.SE.TransactionSetControlNumber != r.ST.TransactionSetControlNumber {
 			return errors.New("has invalid transaction set control number")
 		}
@@ -196,7 +189,6 @@ func (r *TransactionSet) Validate(transRule *rules.TransactionRule) error {
 }
 
 func (r *TransactionSet) Parse(data string, args ...string) (int, error) {
-
 	if r.rule == nil {
 		return 0, errors.New("please specify rules for this transaction set")
 	}

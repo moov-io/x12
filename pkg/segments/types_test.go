@@ -11,7 +11,6 @@ import (
 )
 
 func TestForCreateSegment(t *testing.T) {
-
 	seg, err := CreateSegment("invalid", nil)
 	require.Error(t, err)
 	require.Equal(t, "unsupported segment name", err.Error())
@@ -26,6 +25,16 @@ func TestForCreateSegment(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, seg)
 	require.Equal(t, "BHT", seg.Name())
+
+	seg, err = CreateSegment("BIG", nil)
+	require.NoError(t, err)
+	require.NotNil(t, seg)
+	require.Equal(t, "BIG", seg.Name())
+
+	seg, err = CreateSegment("BPR", nil)
+	require.NoError(t, err)
+	require.NotNil(t, seg)
+	require.Equal(t, "BPR", seg.Name())
 
 	seg, err = CreateSegment("CAS", nil)
 	require.NoError(t, err)
@@ -72,6 +81,16 @@ func TestForCreateSegment(t *testing.T) {
 	require.NotNil(t, seg)
 	require.Equal(t, "DTP", seg.Name())
 
+	seg, err = CreateSegment("FA1", nil)
+	require.NoError(t, err)
+	require.NotNil(t, seg)
+	require.Equal(t, "FA1", seg.Name())
+
+	seg, err = CreateSegment("FA2", nil)
+	require.NoError(t, err)
+	require.NotNil(t, seg)
+	require.Equal(t, "FA2", seg.Name())
+
 	seg, err = CreateSegment("GE", nil)
 	require.NoError(t, err)
 	require.NotNil(t, seg)
@@ -102,6 +121,16 @@ func TestForCreateSegment(t *testing.T) {
 	require.NotNil(t, seg)
 	require.Equal(t, "ISA", seg.Name())
 
+	seg, err = CreateSegment("IT1", nil)
+	require.NoError(t, err)
+	require.NotNil(t, seg)
+	require.Equal(t, "IT1", seg.Name())
+
+	seg, err = CreateSegment("ITD", nil)
+	require.NoError(t, err)
+	require.NotNil(t, seg)
+	require.Equal(t, "ITD", seg.Name())
+
 	seg, err = CreateSegment("LQ", nil)
 	require.NoError(t, err)
 	require.NotNil(t, seg)
@@ -122,6 +151,11 @@ func TestForCreateSegment(t *testing.T) {
 	require.NotNil(t, seg)
 	require.Equal(t, "MOA", seg.Name())
 
+	seg, err = CreateSegment("MSG", nil)
+	require.NoError(t, err)
+	require.NotNil(t, seg)
+	require.Equal(t, "MSG", seg.Name())
+
 	seg, err = CreateSegment("N1", nil)
 	require.NoError(t, err)
 	require.NotNil(t, seg)
@@ -141,6 +175,11 @@ func TestForCreateSegment(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, seg)
 	require.Equal(t, "N4", seg.Name())
+
+	seg, err = CreateSegment("N9", nil)
+	require.NoError(t, err)
+	require.NotNil(t, seg)
+	require.Equal(t, "N9", seg.Name())
 
 	seg, err = CreateSegment("NM1", nil)
 	require.NoError(t, err)
@@ -166,6 +205,11 @@ func TestForCreateSegment(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, seg)
 	require.Equal(t, "PER", seg.Name())
+
+	seg, err = CreateSegment("PID", nil)
+	require.NoError(t, err)
+	require.NotNil(t, seg)
+	require.Equal(t, "PID", seg.Name())
 
 	seg, err = CreateSegment("PLB", nil)
 	require.NoError(t, err)
@@ -201,6 +245,11 @@ func TestForCreateSegment(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, seg)
 	require.Equal(t, "RMR", seg.Name())
+
+	seg, err = CreateSegment("SAC", nil)
+	require.NoError(t, err)
+	require.NotNil(t, seg)
+	require.Equal(t, "SAC", seg.Name())
 
 	seg, err = CreateSegment("SBR", nil)
 	require.NoError(t, err)
@@ -257,6 +306,16 @@ func TestForCreateSegment(t *testing.T) {
 	require.NotNil(t, seg)
 	require.Equal(t, "CN1", seg.Name())
 
+	seg, err = CreateSegment("CTP", nil)
+	require.NoError(t, err)
+	require.NotNil(t, seg)
+	require.Equal(t, "CTP", seg.Name())
+
+	seg, err = CreateSegment("CTT", nil)
+	require.NoError(t, err)
+	require.NotNil(t, seg)
+	require.Equal(t, "CTT", seg.Name())
+
 	seg, err = CreateSegment("CUR", nil)
 	require.NoError(t, err)
 	require.NotNil(t, seg)
@@ -271,6 +330,11 @@ func TestForCreateSegment(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, seg)
 	require.Equal(t, "DN2", seg.Name())
+
+	seg, err = CreateSegment("TDS", nil)
+	require.NoError(t, err)
+	require.NotNil(t, seg)
+	require.Equal(t, "TDS", seg.Name())
 
 	seg, err = CreateSegment("TOO", nil)
 	require.NoError(t, err)
@@ -291,4 +355,9 @@ func TestForCreateSegment(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, seg)
 	require.Equal(t, "TS3", seg.Name())
+
+	seg, err = CreateSegment("TXI", nil)
+	require.NoError(t, err)
+	require.NotNil(t, seg)
+	require.Equal(t, "TXI", seg.Name())
 }

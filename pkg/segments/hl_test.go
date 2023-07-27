@@ -12,9 +12,7 @@ import (
 )
 
 func TestForHL(t *testing.T) {
-
 	t.Run("parsing of hl segment", func(t *testing.T) {
-
 		seg := NewHL(nil)
 
 		in := "HL*HC*85-0858585**20130709~"
@@ -52,7 +50,6 @@ func TestForHL(t *testing.T) {
 	})
 
 	t.Run("encoding of hl segment", func(t *testing.T) {
-
 		seg := NewHL(nil)
 
 		require.Equal(t, "HL****~", seg.String())
@@ -67,7 +64,6 @@ func TestForHL(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of hl segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"HC"}},
 			"02": {Mask: rules.MASK_OPTIONAL},

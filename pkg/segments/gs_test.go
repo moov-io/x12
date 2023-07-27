@@ -12,9 +12,7 @@ import (
 )
 
 func TestForGS(t *testing.T) {
-
 	t.Run("parsing of gs segment", func(t *testing.T) {
-
 		seg := NewGS(nil)
 
 		in := "GS*HC*85-0858585**20130709*1058*101654*X*005010X222A1~"
@@ -52,7 +50,6 @@ func TestForGS(t *testing.T) {
 	})
 
 	t.Run("encoding of gs segment", func(t *testing.T) {
-
 		seg := NewGS(nil)
 
 		require.Equal(t, "GS********~", seg.String())
@@ -67,7 +64,6 @@ func TestForGS(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of gs segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"HC"}},
 			"06": {Mask: rules.MASK_OPTIONAL},

@@ -12,9 +12,7 @@ import (
 )
 
 func TestForCLP(t *testing.T) {
-
 	t.Run("parsing of clp segment", func(t *testing.T) {
-
 		seg := NewCLP(nil)
 
 		in := "CLP*9999999*4*385.20*0*385.20*12*999999999999*13*2~"
@@ -47,7 +45,6 @@ func TestForCLP(t *testing.T) {
 	})
 
 	t.Run("encoding of clp segment", func(t *testing.T) {
-
 		seg := NewCLP(nil)
 
 		require.Equal(t, "CLP*******~", seg.String())
@@ -62,7 +59,6 @@ func TestForCLP(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of clp segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"IC"}},
 			"03": {Mask: rules.MASK_OPTIONAL},

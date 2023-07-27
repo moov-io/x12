@@ -11,7 +11,6 @@ import (
 )
 
 func TestManageFieldByIndex(t *testing.T) {
-
 	type TEST struct {
 		INDEX1 string `index:"INDEX1"`
 		INDEX2 int    `index:"INDEX2"`
@@ -79,7 +78,6 @@ func TestManageFieldByIndex(t *testing.T) {
 	})
 
 	t.Run("Checking duplicated control number", func(t *testing.T) {
-
 		numbers := []string{
 			"number1",
 			"number2",

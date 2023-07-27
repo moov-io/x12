@@ -12,9 +12,7 @@ import (
 )
 
 func TestForPLB(t *testing.T) {
-
 	t.Run("parsing of PLB segment", func(t *testing.T) {
-
 		seg := NewPLB(nil)
 
 		in := "PLB*NPI Number*20111231*50>111*6173.4*50~"
@@ -53,7 +51,6 @@ func TestForPLB(t *testing.T) {
 	})
 
 	t.Run("encoding of PLB segment", func(t *testing.T) {
-
 		seg := NewPLB(nil)
 
 		require.Equal(t, "PLB****~", seg.String())
@@ -65,7 +62,6 @@ func TestForPLB(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of PLB segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED},
 			"02": {Mask: rules.MASK_REQUIRED},

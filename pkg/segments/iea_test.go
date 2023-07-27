@@ -12,9 +12,7 @@ import (
 )
 
 func TestForIEA(t *testing.T) {
-
 	t.Run("parsing of iea segment", func(t *testing.T) {
-
 		seg := NewIEA(nil)
 
 		in := "IEA*3*8~"
@@ -52,7 +50,6 @@ func TestForIEA(t *testing.T) {
 	})
 
 	t.Run("encoding of iea segment", func(t *testing.T) {
-
 		seg := NewIEA(nil)
 
 		require.Equal(t, "IEA**~", seg.String())
@@ -67,7 +64,6 @@ func TestForIEA(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of iea segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"5"}, Mask: rules.MASK_OPTIONAL},
 			"02": {Mask: rules.MASK_NOTUSED},

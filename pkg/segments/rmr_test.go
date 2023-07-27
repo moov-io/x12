@@ -12,9 +12,7 @@ import (
 )
 
 func TestForRMR(t *testing.T) {
-
 	t.Run("parsing of rmr segment", func(t *testing.T) {
-
 		seg := NewRMR(nil)
 
 		in := "RMR*85*2*INDIAN HEALTH HOSPITAL*~"
@@ -46,7 +44,6 @@ func TestForRMR(t *testing.T) {
 	})
 
 	t.Run("encoding of rmr segment", func(t *testing.T) {
-
 		seg := NewRMR(nil)
 
 		require.Equal(t, "RMR**~", seg.String())
@@ -61,7 +58,6 @@ func TestForRMR(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of rmr segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"85"}},
 			"03": {Mask: rules.MASK_OPTIONAL},

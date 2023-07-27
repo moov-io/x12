@@ -16,7 +16,6 @@ import (
 )
 
 func NewCompositeLoop(rule *rules.LoopRule) *CompositeLoop {
-
 	newLoop := CompositeLoop{rule: rule}
 
 	return &newLoop
@@ -37,7 +36,6 @@ func (r CompositeLoop) Name() string {
 }
 
 func (r CompositeLoop) GetSegments() []segments.SegmentInterface {
-
 	segments := r.Loop.Segments
 	for _, loop := range r.SubLoops {
 		segments = append(segments, loop.GetSegments()...)
@@ -55,7 +53,6 @@ func (r *CompositeLoop) SetRule(s *rules.LoopRule) {
 }
 
 func (r *CompositeLoop) Validate(loopRule *rules.LoopRule) error {
-
 	if loopRule == nil && r.rule != nil {
 		loopRule = r.rule
 	}
@@ -73,7 +70,6 @@ func (r *CompositeLoop) Validate(loopRule *rules.LoopRule) error {
 	for index := 0; index < len(loopRule.Composite); index++ {
 		rule := loopRule.Composite[index]
 		for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
-
 			if segIndex+1 > len(r.SubLoops) {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
 					return fmt.Errorf("please add new %s loop", strings.ToUpper(rule.Name))
@@ -111,7 +107,6 @@ func (r *CompositeLoop) Validate(loopRule *rules.LoopRule) error {
 }
 
 func (r *CompositeLoop) Parse(data string, args ...string) (int, error) {
-
 	if r.rule == nil {
 		return 0, errors.New("please specify rules for this Composite loop")
 	}
@@ -141,7 +136,11 @@ func (r *CompositeLoop) Parse(data string, args ...string) (int, error) {
 				r.SubLoops = append(r.SubLoops, *newChild)
 			} else {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
-					return 0, fmt.Errorf("unable to parse %s loop (%s)", strings.ToLower(rule.Name), err.Error())
+					errString := ""
+					if err != nil {
+						errString = err.Error()
+					}
+					return 0, fmt.Errorf("unable to parse %s loop (%s)", strings.ToLower(rule.Name), errString)
 				}
 				break
 			}

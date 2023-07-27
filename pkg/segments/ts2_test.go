@@ -12,9 +12,7 @@ import (
 )
 
 func TestForTS2(t *testing.T) {
-
 	t.Run("parsing of ts2 segment", func(t *testing.T) {
-
 		seg := NewTS2(nil)
 
 		in := "TS2*0019*00~"
@@ -46,7 +44,6 @@ func TestForTS2(t *testing.T) {
 	})
 
 	t.Run("encoding of ts2 segment", func(t *testing.T) {
-
 		seg := NewTS2(nil)
 
 		require.Equal(t, "TS2~", seg.String())
@@ -61,7 +58,6 @@ func TestForTS2(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of ts2 segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"0019"}},
 			"02": {Mask: rules.MASK_OPTIONAL},

@@ -12,14 +12,12 @@ import (
 )
 
 func TestForHealthCareCode(t *testing.T) {
-
 	rule := rules.ElementSetRule{
 		"01": {AcceptValues: []string{"composite"}},
 		"02": {AcceptValues: []string{"1", "2", "3", "4", "5", "7", "8"}},
 	}
 
 	t.Run("parsing of health care code", func(t *testing.T) {
-
 		composite := HealthCareCode{}
 		composite.SetRule(&rule)
 

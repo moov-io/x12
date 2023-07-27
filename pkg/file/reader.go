@@ -7,14 +7,16 @@ package file
 import (
 	"bufio"
 	"io"
+	"strconv"
 	"strings"
 
 	"github.com/moov-io/x12/pkg/util"
 )
 
 type Scanner struct {
-	scan       *bufio.Scanner
-	terminator string
+	scan          *bufio.Scanner
+	terminator    string
+	removeNewLine bool
 }
 
 func (b *Scanner) GetInterchange() string {
@@ -24,10 +26,10 @@ func (b *Scanner) GetInterchange() string {
 
 	raw := b.scan.Text()
 
-	// Removing all of new lines
-	raw = strings.ReplaceAll(raw, "\r\n", "")
-	raw = strings.ReplaceAll(raw, "\r", "")
-	raw = strings.ReplaceAll(raw, "\n", "")
+	if b.removeNewLine {
+		// Removing all of new lines
+		raw = strings.ReplaceAll(raw, "\n", "")
+	}
 
 	startPos := strings.Index(raw, "ISA")
 	if startPos > 0 {
@@ -37,17 +39,24 @@ func (b *Scanner) GetInterchange() string {
 	return strings.TrimSpace(raw)
 }
 
-func NewScanner(fd io.Reader, args ...string) Scanner {
-
-	// init scan
+// ARGS
+//
+//	first: terminator
+//	second: don't allow remove newline
+func NewScanner(fd io.Reader, args ...string) Scanner { // init scan
 	scan := bufio.NewScanner(fd)
 
 	// init object
-	scanner := Scanner{scan: scan}
-	if len(args) > 0 && len(args[0]) == 1 {
+	scanner := Scanner{scan: scan, removeNewLine: true}
+	if len(args) > 0 {
 		scanner.terminator = args[0]
 	} else {
 		scanner.terminator = util.SegmentTerminator
+	}
+
+	if len(args) > 1 {
+		dontAllow, _ := strconv.ParseBool(args[1])
+		scanner.removeNewLine = !dontAllow
 	}
 
 	// set split function
@@ -56,8 +65,7 @@ func NewScanner(fd io.Reader, args ...string) Scanner {
 	return scanner
 }
 
-func (b *Scanner) getInterchangeTerminatorPosition(input string) int {
-
+func (b *Scanner) getInterchangeTerminatorPosition(input string, atEOF bool) int {
 	startPos1 := strings.Index(input, "ISA")
 	startPos2 := strings.LastIndex(input, "ISA")
 
@@ -76,6 +84,9 @@ func (b *Scanner) getInterchangeTerminatorPosition(input string) int {
 
 	tPos := strings.Index(input[endPos:], b.terminator)
 	if tPos == -1 {
+		if atEOF {
+			return len(input)
+		}
 		return 0
 	}
 
@@ -83,14 +94,13 @@ func (b *Scanner) getInterchangeTerminatorPosition(input string) int {
 }
 
 func (b *Scanner) scanInterChange(data []byte, atEOF bool) (advance int, token []byte, err error) {
-
 	if atEOF && len(data) == 0 {
 		return 0, nil, nil
 	}
 
 	line := string(data)
-	pos := b.getInterchangeTerminatorPosition(line)
-	if b.getInterchangeTerminatorPosition(line) < 0 || !atEOF {
+	pos := b.getInterchangeTerminatorPosition(line, atEOF)
+	if b.getInterchangeTerminatorPosition(line, atEOF) < 0 || !atEOF {
 		// need more data
 		return 0, nil, nil
 	}

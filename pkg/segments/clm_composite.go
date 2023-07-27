@@ -36,13 +36,11 @@ func (r HealthCareServiceLocation) GetFieldByIndex(index string) any {
 }
 
 func (r *HealthCareServiceLocation) Validate(rule *rules.ElementSetRule) error {
-
 	if rule == nil {
 		rule = r.GetRule()
 	}
 
 	for i := 1; i <= r.fieldCount(); i++ {
-
 		idx := fmt.Sprintf("%02d", i)
 
 		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask()); err != nil {
@@ -54,13 +52,11 @@ func (r *HealthCareServiceLocation) Validate(rule *rules.ElementSetRule) error {
 }
 
 func (r *HealthCareServiceLocation) Parse(data string, args ...string) (int, error) {
-
 	var err error
 	var size, read int
 	line := data
 
 	for i := 1; i <= r.fieldCount(); i++ {
-
 		var value string
 		idx := fmt.Sprintf("%02d", i)
 
@@ -81,25 +77,10 @@ func (r HealthCareServiceLocation) String(args ...string) string {
 	separator := util.GetElementSeparator(args...)
 
 	for i := r.fieldCount(); i > 0; i-- {
-
 		idx := fmt.Sprintf("%02d", i)
-		value := r.GetFieldByIndex(idx)
+		mask := r.GetRule().GetMask(idx, r.defaultMask())
 
-		if buf == "" {
-			mask := r.GetRule().GetMask(idx, r.defaultMask())
-			if mask == rules.MASK_NOTUSED {
-				continue
-			}
-			if mask == rules.MASK_OPTIONAL && (value == nil || fmt.Sprintf("%v", value) == "") {
-				continue
-			}
-		}
-
-		if buf == "" {
-			buf = fmt.Sprintf("%s", value)
-		} else {
-			buf = fmt.Sprintf("%v%s", value, separator) + buf
-		}
+		buf = r.CompositeString(buf, mask, separator, "", r.GetFieldByIndex(idx))
 	}
 
 	return buf
@@ -135,13 +116,11 @@ func (r RelatedCausesInformation) GetFieldByIndex(index string) any {
 }
 
 func (r *RelatedCausesInformation) Validate(rule *rules.ElementSetRule) error {
-
 	if rule == nil {
 		rule = r.GetRule()
 	}
 
 	for i := 1; i <= r.fieldCount(); i++ {
-
 		idx := fmt.Sprintf("%02d", i)
 
 		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask(i)); err != nil {
@@ -153,13 +132,11 @@ func (r *RelatedCausesInformation) Validate(rule *rules.ElementSetRule) error {
 }
 
 func (r *RelatedCausesInformation) Parse(data string, args ...string) (int, error) {
-
 	var err error
 	var size, read int
 	line := data
 
 	for i := 1; i <= r.fieldCount(); i++ {
-
 		var value string
 		idx := fmt.Sprintf("%02d", i)
 
@@ -176,29 +153,13 @@ func (r *RelatedCausesInformation) Parse(data string, args ...string) (int, erro
 
 func (r RelatedCausesInformation) String(args ...string) string {
 	var buf string
-
 	separator := util.GetElementSeparator(args...)
 
 	for i := r.fieldCount(); i > 0; i-- {
-
 		idx := fmt.Sprintf("%02d", i)
-		value := r.GetFieldByIndex(idx)
+		mask := r.GetRule().GetMask(idx, r.defaultMask(i))
 
-		if buf == "" {
-			mask := r.GetRule().GetMask(idx, r.defaultMask(i))
-			if mask == rules.MASK_NOTUSED {
-				continue
-			}
-			if mask == rules.MASK_OPTIONAL && (value == nil || fmt.Sprintf("%v", value) == "") {
-				continue
-			}
-		}
-
-		if buf == "" {
-			buf = fmt.Sprintf("%s", value)
-		} else {
-			buf = fmt.Sprintf("%v%s", value, separator) + buf
-		}
+		buf = r.CompositeString(buf, mask, separator, "", r.GetFieldByIndex(idx))
 	}
 
 	return buf

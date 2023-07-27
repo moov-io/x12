@@ -12,12 +12,11 @@ import (
 	"strings"
 
 	"github.com/moov-io/x12/pkg/file"
-	. "github.com/moov-io/x12/rules/rule_5010_837d"
+	. "github.com/moov-io/x12/rules/rule_5010_837p"
 )
 
 func main() {
-
-	reader, err := os.Open(path.Join("examples", "example_5010_837d", "sample1.txt"))
+	reader, err := os.Open(path.Join("examples", "example_5010_837p", "sample.txt"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,6 +38,4 @@ func main() {
 	fmt.Println(strings.ReplaceAll(newChange.String(), "~", "~\n"))
 
 	newChange.Print(os.Stdout)
-
-	InterchangeRule.Print(os.Stdout, true)
 }

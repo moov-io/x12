@@ -12,9 +12,7 @@ import (
 )
 
 func TestForMOA(t *testing.T) {
-
 	t.Run("parsing of moa segment", func(t *testing.T) {
-
 		seg := NewMOA(nil)
 
 		in := "MOA*0019*00~"
@@ -46,7 +44,6 @@ func TestForMOA(t *testing.T) {
 	})
 
 	t.Run("encoding of moa segment", func(t *testing.T) {
-
 		seg := NewMOA(nil)
 
 		require.Equal(t, "MOA~", seg.String())
@@ -61,7 +58,6 @@ func TestForMOA(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of moa segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"0019"}},
 			"02": {Mask: rules.MASK_OPTIONAL},

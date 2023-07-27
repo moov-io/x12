@@ -12,9 +12,7 @@ import (
 )
 
 func TestForSVC(t *testing.T) {
-
 	t.Run("parsing of svc segment", func(t *testing.T) {
-
 		seg := NewSVC(nil)
 
 		in := "SVC*1-1180*174****11:B:1*~"
@@ -41,7 +39,6 @@ func TestForSVC(t *testing.T) {
 	})
 
 	t.Run("encoding of SVC segment", func(t *testing.T) {
-
 		seg := NewSVC(nil)
 
 		require.Equal(t, "SVC***~", seg.String())

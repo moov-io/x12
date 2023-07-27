@@ -12,9 +12,7 @@ import (
 )
 
 func TestForAMT(t *testing.T) {
-
 	t.Run("parsing of amt segment", func(t *testing.T) {
-
 		seg := NewAMT(nil)
 
 		in := "AMT*0019*00~"
@@ -52,7 +50,6 @@ func TestForAMT(t *testing.T) {
 	})
 
 	t.Run("encoding of amt segment", func(t *testing.T) {
-
 		seg := NewAMT(nil)
 
 		require.Equal(t, "AMT**~", seg.String())
@@ -67,7 +64,6 @@ func TestForAMT(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of amt segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"0019"}},
 			"02": {Mask: rules.MASK_OPTIONAL},
