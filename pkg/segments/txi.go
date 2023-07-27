@@ -32,10 +32,10 @@ type TXI struct {
 	Field04 string `index:"04" json:"04,omitempty" xml:"04,omitempty"`
 	Field05 string `index:"05" json:"05,omitempty" xml:"05,omitempty"`
 	Field06 string `index:"06" json:"06,omitempty" xml:"06,omitempty"`
-	Field07 string `index:"06" json:"06,omitempty" xml:"06,omitempty"`
-	Field08 string `index:"06" json:"06,omitempty" xml:"06,omitempty"`
-	Field09 string `index:"06" json:"06,omitempty" xml:"06,omitempty"`
-	Field10 string `index:"06" json:"06,omitempty" xml:"06,omitempty"`
+	Field07 string `index:"07" json:"07,omitempty" xml:"07,omitempty"`
+	Field08 string `index:"08" json:"08,omitempty" xml:"08,omitempty"`
+	Field09 string `index:"09" json:"09,omitempty" xml:"09,omitempty"`
+	Field10 string `index:"10" json:"10,omitempty" xml:"10,omitempty"`
 
 	Element
 }
