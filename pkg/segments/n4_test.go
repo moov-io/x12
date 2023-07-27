@@ -23,7 +23,7 @@ func TestForN4(t *testing.T) {
 		in = "N4*ALBUQUERQUE*NM*871201234*~"
 		read, err = seg.Parse(in)
 		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Equal(t, len(in), read)
 
 		in = "N4*ALBUQUERQUE**~"
 		read, err = seg.Parse(in)

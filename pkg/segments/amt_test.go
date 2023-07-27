@@ -23,7 +23,7 @@ func TestForAMT(t *testing.T) {
 		in = "AMT*0019*00*XX~"
 		read, err = seg.Parse(in)
 		require.NoError(t, err)
-		require.Equal(t, len(in)-3, read)
+		require.Equal(t, len(in), read)
 
 		in = "AMT*0019*~"
 		read, err = seg.Parse(in)
