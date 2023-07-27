@@ -78,7 +78,7 @@ func (e *Element) VerifyCode(data, name string, args ...string) (int, string, er
 
 	if length < codeLen {
 		return 0, "", fmt.Errorf("%s segment has not enough input data", name)
-	} else if strings.ToUpper(name) != strings.ToUpper(data[:codeLen]) {
+	} else if !strings.EqualFold(strings.ToUpper(name), strings.ToUpper(data[:codeLen])) {
 		return 0, "", fmt.Errorf("%s segment contains invalid code", name)
 	}
 
