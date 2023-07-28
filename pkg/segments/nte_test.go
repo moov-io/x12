@@ -12,9 +12,7 @@ import (
 )
 
 func TestForNTE(t *testing.T) {
-
 	t.Run("parsing of net segment", func(t *testing.T) {
-
 		seg := NewNTE(nil)
 
 		in := "NTE*0019*00~"
@@ -52,7 +50,6 @@ func TestForNTE(t *testing.T) {
 	})
 
 	t.Run("encoding of nte segment", func(t *testing.T) {
-
 		seg := NewNTE(nil)
 
 		require.Equal(t, "NTE**~", seg.String())
@@ -67,7 +64,6 @@ func TestForNTE(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of nte segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"0019"}},
 			"02": {Mask: rules.MASK_OPTIONAL},

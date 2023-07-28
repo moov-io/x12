@@ -12,14 +12,12 @@ import (
 )
 
 func TestForServiceProcedure(t *testing.T) {
-
 	rule := rules.ElementSetRule{
 		"01": {AcceptValues: []string{"composite"}},
 		"02": {AcceptValues: []string{"1", "2", "3", "4", "5", "7", "8"}},
 	}
 
 	t.Run("parsing of dental service procedure", func(t *testing.T) {
-
 		composite := ServiceProcedure{}
 		composite.SetRule(&rule)
 
@@ -39,14 +37,12 @@ func TestForServiceProcedure(t *testing.T) {
 }
 
 func TestForDentalServiceCode(t *testing.T) {
-
 	rule := rules.ElementSetRule{
 		"01": {AcceptValues: []string{"composite"}},
 		"02": {AcceptValues: []string{"1", "2", "3", "4", "5", "7", "8"}},
 	}
 
 	t.Run("parsing of dental service code", func(t *testing.T) {
-
 		composite := DentalServiceCode{}
 		composite.SetRule(&rule)
 
@@ -66,14 +62,12 @@ func TestForDentalServiceCode(t *testing.T) {
 }
 
 func TestForDentalServiceCodePointer(t *testing.T) {
-
 	rule := rules.ElementSetRule{
 		"01": {AcceptValues: []string{"composite"}},
 		"02": {AcceptValues: []string{"1", "2", "3", "4", "5", "7", "8"}},
 	}
 
 	t.Run("parsing of dental service code pointer", func(t *testing.T) {
-
 		composite := DentalServiceCodePointer{}
 		composite.SetRule(&rule)
 

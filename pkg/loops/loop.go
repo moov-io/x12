@@ -16,7 +16,6 @@ import (
 )
 
 func NewLoop(rule *rules.LoopRule) *Loop {
-
 	newLoop := Loop{
 		rule: rule,
 	}
@@ -46,7 +45,6 @@ func (r Loop) Name() string {
 }
 
 func (r *Loop) Validate(segRules *rules.SegmentSetRule) error {
-
 	if segRules == nil && r.rule != nil {
 		segRules = &r.rule.Segments
 	}
@@ -58,9 +56,7 @@ func (r *Loop) Validate(segRules *rules.SegmentSetRule) error {
 	index := 0
 	segIndex := 0
 	for rule := segRules.Get(index); rule != nil; rule = segRules.Get(index) {
-
 		for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
-
 			if segIndex+1 > len(r.Segments) {
 				// there isn't segments although rule has required segments
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
@@ -101,7 +97,6 @@ func (r *Loop) Validate(segRules *rules.SegmentSetRule) error {
 }
 
 func (r *Loop) Parse(data string, args ...string) (int, error) {
-
 	if r.rule == nil {
 		return 0, errors.New("please specify rules for this loop")
 	}
@@ -113,6 +108,7 @@ func (r *Loop) Parse(data string, args ...string) (int, error) {
 	index := 0
 
 	for rule := segRules.Get(index); rule != nil; rule = segRules.Get(index) {
+
 		for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
 			segment, err := segments.CreateSegment(rule.Name, rule)
 			if err != nil {
@@ -135,6 +131,10 @@ func (r *Loop) Parse(data string, args ...string) (int, error) {
 		}
 
 		index++
+	}
+
+	if len(newSegments) == 0 {
+		return 0, fmt.Errorf("unable to parse loop(%s)", r.Name())
 	}
 
 	r.Segments = newSegments

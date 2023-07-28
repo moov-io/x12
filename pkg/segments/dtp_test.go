@@ -12,9 +12,7 @@ import (
 )
 
 func TestForDTP(t *testing.T) {
-
 	t.Run("parsing of dtp segment", func(t *testing.T) {
-
 		seg := NewDTP(nil)
 
 		in := "DTP*0019*00*101654~"
@@ -52,7 +50,6 @@ func TestForDTP(t *testing.T) {
 	})
 
 	t.Run("encoding of dtp segment", func(t *testing.T) {
-
 		seg := NewDTP(nil)
 
 		require.Equal(t, "DTP***~", seg.String())
@@ -67,7 +64,6 @@ func TestForDTP(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of dtp segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"0019"}},
 			"02": {Mask: rules.MASK_OPTIONAL},

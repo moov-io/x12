@@ -12,9 +12,7 @@ import (
 )
 
 func TestForCAS(t *testing.T) {
-
 	t.Run("parsing of cas segment", func(t *testing.T) {
-
 		seg := NewCAS(nil)
 
 		in := "CAS*IC*BUSINESS OFFICE*TE*5052484349~"
@@ -52,7 +50,6 @@ func TestForCAS(t *testing.T) {
 	})
 
 	t.Run("encoding of cas segment", func(t *testing.T) {
-
 		seg := NewCAS(nil)
 
 		require.Equal(t, "CAS***~", seg.String())
@@ -67,7 +64,6 @@ func TestForCAS(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of cas segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"IC"}},
 			"03": {Mask: rules.MASK_OPTIONAL},

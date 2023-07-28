@@ -12,9 +12,7 @@ import (
 )
 
 func TestForPAT(t *testing.T) {
-
 	t.Run("parsing of pat segment", func(t *testing.T) {
-
 		seg := NewPAT(nil)
 
 		in := "PAT*19~"
@@ -46,7 +44,6 @@ func TestForPAT(t *testing.T) {
 	})
 
 	t.Run("encoding of pat segment", func(t *testing.T) {
-
 		seg := NewPAT(nil)
 
 		require.Equal(t, "PAT~", seg.String())
@@ -60,7 +57,6 @@ func TestForPAT(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of pat segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"19"}, Mask: rules.MASK_REQUIRED},
 			"08": {Mask: rules.MASK_OPTIONAL},

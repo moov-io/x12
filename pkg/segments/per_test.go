@@ -12,9 +12,7 @@ import (
 )
 
 func TestForPER(t *testing.T) {
-
 	t.Run("parsing of per segment", func(t *testing.T) {
-
 		seg := NewPER(nil)
 
 		in := "PER*IC*BUSINESS OFFICE*TE*5052484349~"
@@ -52,7 +50,6 @@ func TestForPER(t *testing.T) {
 	})
 
 	t.Run("encoding of per segment", func(t *testing.T) {
-
 		seg := NewPER(nil)
 
 		require.Equal(t, "PER****~", seg.String())
@@ -67,7 +64,6 @@ func TestForPER(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of per segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"IC"}},
 			"03": {Mask: rules.MASK_OPTIONAL},

@@ -12,9 +12,7 @@ import (
 )
 
 func TestForN1(t *testing.T) {
-
 	t.Run("parsing of n1 segment", func(t *testing.T) {
-
 		seg := NewN1(nil)
 
 		in := "N1*3*8~"
@@ -46,7 +44,6 @@ func TestForN1(t *testing.T) {
 	})
 
 	t.Run("encoding of n1 segment", func(t *testing.T) {
-
 		seg := NewN1(nil)
 
 		require.Equal(t, "N1**~", seg.String())
@@ -61,7 +58,6 @@ func TestForN1(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of n1 segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"5"}, Mask: rules.MASK_OPTIONAL},
 			"02": {Mask: rules.MASK_NOTUSED},

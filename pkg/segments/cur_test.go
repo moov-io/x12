@@ -12,9 +12,7 @@ import (
 )
 
 func TestForCUR(t *testing.T) {
-
 	t.Run("parsing of cur segment", func(t *testing.T) {
-
 		seg := NewCUR(nil)
 
 		in := "CUR*0019*00~"
@@ -52,7 +50,6 @@ func TestForCUR(t *testing.T) {
 	})
 
 	t.Run("encoding of cur segment", func(t *testing.T) {
-
 		seg := NewCUR(nil)
 
 		require.Equal(t, "CUR**~", seg.String())
@@ -67,7 +64,6 @@ func TestForCUR(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of cur segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"0019"}},
 			"02": {Mask: rules.MASK_OPTIONAL},

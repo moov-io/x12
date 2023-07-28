@@ -12,9 +12,7 @@ import (
 )
 
 func TestForN3(t *testing.T) {
-
 	t.Run("parsing of n3 segment", func(t *testing.T) {
-
 		seg := NewN3(nil)
 
 		in := "N3*3*8~"
@@ -52,7 +50,6 @@ func TestForN3(t *testing.T) {
 	})
 
 	t.Run("encoding of n3 segment", func(t *testing.T) {
-
 		seg := NewN3(nil)
 
 		require.Equal(t, "N3**~", seg.String())
@@ -67,7 +64,6 @@ func TestForN3(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of n3 segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"5"}, Mask: rules.MASK_OPTIONAL},
 			"02": {Mask: rules.MASK_NOTUSED},

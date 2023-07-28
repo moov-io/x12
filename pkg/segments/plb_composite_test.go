@@ -12,14 +12,12 @@ import (
 )
 
 func TestForMonetaryIdentification(t *testing.T) {
-
 	rule := rules.ElementSetRule{
 		"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"AA", "EM", "OA"}},
 		"02": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"AA", "EM", "OA"}},
 	}
 
 	t.Run("parsing of monetary identification", func(t *testing.T) {
-
 		composite := MonetaryIdentification{}
 		composite.SetRule(&rule)
 

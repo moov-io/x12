@@ -14,7 +14,6 @@ import (
 )
 
 func TestGroupFor837P(t *testing.T) {
-
 	raw := `GS*HC*133052274*311279999*20120419*212549*2120*X*005010X222A1~
 ST*837*000000533*005010X222A1~
 BHT*0019*00*000017120*20120419*212550*CH~
@@ -210,7 +209,6 @@ SE*191*000000533~
 GE*1*2120~`
 
 	t.Run("testing group for edi 837p", func(t *testing.T) {
-
 		data := strings.ReplaceAll(raw, "\n", "")
 
 		newGroup := NewGroup(&rule.GroupRule)

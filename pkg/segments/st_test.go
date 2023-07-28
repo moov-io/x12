@@ -12,9 +12,7 @@ import (
 )
 
 func TestForST(t *testing.T) {
-
 	t.Run("parsing of st segment", func(t *testing.T) {
-
 		seg := NewST(nil)
 
 		in := "ST*837*0001*005010X222A1~"
@@ -52,7 +50,6 @@ func TestForST(t *testing.T) {
 	})
 
 	t.Run("encoding of st segment", func(t *testing.T) {
-
 		seg := NewST(nil)
 
 		require.Equal(t, "ST*~", seg.String())
@@ -67,7 +64,6 @@ func TestForST(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of st segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"5"}, Mask: rules.MASK_OPTIONAL},
 			"02": {Mask: rules.MASK_NOTUSED},

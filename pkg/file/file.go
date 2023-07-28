@@ -7,17 +7,16 @@ package file
 import (
 	"bytes"
 	"errors"
-	"github.com/moov-io/x12/pkg/util"
 	"io"
 
 	"github.com/moov-io/x12/pkg/rules"
+	"github.com/moov-io/x12/pkg/util"
 )
 
 func NewFile(rule *rules.InterchangeRule, args ...string) *File {
-
 	f := File{rule: rule}
 
-	if len(args) > 0 && len(args[0]) == 1 {
+	if len(args) > 0 && args[0] != "" {
 		f.terminator = args[0]
 	}
 
@@ -32,7 +31,7 @@ type File struct {
 }
 
 func (f File) getTerminator() string {
-	if len(f.terminator) == 1 {
+	if f.terminator != "" {
 		return f.terminator
 	}
 
@@ -40,7 +39,6 @@ func (f File) getTerminator() string {
 }
 
 func (f *File) Validate() error {
-
 	if len(f.Interchanges) == 0 {
 		return errors.New("unable to find any interchange")
 	}
@@ -90,7 +88,6 @@ func (f File) Print(w io.Writer) {
 }
 
 func (f *File) Parse(scan Scanner) error {
-
 	if f.rule == nil {
 		return errors.New("unable to find valid rule")
 	}

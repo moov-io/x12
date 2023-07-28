@@ -70,7 +70,6 @@ func (r InterchangeRule) dumpRuleInfo(level int, isRequiredOnly bool) []ruleInfo
 }
 
 func (r InterchangeRule) Print(w io.Writer, isRequiredOnly bool) {
-
 	w.Write([]byte("\n  DUMP RULE " + r.Name + "\n\n"))
 
 	padChar := byte(' ')
@@ -90,7 +89,6 @@ func (r InterchangeRule) Print(w io.Writer, isRequiredOnly bool) {
 
 	selfDumps := r.dumpRuleInfo(0, isRequiredOnly)
 	for _, d := range selfDumps {
-
 		printStr := d.Name + "\t"
 		printStr = printStr + d.Mask + "\t"
 		if d.RepeatCount == GREATER_THAN_ONE {
@@ -254,12 +252,12 @@ type ElementSetRule map[string]ElementRule
 type ElementRule struct {
 	Mask         string
 	Name         string
+	AcceptRegex  string
 	AcceptValues []string
 	Composite    ElementSetRule
 }
 
 func (s SegmentSetRule) Get(index int) *SegmentRule {
-
 	segment, ok := s[index]
 	if ok {
 		return &segment
@@ -269,7 +267,6 @@ func (s SegmentSetRule) Get(index int) *SegmentRule {
 }
 
 func (e ElementSetRule) Get(name string) ElementRule {
-
 	element, ok := e[name]
 	if ok {
 		return element
@@ -279,7 +276,6 @@ func (e ElementSetRule) Get(name string) ElementRule {
 }
 
 func (e ElementSetRule) GetMask(name, defaultMask string) string {
-
 	element, ok := e[name]
 	if !ok {
 		element = ElementRule{}

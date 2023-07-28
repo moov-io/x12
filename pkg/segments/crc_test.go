@@ -12,9 +12,7 @@ import (
 )
 
 func TestForCRC(t *testing.T) {
-
 	t.Run("parsing of crc segment", func(t *testing.T) {
-
 		seg := NewCRC(nil)
 
 		in := "CRC*19~"
@@ -46,7 +44,6 @@ func TestForCRC(t *testing.T) {
 	})
 
 	t.Run("encoding of crc segment", func(t *testing.T) {
-
 		seg := NewCRC(nil)
 
 		require.Equal(t, "CRC~", seg.String())
@@ -60,7 +57,6 @@ func TestForCRC(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of crc segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"19"}, Mask: rules.MASK_REQUIRED},
 			"08": {Mask: rules.MASK_OPTIONAL},

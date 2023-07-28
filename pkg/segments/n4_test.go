@@ -12,9 +12,7 @@ import (
 )
 
 func TestForN4(t *testing.T) {
-
 	t.Run("parsing of n4 segment", func(t *testing.T) {
-
 		seg := NewN4(nil)
 
 		in := "N4*ALBUQUERQUE*NM*871201234~"
@@ -25,7 +23,7 @@ func TestForN4(t *testing.T) {
 		in = "N4*ALBUQUERQUE*NM*871201234*~"
 		read, err = seg.Parse(in)
 		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Equal(t, len(in), read)
 
 		in = "N4*ALBUQUERQUE**~"
 		read, err = seg.Parse(in)
@@ -52,7 +50,6 @@ func TestForN4(t *testing.T) {
 	})
 
 	t.Run("encoding of n4 segment", func(t *testing.T) {
-
 		seg := NewN4(nil)
 
 		require.Equal(t, "N4***~", seg.String())
@@ -67,7 +64,6 @@ func TestForN4(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of n4 segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"ALBUQUERQUE"}},
 			"02": {Mask: rules.MASK_OPTIONAL},

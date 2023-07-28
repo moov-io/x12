@@ -12,9 +12,7 @@ import (
 )
 
 func TestForLQ(t *testing.T) {
-
 	t.Run("parsing of LQ segment", func(t *testing.T) {
-
 		seg := NewLQ(nil)
 
 		in := "LQ**~"
@@ -36,7 +34,6 @@ func TestForLQ(t *testing.T) {
 	})
 
 	t.Run("encoding of LQ segment", func(t *testing.T) {
-
 		seg := NewLQ(nil)
 
 		require.Equal(t, "LQ**~", seg.String())

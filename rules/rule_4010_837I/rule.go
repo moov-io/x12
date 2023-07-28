@@ -3143,6 +3143,11 @@ var L2410Rule = rules.SegmentSetRule{
 				Mask: rules.MASK_OPTIONAL,
 				Composite: rules.ElementSetRule{
 					"01": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"F2", "GR", "ML", "UN"}},
+					"02": {Mask: rules.MASK_OPTIONAL},
+					"03": {Mask: rules.MASK_OPTIONAL},
+					"04": {Mask: rules.MASK_OPTIONAL},
+					"05": {Mask: rules.MASK_OPTIONAL},
+					"06": {Mask: rules.MASK_OPTIONAL},
 				},
 			},
 		},

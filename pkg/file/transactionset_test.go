@@ -14,7 +14,6 @@ import (
 )
 
 func TestTransactionSetFor837P(t *testing.T) {
-
 	raw := `ST*837*000000533*005010X222A1~
 BHT*0019*00*000017120*20120419*212550*CH~
 NM1*41*2*CS*****46*133052274~
@@ -208,7 +207,6 @@ DTP*472*D8*20070118~
 SE*191*000000533~`
 
 	t.Run("testing empty unified loop", func(t *testing.T) {
-
 		data := strings.ReplaceAll(raw, "\n", "")
 
 		newTransaction := NewTransactionSet(&rule.TransactionSetRule)

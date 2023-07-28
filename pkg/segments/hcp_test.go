@@ -12,9 +12,7 @@ import (
 )
 
 func TestForHCP(t *testing.T) {
-
 	t.Run("parsing of hcp segment", func(t *testing.T) {
-
 		seg := NewHCP(nil)
 
 		in := "HCP*0019*00~"
@@ -46,7 +44,6 @@ func TestForHCP(t *testing.T) {
 	})
 
 	t.Run("encoding of hcp segment", func(t *testing.T) {
-
 		seg := NewHCP(nil)
 
 		require.Equal(t, "HCP~", seg.String())
@@ -61,7 +58,6 @@ func TestForHCP(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of hcp segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"0019"}},
 			"02": {Mask: rules.MASK_OPTIONAL},

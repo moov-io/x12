@@ -1188,11 +1188,11 @@ var L2310CRule = rules.SegmentSetRule{
 		Description: "FACILITY CONTACT INFORMATION - 2310C",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
-			"01": {AcceptValues: []string{"IC"}, Mask: rules.MASK_OPTIONAL},
+			"01": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"IC"}},
 			"02": {Mask: rules.MASK_OPTIONAL},
-			"03": {AcceptValues: []string{"TE"}, Mask: rules.MASK_OPTIONAL},
+			"03": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"TE"}},
 			"04": {Mask: rules.MASK_OPTIONAL},
-			"05": {AcceptValues: []string{"EX"}, Mask: rules.MASK_OPTIONAL},
+			"05": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"EX"}},
 			"06": {Mask: rules.MASK_OPTIONAL},
 			"07": {Mask: rules.MASK_OPTIONAL},
 			"08": {Mask: rules.MASK_OPTIONAL},
@@ -1830,9 +1830,9 @@ var L2410Rule = rules.SegmentSetRule{
 		Description: "DRUG INFORMATION - 2410",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
-			"01": {Mask: rules.MASK_NOTUSED},
-			"02": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"N4", "EN", "EO", "HI", "ON", "UK", "UP"}},
-			"03": {Mask: rules.MASK_REQUIRED},
+			"01": {Mask: rules.MASK_OPTIONAL},
+			"02": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"N4", "EN", "EO", "HI", "ON", "UK", "UP"}},
+			"03": {Mask: rules.MASK_OPTIONAL},
 		},
 	},
 	1: rules.SegmentRule{
@@ -1840,11 +1840,20 @@ var L2410Rule = rules.SegmentSetRule{
 		Description: "DRUG INFORMATION - 2410",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
-			"01": {Mask: rules.MASK_NOTUSED},
-			"02": {Mask: rules.MASK_NOTUSED},
-			"03": {Mask: rules.MASK_NOTUSED},
-			"04": {Mask: rules.MASK_REQUIRED},
-			"05": {Mask: rules.MASK_REQUIRED},
+			"01": {Mask: rules.MASK_OPTIONAL},
+			"02": {Mask: rules.MASK_OPTIONAL},
+			"03": {Mask: rules.MASK_OPTIONAL},
+			"04": {Mask: rules.MASK_OPTIONAL},
+			"05": {
+				Mask: rules.MASK_OPTIONAL,
+				Composite: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_OPTIONAL},
+					"02": {Mask: rules.MASK_OPTIONAL},
+					"03": {Mask: rules.MASK_OPTIONAL},
+					"04": {Mask: rules.MASK_OPTIONAL},
+					"05": {Mask: rules.MASK_OPTIONAL},
+					"06": {Mask: rules.MASK_OPTIONAL},
+				}},
 		},
 	},
 	2: rules.SegmentRule{
@@ -1853,7 +1862,8 @@ var L2410Rule = rules.SegmentSetRule{
 		Mask:        rules.MASK_OPTIONAL,
 		RepeatCount: 20,
 		Elements: rules.ElementSetRule{
-			"01": {AcceptValues: []string{"VV", "XZ"}},
+			"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"VV", "XZ"}},
+			"02": {Mask: rules.MASK_REQUIRED},
 		},
 	},
 }

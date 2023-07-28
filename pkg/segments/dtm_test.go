@@ -12,9 +12,7 @@ import (
 )
 
 func TestForDTM(t *testing.T) {
-
 	t.Run("parsing of dtm segment", func(t *testing.T) {
-
 		seg := NewDTM(nil)
 
 		in := "DTM*0019*00~"
@@ -52,7 +50,6 @@ func TestForDTM(t *testing.T) {
 	})
 
 	t.Run("encoding of dtm segment", func(t *testing.T) {
-
 		seg := NewDTM(nil)
 
 		require.Equal(t, "DTM**~", seg.String())
@@ -67,7 +64,6 @@ func TestForDTM(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of dtm segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"0019"}},
 			"02": {Mask: rules.MASK_OPTIONAL},

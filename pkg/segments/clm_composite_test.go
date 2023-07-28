@@ -12,14 +12,12 @@ import (
 )
 
 func TestForHealthCareServiceLocation(t *testing.T) {
-
 	rule := rules.ElementSetRule{
 		"02": {AcceptValues: []string{"2"}},
 		"03": {AcceptValues: []string{"1", "2", "3", "4", "5", "7", "8"}},
 	}
 
 	t.Run("parsing of service location", func(t *testing.T) {
-
 		composite := HealthCareServiceLocation{}
 		composite.SetRule(&rule)
 
@@ -39,7 +37,6 @@ func TestForHealthCareServiceLocation(t *testing.T) {
 }
 
 func TestForRelatedCausesInformation(t *testing.T) {
-
 	rule := rules.ElementSetRule{
 		"01": {AcceptValues: []string{"AA", "EM", "OA"}},
 		"02": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"AA", "EM", "OA"}},
@@ -49,7 +46,6 @@ func TestForRelatedCausesInformation(t *testing.T) {
 	}
 
 	t.Run("parsing of causes information", func(t *testing.T) {
-
 		composite := HealthCareServiceLocation{}
 		composite.SetRule(&rule)
 

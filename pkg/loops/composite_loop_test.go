@@ -119,7 +119,6 @@ var testComplexRule = rules.LoopRule{
 }
 
 func FillCompositeLoopWithRule(loop *CompositeLoop) {
-
 	seg11 := segments.NewNM1(&testSegRule1.Get(0).Elements)
 	seg11.SetFieldByIndex("01", "41")
 	seg11.SetFieldByIndex("02", "2")
@@ -169,9 +168,7 @@ func FillCompositeLoopWithRule(loop *CompositeLoop) {
 }
 
 func TestCompositeLoop(t *testing.T) {
-
 	t.Run("testing empty Composite loop", func(t *testing.T) {
-
 		loop := &CompositeLoop{}
 		require.Error(t, loop.Validate(nil))
 		require.Equal(t, "please specify rules for this Composite loop", loop.Validate(nil).Error())
@@ -204,7 +201,6 @@ func TestCompositeLoop(t *testing.T) {
 	})
 
 	t.Run("testing Composite loop with specified rule", func(t *testing.T) {
-
 		loop := NewCompositeLoop(&testComplexRule)
 		require.Error(t, loop.Validate(nil))
 		require.Equal(t, "loop(1000A) is invalid, please add new NM1 segment", loop.Validate(nil).Error())
@@ -232,7 +228,6 @@ func TestCompositeLoop(t *testing.T) {
 	})
 
 	t.Run("testing Composite loop with 1000A", func(t *testing.T) {
-
 		rule := rules.LoopRule{
 			Segments: rule_5010_837p.L1000ARule,
 			Mask:     rules.MASK_REQUIRED,

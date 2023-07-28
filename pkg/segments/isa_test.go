@@ -12,9 +12,7 @@ import (
 )
 
 func TestForISA(t *testing.T) {
-
 	t.Run("parsing of isa segment", func(t *testing.T) {
-
 		seg := NewISA(nil)
 
 		in := "ISA*00* *00* *ZZ*85-0858585 *ZZ* *130709*1058*^*00501*000101654*1*P*:~"
@@ -52,7 +50,6 @@ func TestForISA(t *testing.T) {
 	})
 
 	t.Run("encoding of isa segment", func(t *testing.T) {
-
 		seg := NewISA(nil)
 
 		require.Equal(t, "ISA****************~", seg.String())
@@ -67,7 +64,6 @@ func TestForISA(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of isa segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"00"}},
 			"14": {Mask: rules.MASK_OPTIONAL},

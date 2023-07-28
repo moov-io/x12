@@ -5,15 +5,14 @@
 package segments
 
 import (
-	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/moov-io/x12/pkg/rules"
 	"github.com/moov-io/x12/pkg/util"
 )
 
 func NewN1(rule *rules.ElementSetRule) SegmentInterface {
-
 	newSegment := N1{}
 
 	if rule == nil {
@@ -61,13 +60,11 @@ func (r N1) GetFieldByIndex(index string) any {
 }
 
 func (r *N1) Validate(rule *rules.ElementSetRule) error {
-
 	if rule == nil {
 		rule = r.GetRule()
 	}
 
 	for i := 1; i <= r.fieldCount(); i++ {
-
 		idx := fmt.Sprintf("%02d", i)
 
 		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask(i)); err != nil {
@@ -79,32 +76,19 @@ func (r *N1) Validate(rule *rules.ElementSetRule) error {
 }
 
 func (r *N1) Parse(data string, args ...string) (int, error) {
-
-	var line string
-	var err error
 	var size int
-
-	length := util.GetRecordSize(data, args...)
-	codeLen := len(r.Name())
-	read := codeLen + 1
-
-	if length < int64(read) {
-		return 0, errors.New("n1 segment has not enough input data")
-	} else {
-		line = data[:length]
-	}
-
-	if r.Name() != data[:codeLen] {
-		return 0, errors.New("n1 segment contains invalid code")
+	name := strings.ToLower(r.Name())
+	read, line, err := r.VerifyCode(data, name, args...)
+	if err != nil {
+		return 0, err
 	}
 
 	for i := 1; i <= r.fieldCount(); i++ {
-
 		var value string
 		idx := fmt.Sprintf("%02d", i)
 
 		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), r.defaultMask(i), args...); err != nil {
-			return 0, fmt.Errorf("unable to parse n1's element (%s), %s", idx, err.Error())
+			return 0, fmt.Errorf("unable to parse %s's element (%s), %s", name, idx, err.Error())
 		} else {
 			read += size
 			r.SetFieldByIndex(idx, value)
@@ -118,28 +102,11 @@ func (r N1) String(args ...string) string {
 	var buf string
 
 	for i := r.fieldCount(); i > 0; i-- {
-
 		idx := fmt.Sprintf("%02d", i)
-		value := r.GetFieldByIndex(idx)
+		mask := r.GetRule().GetMask(idx, r.defaultMask(i))
 
-		if buf == "" {
-			mask := r.GetRule().GetMask(idx, r.defaultMask(i))
-			if mask == rules.MASK_NOTUSED {
-				continue
-			}
-			if mask == rules.MASK_OPTIONAL && (value == nil || fmt.Sprintf("%v", value) == "") {
-				continue
-			}
-		}
-
-		if buf == "" {
-			buf = fmt.Sprintf("%v%s", value, util.GetSegmentTerminator(args...))
-		} else {
-			buf = fmt.Sprintf("%v%s", value, util.DataElementSeparator) + buf
-		}
+		buf = r.CompositeString(buf, mask, util.DataElementSeparator, util.GetSegmentTerminator(args...), r.GetFieldByIndex(idx))
 	}
 
-	buf = fmt.Sprintf("%s%s", r.Name(), util.DataElementSeparator) + buf
-
-	return buf
+	return r.TerminateString(buf, r.Name())
 }

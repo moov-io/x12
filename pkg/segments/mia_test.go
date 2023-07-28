@@ -12,9 +12,7 @@ import (
 )
 
 func TestForMIA(t *testing.T) {
-
 	t.Run("parsing of mia segment", func(t *testing.T) {
-
 		seg := NewMIA(nil)
 
 		in := "MIA*0019*00~"
@@ -46,7 +44,6 @@ func TestForMIA(t *testing.T) {
 	})
 
 	t.Run("encoding of mia segment", func(t *testing.T) {
-
 		seg := NewMIA(nil)
 
 		require.Equal(t, "MIA*~", seg.String())
@@ -61,7 +58,6 @@ func TestForMIA(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of mia segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"0019"}},
 			"02": {Mask: rules.MASK_OPTIONAL},

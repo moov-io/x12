@@ -12,9 +12,7 @@ import (
 )
 
 func TestForREF(t *testing.T) {
-
 	t.Run("parsing of ref segment", func(t *testing.T) {
-
 		seg := NewREF(nil)
 
 		in := "REF*3*8~"
@@ -52,7 +50,6 @@ func TestForREF(t *testing.T) {
 	})
 
 	t.Run("encoding of ref segment", func(t *testing.T) {
-
 		seg := NewREF(nil)
 
 		require.Equal(t, "REF**~", seg.String())
@@ -67,7 +64,6 @@ func TestForREF(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of ref segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"5"}, Mask: rules.MASK_OPTIONAL},
 			"02": {Mask: rules.MASK_NOTUSED},

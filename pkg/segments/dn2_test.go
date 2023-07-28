@@ -12,9 +12,7 @@ import (
 )
 
 func TestForDN2(t *testing.T) {
-
 	t.Run("parsing of dn2 segment", func(t *testing.T) {
-
 		seg := NewDN2(nil)
 
 		in := "DN2*0019*00~"
@@ -46,7 +44,6 @@ func TestForDN2(t *testing.T) {
 	})
 
 	t.Run("encoding of dn2 segment", func(t *testing.T) {
-
 		seg := NewDN2(nil)
 
 		require.Equal(t, "DN2~", seg.String())
@@ -61,7 +58,6 @@ func TestForDN2(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of dn2 segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"0019"}},
 			"02": {Mask: rules.MASK_OPTIONAL},

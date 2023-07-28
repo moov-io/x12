@@ -51,7 +51,6 @@ var testRule = rules.LoopRule{
 
 func TestNewLoop(t *testing.T) {
 	t.Run("testing empty  loop", func(t *testing.T) {
-
 		loop := &Loop{}
 		require.Error(t, loop.Validate(nil))
 		require.Equal(t, "please specify rules for this loop", loop.Validate(nil).Error())
@@ -86,7 +85,6 @@ func TestNewLoop(t *testing.T) {
 
 func TestLoop100A(t *testing.T) {
 	t.Run("testing loop 1000a", func(t *testing.T) {
-
 		loop := NewLoop(&testRule)
 
 		require.Error(t, loop.Validate(nil))
@@ -100,7 +98,6 @@ func TestLoop100A(t *testing.T) {
 	})
 
 	t.Run("parsing loop 1000a", func(t *testing.T) {
-
 		in := "NM1*41*2*PREMIER BILLING SERVICE*****46*TGJ23~PER*IC*JERRY*TE*7176149999~"
 		loop := NewLoop(&testRule)
 
@@ -137,7 +134,6 @@ func TestLoop100A(t *testing.T) {
 	})
 
 	t.Run("validating loop 1000a", func(t *testing.T) {
-
 		loop := NewLoop(&testRule)
 
 		nm1 := segments.NM1{}
@@ -198,7 +194,6 @@ func TestLoop100A(t *testing.T) {
 	})
 
 	t.Run("testing loop 1000a with repeated segments", func(t *testing.T) {
-
 		var rule = rules.LoopRule{
 			Name: "1000A",
 			Segments: rules.SegmentSetRule{
@@ -290,7 +285,6 @@ func TestLoop100A(t *testing.T) {
 	})
 
 	t.Run("testing loop 1000a with repeated segments", func(t *testing.T) {
-
 		var rule = rules.LoopRule{
 			Name: "1000A",
 			Mask: rules.MASK_REQUIRED,

@@ -19,10 +19,9 @@ import (
 )
 
 func NewInterchange(rule *rules.InterchangeRule, args ...string) *Interchange {
-
 	newChange := Interchange{rule: rule}
 
-	if len(args) > 0 && len(args[0]) == 1 {
+	if len(args) > 0 && args[0] != "" {
 		newChange.terminator = args[0]
 	}
 
@@ -40,7 +39,7 @@ type Interchange struct {
 }
 
 func (r Interchange) getTerminator() string {
-	if len(r.terminator) == 1 {
+	if r.terminator != "" {
 		return r.terminator
 	}
 
@@ -64,7 +63,6 @@ func (r *Interchange) GetGroupControlNumbers() []string {
 }
 
 func (r *Interchange) Validate(validateRule *rules.InterchangeRule) error {
-
 	changeRule := r.rule
 	if validateRule != nil {
 		changeRule = validateRule
@@ -122,9 +120,7 @@ func (r *Interchange) Validate(validateRule *rules.InterchangeRule) error {
 	}
 
 	// Validating
-	if r.IEA != nil {
-
-		// compare control set number
+	if r.IEA != nil { // compare control set number
 		if r.IEA.InterchangeControlNumber != r.ISA.InterchangeControlNumber {
 			return errors.New("has invalid interchange control number")
 		}
@@ -151,7 +147,6 @@ func (r *Interchange) Validate(validateRule *rules.InterchangeRule) error {
 }
 
 func (r *Interchange) Parse(data string) (int, error) {
-
 	if r.rule == nil {
 		return 0, errors.New("please specify rules for this group")
 	}
@@ -245,7 +240,6 @@ func (r Interchange) String(args ...string) string {
 //	IEA          |1             |000002120         |~                       |           |       |                |    |                |           |     |    |      |          |    |    |    |    |    |    |
 
 func (r Interchange) Print(w io.Writer) {
-
 	padChar := byte(' ')
 	padding := 1
 	level := 0
@@ -285,7 +279,6 @@ func (r Interchange) Print(w io.Writer) {
 	}
 
 	for _, d := range selfDumps {
-
 		printStr := d.Name + "\t"
 		for _, item := range d.Items {
 			printStr = printStr + item + "\t"

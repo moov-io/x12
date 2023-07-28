@@ -12,9 +12,7 @@ import (
 )
 
 func TestForENT(t *testing.T) {
-
 	t.Run("parsing of ent segment", func(t *testing.T) {
-
 		seg := NewENT(nil)
 
 		in := "ENT*85*2*INDIAN HEALTH HOSPITAL*~"
@@ -46,7 +44,6 @@ func TestForENT(t *testing.T) {
 	})
 
 	t.Run("encoding of ent segment", func(t *testing.T) {
-
 		seg := NewENT(nil)
 
 		require.Equal(t, "ENT**~", seg.String())
@@ -61,7 +58,6 @@ func TestForENT(t *testing.T) {
 	})
 
 	t.Run("parsing and encoding of ent segment with specified rule", func(t *testing.T) {
-
 		rule := rules.ElementSetRule{
 			"01": {AcceptValues: []string{"85"}},
 			"03": {Mask: rules.MASK_OPTIONAL},
