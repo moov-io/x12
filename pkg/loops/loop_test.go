@@ -53,24 +53,24 @@ func TestNewLoop(t *testing.T) {
 	t.Run("testing empty  loop", func(t *testing.T) {
 		loop := &Loop{}
 		require.Error(t, loop.Validate(nil))
-		require.Equal(t, "please specify rules for loop(loop)", loop.Validate(nil).Error())
+		require.Equal(t, "element(loop) rule is not defined", loop.Validate(nil).Error())
 		require.Equal(t, "", loop.String())
 		require.Equal(t, "loop", loop.Name())
 
 		read, err := loop.Parse("")
 		require.Error(t, err)
-		require.Equal(t, "please specify rules for loop(loop)", err.Error())
+		require.Equal(t, "element(loop) rule is not defined", err.Error())
 		require.Equal(t, 0, read)
 
 		loop = NewLoop(nil)
 		require.Error(t, loop.Validate(nil))
-		require.Equal(t, "please specify rules for loop(loop)", loop.Validate(nil).Error())
+		require.Equal(t, "element(loop) rule is not defined", loop.Validate(nil).Error())
 		require.Equal(t, "", loop.String())
 		require.Equal(t, "loop", loop.Name())
 
 		read, err = loop.Parse("")
 		require.Error(t, err)
-		require.Equal(t, "please specify rules for loop(loop)", err.Error())
+		require.Equal(t, "element(loop) rule is not defined", err.Error())
 		require.Equal(t, 0, read)
 
 		loop = NewLoop(&testRule)
@@ -158,25 +158,25 @@ func TestLoop100A(t *testing.T) {
 
 		err = loop.Validate(nil)
 		require.Error(t, err)
-		require.Equal(t, "segment(nm1)'s name is not equal with rule's name (per)", err.Error())
+		require.Equal(t, "segment(nm1) don't accept specified rule(per), please verify segment orders or has dirty segments as previous segment", err.Error())
 
 		loop.Segments = []segments.SegmentInterface{&per1, &per1}
 
 		err = loop.Validate(nil)
 		require.Error(t, err)
-		require.Equal(t, "segment(per)'s name is not equal with rule's name (nm1)", err.Error())
+		require.Equal(t, "segment(per) don't accept specified rule(nm1), please verify segment orders or has dirty segments as previous segment", err.Error())
 
 		loop.Segments = []segments.SegmentInterface{&nm1, &per1, &per1}
 
 		err = loop.Validate(nil)
 		require.Error(t, err)
-		require.Equal(t, "unable to validate segment(02), rule is not specified", err.Error())
+		require.Equal(t, "all segments of 1000a don't to validate using specified rule, have dirty segments", err.Error())
 
 		loop.Segments = []segments.SegmentInterface{&nm1, &per1, &nm1, &per1}
 
 		err = loop.Validate(nil)
 		require.Error(t, err)
-		require.Equal(t, "unable to validate segment(02~03), rule is not specified", err.Error())
+		require.Equal(t, "all segments of 1000a don't to validate using specified rule, have dirty segments", err.Error())
 
 		per1.SetFieldByIndex("01", "XX")
 
@@ -190,7 +190,7 @@ func TestLoop100A(t *testing.T) {
 
 		err = loop.Validate(nil)
 		require.Error(t, err)
-		require.Equal(t, "please add new PER segment", err.Error())
+		require.Equal(t, "segment(per) does not repeat as specified times", err.Error())
 	})
 
 	t.Run("testing loop 1000a with repeated segments", func(t *testing.T) {
@@ -345,13 +345,13 @@ func TestLoop100A(t *testing.T) {
 
 		err = loop.Validate(nil)
 		require.Error(t, err)
-		require.Equal(t, "please add new PER segment", err.Error())
+		require.Equal(t, "segment(per) does not repeat as specified times", err.Error())
 
 		loop.Segments = []segments.SegmentInterface{&nm1}
 
 		err = loop.Validate(nil)
 		require.Error(t, err)
-		require.Equal(t, "please add new PER segment", err.Error())
+		require.Equal(t, "segment(nm1) does not repeat as specified times", err.Error())
 
 		in := "NM1*41*2*PREMIER BILLING SERVICE*****46*TGJ23~NM1*41*2*PREMIER BILLING SERVICE*****46*TGJ23~PER*IC*JERRY*TE*7176149999~"
 
@@ -361,5 +361,44 @@ func TestLoop100A(t *testing.T) {
 		require.Equal(t, in, loop.String())
 		require.NoError(t, loop.Validate(nil))
 
+		rule = rules.LoopRule{
+			Name: "1000A",
+			Mask: rules.MASK_REQUIRED,
+			Segments: rules.SegmentSetRule{
+				0: rules.SegmentRule{
+					Name:        "NM1",
+					Description: "SUBMITTER NAME-1000A",
+					RepeatCount: 2,
+					Mask:        rules.MASK_OPTIONAL,
+					Elements: map[string]rules.ElementRule{
+						"01": {AcceptValues: []string{"41"}},
+						"02": {AcceptValues: []string{"1", "2"}},
+						"04": {Mask: rules.MASK_OPTIONAL},
+						"05": {Mask: rules.MASK_OPTIONAL},
+						"06": {Mask: rules.MASK_NOTUSED},
+						"07": {Mask: rules.MASK_NOTUSED},
+						"08": {AcceptValues: []string{"46"}},
+					},
+				},
+				1: rules.SegmentRule{
+					Name:        "PER",
+					Description: "SUBMITTER EDI CONTACT INFORMATION-1000A",
+					RepeatCount: 1,
+					Mask:        rules.MASK_REQUIRED,
+					Elements: map[string]rules.ElementRule{
+						"01": {AcceptValues: []string{"IC"}},
+						"03": {AcceptValues: []string{"TE"}},
+						"05": {AcceptValues: []string{"EM"}, Mask: rules.MASK_OPTIONAL},
+						"06": {Mask: rules.MASK_OPTIONAL},
+						"07": {Mask: rules.MASK_NOTUSED},
+						"08": {Mask: rules.MASK_NOTUSED},
+					},
+				},
+			},
+		}
+		loop = NewLoop(&rule)
+		err = loop.Validate(nil)
+		require.Error(t, err)
+		require.Equal(t, "segment(per) does not repeat as specified times", err.Error())
 	})
 }

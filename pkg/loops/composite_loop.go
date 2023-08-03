@@ -6,7 +6,6 @@ package loops
 
 import (
 	"bytes"
-	"fmt"
 	"strings"
 
 	"github.com/moov-io/x12/pkg/rules"
@@ -57,7 +56,7 @@ func (r *CompositeLoop) Validate(loopRule *rules.LoopRule) error {
 	}
 
 	if loopRule == nil {
-		return util.NewSpecifiedRuleError(util.GetStructName(r))
+		return util.NewSpecifiedRuleError(r.Name())
 	}
 
 	err := r.Loop.Validate(&loopRule.Segments)
@@ -65,41 +64,41 @@ func (r *CompositeLoop) Validate(loopRule *rules.LoopRule) error {
 		return err
 	}
 
-	segIndex := 0
+	passIndex := 0
 	for index := 0; index < len(loopRule.Composite); index++ {
 		rule := loopRule.Composite[index]
+		passLoopIndex := 0
 		for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
-			if segIndex+1 > len(r.SubLoops) {
-				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
-					return fmt.Errorf("please add new %s loop", strings.ToUpper(rule.Name))
-				}
+			if passIndex+1 > len(r.SubLoops) {
 				break
 			}
 
-			if r.SubLoops[segIndex].Name() != rule.Name {
+			if r.SubLoops[passIndex].Name() != rule.Name {
 				if rules.IsMaskRequired(rule.Mask) {
-					return fmt.Errorf("loop(%02d)'s name is not equal with rule's name (%s)", segIndex, strings.ToLower(rule.Name))
+					return util.NewMismatchLoopError(r.SubLoops[passIndex].Name(), rule.Name)
 				}
 				break
 			}
 
-			if err = r.SubLoops[segIndex].Validate(&rule); err != nil {
+			if err = r.SubLoops[passIndex].Validate(&rule); err != nil {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
-					return fmt.Errorf("loop(%02d) should be valid %s loop, %s", segIndex, strings.ToLower(rule.Name), err.Error())
+					util.AppendErrorStack(err, r.SubLoops[passIndex].Name())
+					return err
 				}
 				break
 			}
 
-			segIndex++
+			passLoopIndex++
+			passIndex++
+		}
+
+		if passLoopIndex < rule.MinRepeat() {
+			return util.NewMinLoopError(rule.Name)
 		}
 	}
 
-	if len(r.SubLoops) > segIndex {
-		if segIndex == len(r.SubLoops)-1 {
-			return fmt.Errorf("unable to validate loop(%02d), rule is not specified", segIndex)
-		} else {
-			return fmt.Errorf("unable to validate loop(%02d~%02d), rule is not specified", segIndex, len(r.SubLoops)-1)
-		}
+	if len(r.SubLoops) > passIndex {
+		return util.NewAllLoopError(r.Name())
 	}
 
 	return nil
@@ -107,7 +106,7 @@ func (r *CompositeLoop) Validate(loopRule *rules.LoopRule) error {
 
 func (r *CompositeLoop) Parse(data string, args ...string) (int, error) {
 	if r.rule == nil {
-		return 0, util.NewSpecifiedRuleError(util.GetStructName(r))
+		return 0, util.NewSpecifiedRuleError(r.Name())
 	}
 
 	r.Loop.SetRule(r.rule)
