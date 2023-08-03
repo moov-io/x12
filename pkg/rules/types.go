@@ -180,10 +180,6 @@ func (l LoopRule) MinRepeat() int {
 		return 1
 	}
 
-	if l.RepeatCount > 1 {
-		return l.RepeatCount
-	}
-
 	return 1
 }
 
@@ -261,10 +257,6 @@ func (s SegmentRule) MinRepeat() int {
 
 	if s.RepeatCount == GREATER_THAN_ONE {
 		return 1
-	}
-
-	if s.RepeatCount > 1 {
-		return s.RepeatCount
 	}
 
 	return 1
