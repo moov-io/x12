@@ -102,11 +102,10 @@ func (r *TransactionSet) Parse(data string, args ...string) (int, error) {
 	{
 		r.ST.SetRule(&stRule.Elements)
 		size, err = r.ST.Parse(data[read:], args...)
+		read += size
 		if err != nil {
 			util.AppendErrorStack(err, util.GetStructName(r))
-			return 0, err
-		} else {
-			read += size
+			return read, err
 		}
 	}
 
@@ -114,11 +113,10 @@ func (r *TransactionSet) Parse(data string, args ...string) (int, error) {
 	{
 		r.Composite.SetRule(&r.rule.Composite)
 		size, err = r.Composite.Parse(data[read:], args...)
+		read += size
 		if err != nil {
 			util.AppendErrorStack(err, util.GetStructName(r))
-			return 0, err
-		} else {
-			read += size
+			return read, err
 		}
 	}
 
@@ -129,7 +127,7 @@ func (r *TransactionSet) Parse(data string, args ...string) (int, error) {
 		size, err = newSE.Parse(data[read:], args...)
 		if err != nil && rules.IsMaskRequired(seRule.Mask) {
 			util.AppendErrorStack(err, util.GetStructName(r))
-			return 0, err
+			return read, err
 		} else if err == nil {
 			read += size
 			if s, ok := newSE.(*segments.SE); ok {

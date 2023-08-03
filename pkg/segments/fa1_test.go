@@ -49,7 +49,7 @@ func TestForFA1(t *testing.T) {
 
 		require.Equal(t, "FA1*~", seg.String())
 
-		in := "FA1*0019*~"
+		in := "FA1*0019~"
 		read, err := seg.Parse(in)
 		require.NoError(t, err)
 		require.Equal(t, len(in), read)

@@ -69,7 +69,7 @@ func (r *Interchange) Validate(validateRule *rules.InterchangeRule) error {
 	}
 
 	if changeRule == nil {
-		return util.NewFindRuleError("interchange")
+		return util.NewFindRuleError(util.GetStructName(r))
 	}
 
 	var err error
@@ -79,7 +79,7 @@ func (r *Interchange) Validate(validateRule *rules.InterchangeRule) error {
 	{
 		err = r.ISA.Validate(&isaRule.Elements)
 		if err != nil {
-			return err
+			return util.UpdateErrorReason(err)
 		}
 	}
 
@@ -92,22 +92,17 @@ func (r *Interchange) Validate(validateRule *rules.InterchangeRule) error {
 		for index := 0; index < len(r.FunctionalGroups); index++ {
 			group := r.FunctionalGroups[index]
 			if err = group.Validate(&changeRule.Group); err != nil {
-				return err
+				return util.UpdateErrorReason(err)
 			}
 		}
 
 	}
 
-	// Validating IEA Segment
 	ieaRule := changeRule.IEA
-	if rules.IsMaskRequired(ieaRule.Mask) && r.IEA == nil {
-		return errors.New("iea segment is required segment")
-	}
-
 	if r.IEA != nil {
 		err = r.IEA.Validate(&ieaRule.Elements)
 		if err != nil && rules.IsMaskRequired(ieaRule.Mask) {
-			return err
+			return util.UpdateErrorReason(err)
 		}
 	}
 
@@ -140,7 +135,7 @@ func (r *Interchange) Validate(validateRule *rules.InterchangeRule) error {
 
 func (r *Interchange) Parse(data string) (int, error) {
 	if r.rule == nil {
-		return 0, errors.New("please specify rules for this group")
+		return 0, util.NewFindRuleError(util.GetStructName(r))
 	}
 
 	var size, read int
@@ -170,7 +165,7 @@ func (r *Interchange) Parse(data string) (int, error) {
 		} else {
 			line := data[read:]
 			if len(r.FunctionalGroups) == 0 && (len(line) > 2 && line[0:2] == "GS") {
-				return 0, err
+				return 0, util.UpdateErrorReason(err)
 			}
 		}
 	}
