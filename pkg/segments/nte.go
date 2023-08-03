@@ -75,7 +75,7 @@ func (r *NTE) Parse(data string, args ...string) (int, error) {
 		}
 	}
 
-	return returnRead(read, data, name)
+	return returnRead(read, data, name, args...)
 }
 
 func (r NTE) String(args ...string) string {

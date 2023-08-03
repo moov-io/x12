@@ -74,7 +74,7 @@ func (r *FA2) Parse(data string, args ...string) (int, error) {
 		}
 	}
 
-	return returnRead(read, data, name)
+	return returnRead(read, data, name, args...)
 }
 
 func (r FA2) String(args ...string) string {

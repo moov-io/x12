@@ -76,7 +76,7 @@ func (r *TRN) Parse(data string, args ...string) (int, error) {
 		}
 	}
 
-	return returnRead(read, data, name)
+	return returnRead(read, data, name, args...)
 }
 
 func (r TRN) String(args ...string) string {

@@ -210,7 +210,7 @@ func (r *PLB) Parse(data string, args ...string) (int, error) {
 		}
 	}
 
-	return returnRead(read, data, name)
+	return returnRead(read, data, name, args...)
 }
 
 func (r PLB) String(args ...string) string {

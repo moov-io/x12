@@ -82,7 +82,7 @@ func (r *TXI) Parse(data string, args ...string) (int, error) {
 		}
 	}
 
-	return returnRead(read, data, name)
+	return returnRead(read, data, name, args...)
 }
 
 func (r TXI) String(args ...string) string {

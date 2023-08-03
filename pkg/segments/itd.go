@@ -79,7 +79,7 @@ func (r *ITD) Parse(data string, args ...string) (int, error) {
 		}
 	}
 
-	return returnRead(read, data, name)
+	return returnRead(read, data, name, args...)
 }
 
 func (r ITD) String(args ...string) string {

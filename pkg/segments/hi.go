@@ -200,7 +200,7 @@ func (r *HI) Parse(data string, args ...string) (int, error) {
 		}
 	}
 
-	return returnRead(read, data, name)
+	return returnRead(read, data, name, args...)
 }
 
 func (r HI) String(args ...string) string {

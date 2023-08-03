@@ -74,7 +74,7 @@ func (r *LX) Parse(data string, args ...string) (int, error) {
 		}
 	}
 
-	return returnRead(read, data, name)
+	return returnRead(read, data, name, args...)
 }
 
 func (r LX) String(args ...string) string {
