@@ -351,7 +351,7 @@ func TestLoop100A(t *testing.T) {
 
 		err = loop.Validate(nil)
 		require.Error(t, err)
-		require.Equal(t, "segment(nm1) does not repeat as specified times", err.Error())
+		require.Equal(t, "segment(per) does not repeat as specified times", err.Error())
 
 		in := "NM1*41*2*PREMIER BILLING SERVICE*****46*TGJ23~NM1*41*2*PREMIER BILLING SERVICE*****46*TGJ23~PER*IC*JERRY*TE*7176149999~"
 

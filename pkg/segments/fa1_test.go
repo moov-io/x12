@@ -47,7 +47,7 @@ func TestForFA1(t *testing.T) {
 	t.Run("encoding of fa1 segment", func(t *testing.T) {
 		seg := NewFA1(nil)
 
-		require.Equal(t, "FA1**~", seg.String())
+		require.Equal(t, "FA1*~", seg.String())
 
 		in := "FA1*0019*~"
 		read, err := seg.Parse(in)
