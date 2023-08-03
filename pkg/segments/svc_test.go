@@ -22,13 +22,14 @@ func TestForSVC(t *testing.T) {
 
 		in = "SVC*1-1180*174****11:B:1*Y*A*Y*Y*P*********~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, 27, read)
+		require.Error(t, err)
+		require.Equal(t, "svc segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
-		in = "SVC*1-1180*174****11:B:1*Y*A*Y*Y~"
+		in = "SVC*1-1180*174****11:B:1*~"
 		read, err = seg.Parse(in)
 		require.NoError(t, err)
-		require.Equal(t, 27, read)
+		require.Equal(t, len(in), read)
 
 		in = "DMT~"
 		read, err = seg.Parse(in)

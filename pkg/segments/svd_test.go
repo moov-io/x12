@@ -23,8 +23,9 @@ func TestForSVD(t *testing.T) {
 
 		in = "SVD*CODE*AMOUNT*AA:B**A**~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "svd segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "SVD*CODE*AMOUNT*AA:B**A~"
 		read, err = seg.Parse(in)
@@ -60,12 +61,12 @@ func TestForSVD(t *testing.T) {
 		read, err := seg.Parse(in)
 		require.Error(t, err)
 		require.Equal(t, 0, read)
-		require.Equal(t, "unable to parse svd's element (03), unable to parse procedure identifier's element (01), doesn't enough input string", err.Error())
+		require.Equal(t, "unable to parse svd's element (03), unable to parse procedureidentifier's element (01), doesn't enough input string", err.Error())
 
 		read, err = seg.Parse(in, util.SegmentTerminator, "<")
 		require.Error(t, err)
 		require.Equal(t, 0, read)
-		require.Equal(t, "unable to parse svd's element (03), unable to parse procedure identifier's element (01), doesn't enough input string", err.Error())
+		require.Equal(t, "unable to parse svd's element (03), unable to parse procedureidentifier's element (01), doesn't enough input string", err.Error())
 	})
 
 	t.Run("parsing and encoding of svd segment with specified rule", func(t *testing.T) {
@@ -98,7 +99,7 @@ func TestForSVD(t *testing.T) {
 		in = "SVD*CODE*AMOUNT*A:A**Y~"
 		read, err = seg.Parse(in)
 		require.Error(t, err)
-		require.Equal(t, "unable to parse svd's element (03), unable to parse procedure identifier's element (02), the element contains unexpected value", err.Error())
+		require.Equal(t, "unable to parse svd's element (03), unable to parse procedureidentifier's element (02), the element contains unexpected value", err.Error())
 		require.Equal(t, 0, read)
 	})
 

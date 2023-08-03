@@ -31,7 +31,7 @@ func TestForPricingComposite(t *testing.T) {
 		read, err = composite.Parse(in)
 		require.Error(t, err)
 		require.Equal(t, 0, read)
-		require.Equal(t, "unable to parse pricing composite's element (03), the element contains unexpected value", err.Error())
+		require.Equal(t, "unable to parse pricingcomposite's element (03), the element contains unexpected value", err.Error())
 	})
 
 }

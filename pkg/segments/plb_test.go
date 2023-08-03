@@ -22,8 +22,9 @@ func TestForPLB(t *testing.T) {
 
 		in = "PLB*NPI Number*20111231*50>111*6173.4*50**********~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "plb segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "PLB*NPI Number*20111231*50>111*6173.4*50~"
 		read, err = seg.Parse(in)

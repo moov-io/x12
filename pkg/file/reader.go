@@ -29,6 +29,7 @@ func (b *Scanner) GetInterchange() string {
 	if b.removeNewLine {
 		// Removing all of new lines
 		raw = strings.ReplaceAll(raw, "\n", "")
+		raw = strings.ReplaceAll(raw, "\r", "")
 	}
 
 	startPos := strings.Index(raw, "ISA")

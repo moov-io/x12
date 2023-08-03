@@ -22,8 +22,9 @@ func TestForISA(t *testing.T) {
 
 		in = "ISA*00* *00* *ZZ*85-0858585 *ZZ* *130709*1058*^*00501*000101654*1*P*:*~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "isa segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "ISA*00* *00* *ZZ*85-0858585 *ZZ* *130709*1058*^*00501*000101654*1**~"
 		read, err = seg.Parse(in)

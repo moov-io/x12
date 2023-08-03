@@ -22,8 +22,9 @@ func TestForGE(t *testing.T) {
 
 		in = "GE*3*8*~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "ge segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "GE*3*~"
 		read, err = seg.Parse(in)

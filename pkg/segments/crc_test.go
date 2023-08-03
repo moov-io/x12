@@ -22,8 +22,9 @@ func TestForCRC(t *testing.T) {
 
 		in = "CRC*19*******~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "crc segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "CRC*19*****~"
 		read, err = seg.Parse(in)
@@ -48,7 +49,7 @@ func TestForCRC(t *testing.T) {
 
 		require.Equal(t, "CRC~", seg.String())
 
-		in := "CRC*19********~"
+		in := "CRC*19*****~"
 		_, err := seg.Parse(in)
 		require.NoError(t, err)
 		require.Equal(t, "CRC*19~", seg.String())

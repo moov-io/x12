@@ -22,8 +22,9 @@ func TestForDMG(t *testing.T) {
 
 		in = "DMG*0019*00*101654*~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "dmg segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "DMG*0019*00*~"
 		read, err = seg.Parse(in)

@@ -69,7 +69,7 @@ func (r *Interchange) Validate(validateRule *rules.InterchangeRule) error {
 	}
 
 	if changeRule == nil {
-		return errors.New("invalid interchange rule")
+		return util.NewFindRuleError("interchange")
 	}
 
 	var err error
@@ -77,20 +77,16 @@ func (r *Interchange) Validate(validateRule *rules.InterchangeRule) error {
 	// Validating ISA Segment
 	isaRule := changeRule.ISA
 	{
-		if isaRule.Name != "ISA" {
-			return errors.New("invalid isa rule")
-		}
-
 		err = r.ISA.Validate(&isaRule.Elements)
 		if err != nil {
-			return errors.New("unable to validate isa segment")
+			return err
 		}
 	}
 
 	// Validating groups
 	{
 		if len(r.FunctionalGroups) == 0 {
-			return errors.New("unable to find any group")
+			return util.NewFindElementError("group")
 		}
 
 		for index := 0; index < len(r.FunctionalGroups); index++ {
@@ -109,13 +105,9 @@ func (r *Interchange) Validate(validateRule *rules.InterchangeRule) error {
 	}
 
 	if r.IEA != nil {
-		if ieaRule.Name != "IEA" {
-			return errors.New("invalid iea rule")
-		}
-
 		err = r.IEA.Validate(&ieaRule.Elements)
 		if err != nil && rules.IsMaskRequired(ieaRule.Mask) {
-			return errors.New("unable to validate iea segment")
+			return err
 		}
 	}
 
@@ -157,14 +149,11 @@ func (r *Interchange) Parse(data string) (int, error) {
 	// Parsing ISA Segment
 	isaRule := r.rule.ISA
 	{
-		if isaRule.Name != "ISA" {
-			return 0, errors.New("invalid isa rule")
-		}
-
 		r.ISA.SetRule(&isaRule.Elements)
 		size, err = r.ISA.Parse(data[read:], r.getTerminator())
 		if err != nil {
-			return 0, errors.New("unable to parse isa segment")
+			util.AppendErrorSegmentLine(err, data[read:], r.getTerminator())
+			return 0, util.UpdateErrorReason(err)
 		} else {
 			read += size
 		}
@@ -192,13 +181,16 @@ func (r *Interchange) Parse(data string) (int, error) {
 		newIEA := segments.NewIEA(&ieaRule.Elements)
 		size, err = newIEA.Parse(data[read:], r.getTerminator())
 		if err != nil && rules.IsMaskRequired(ieaRule.Mask) {
-			return 0, errors.New("unable to parse iea segment")
+			util.AppendErrorSegmentLine(err, data[read:], r.getTerminator())
+			return 0, util.UpdateErrorReason(err)
 		} else if err == nil {
 			read += size
 			if s, ok := newIEA.(*segments.IEA); ok {
 				r.IEA = s
 			}
 		}
+	} else if rules.IsMaskRequired(ieaRule.Mask) {
+		return 0, util.NewFindSegmentError("iea")
 	}
 
 	return read, nil

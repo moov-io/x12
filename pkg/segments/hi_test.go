@@ -29,7 +29,7 @@ func TestForHI(t *testing.T) {
 		in = "HI*composite1~"
 		read, err = seg.Parse(in)
 		require.Error(t, err)
-		require.Equal(t, "unable to parse hi's element (01), unable to parse health care code's element (02), doesn't enough input string", err.Error())
+		require.Equal(t, "unable to parse hi's element (01), unable to parse healthcarecode's element (02), doesn't enough input string", err.Error())
 		require.Equal(t, 0, read)
 
 		in = "BH*"
@@ -55,7 +55,7 @@ func TestForHI(t *testing.T) {
 		read, err := seg.Parse(in)
 		require.Error(t, err)
 		require.Equal(t, 0, read)
-		require.Equal(t, "unable to parse hi's element (01), unable to parse health care code's element (02), doesn't enough input string", err.Error())
+		require.Equal(t, "unable to parse hi's element (01), unable to parse healthcarecode's element (02), doesn't enough input string", err.Error())
 
 		read, err = seg.Parse(in, util.SegmentTerminator, "<")
 		require.NoError(t, err)

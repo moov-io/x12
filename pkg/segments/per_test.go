@@ -22,8 +22,9 @@ func TestForPER(t *testing.T) {
 
 		in = "PER*IC*BUSINESS OFFICE*TE*5052484349*****~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "per segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "PER*IC*BUSINESS OFFICE*TE*5052484349~"
 		read, err = seg.Parse(in)

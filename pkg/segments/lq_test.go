@@ -22,8 +22,9 @@ func TestForLQ(t *testing.T) {
 
 		in = "LQ***~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "lq segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "DT~"
 		read, err = seg.Parse(in)

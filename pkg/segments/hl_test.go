@@ -22,8 +22,9 @@ func TestForHL(t *testing.T) {
 
 		in = "HL*HC*85-0858585**20130709*~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "hl segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "HL*HC*85-0858585**~"
 		read, err = seg.Parse(in)

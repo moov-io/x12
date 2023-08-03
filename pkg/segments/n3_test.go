@@ -22,8 +22,9 @@ func TestForN3(t *testing.T) {
 
 		in = "N3*3*8*~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "n3 segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "N3*3*~"
 		read, err = seg.Parse(in)

@@ -5,7 +5,6 @@
 package segments
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/moov-io/x12/pkg/rules"
@@ -43,21 +42,6 @@ type CLP struct {
 	Element
 }
 
-func (r CLP) defaultMask(index int) string {
-	if index < 5 || index == 6 || index == 7 {
-		return rules.MASK_REQUIRED
-	}
-	return rules.MASK_OPTIONAL
-}
-
-func (r CLP) fieldCount() int {
-	return 13
-}
-
-func (r CLP) Name() string {
-	return "CLP"
-}
-
 func (r *CLP) SetFieldByIndex(index string, data any) error {
 	return util.SetFieldByIndex(r, index, data)
 }
@@ -71,10 +55,10 @@ func (r *CLP) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= r.fieldCount(); i++ {
-		idx := fmt.Sprintf("%02d", i)
-		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask(i)); err != nil {
-			return fmt.Errorf("clp's element (%s) has invalid value, %s", idx, err.Error())
+	for i := 1; i <= segmentFieldCount(r); i++ {
+		idx := util.GetFormattedIndex(i)
+		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), getFieldMask(r, i)); err != nil {
+			return util.NewValidateElementError(util.GetStructName(r), idx, err.Error())
 		}
 	}
 
@@ -83,36 +67,36 @@ func (r *CLP) Validate(rule *rules.ElementSetRule) error {
 
 func (r *CLP) Parse(data string, args ...string) (int, error) {
 	var size int
-	name := strings.ToLower(r.Name())
+	name := strings.ToLower(util.GetStructName(r))
 	read, line, err := r.VerifyCode(data, name, args...)
 	if err != nil {
 		return 0, err
 	}
 
-	for i := 1; i <= r.fieldCount(); i++ {
+	for i := 1; i <= segmentFieldCount(r); i++ {
 		var value string
-		idx := fmt.Sprintf("%02d", i)
+		idx := util.GetFormattedIndex(i)
 
-		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), r.defaultMask(i), args...); err != nil {
-			return 0, fmt.Errorf("unable to parse %s's element (%s), %s", name, idx, err.Error())
+		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), getFieldMask(r, i), args...); err != nil {
+			return 0, util.NewParseSegmentError(name, idx, err.Error())
 		} else {
 			read += size
 			r.SetFieldByIndex(idx, value)
 		}
 	}
 
-	return read, nil
+	return returnRead(read, data, name)
 }
 
 func (r CLP) String(args ...string) string {
 	var buf string
 
-	for i := r.fieldCount(); i > 0; i-- {
-		idx := fmt.Sprintf("%02d", i)
-		mask := r.GetRule().GetMask(idx, r.defaultMask(i))
+	for i := segmentFieldCount(r); i > 0; i-- {
+		idx := util.GetFormattedIndex(i)
+		mask := r.GetRule().GetMask(idx, getFieldMask(r, i))
 
 		buf = r.CompositeString(buf, mask, util.DataElementSeparator, util.GetSegmentTerminator(args...), r.GetFieldByIndex(idx))
 	}
 
-	return r.TerminateString(buf, r.Name())
+	return r.TerminateString(buf, util.GetStructName(r))
 }

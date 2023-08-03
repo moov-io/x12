@@ -22,18 +22,19 @@ func TestForN2(t *testing.T) {
 
 		in = "N2*3*8*~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "n2 segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "N2*3*~"
 		read, err = seg.Parse(in)
 		require.NoError(t, err)
 		require.Equal(t, len(in), read)
 
-		in = "N2*3~"
+		in = "N2~"
 		read, err = seg.Parse(in)
 		require.Error(t, err)
-		require.Equal(t, "unable to parse n2's element (02), doesn't enough input string", err.Error())
+		require.Equal(t, "unable to parse n2's element (01), doesn't enough input string", err.Error())
 		require.Equal(t, 0, read)
 
 		in = "N2"
@@ -52,9 +53,9 @@ func TestForN2(t *testing.T) {
 	t.Run("encoding of n2 segment", func(t *testing.T) {
 		seg := NewN2(nil)
 
-		require.Equal(t, "N2**~", seg.String())
+		require.Equal(t, "N2*~", seg.String())
 
-		in := "N2*3*~"
+		in := "N2*3~"
 		read, err := seg.Parse(in)
 		require.NoError(t, err)
 		require.Equal(t, len(in), read)

@@ -22,8 +22,9 @@ func TestForLX(t *testing.T) {
 
 		in = "LX*3*~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "lx segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "LX*3~"
 		read, err = seg.Parse(in)

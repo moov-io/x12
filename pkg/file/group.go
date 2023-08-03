@@ -7,7 +7,6 @@ package file
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"strconv"
 
 	"github.com/moov-io/x12/pkg/rules"
@@ -51,26 +50,22 @@ func (r *FunctionalGroup) Validate(groupRule *rules.GroupRule) error {
 	// Validating GS Segment
 	gsRule := groupRule.GS
 	{
-		if gsRule.Name != "GS" {
-			return errors.New("invalid gs rule")
-		}
-
 		err = r.GS.Validate(&gsRule.Elements)
 		if err != nil {
-			return errors.New("unable to validate gs segment")
+			return err
 		}
 	}
 
 	// Validating transaction sets
 	{
 		if len(r.TransactionSets) == 0 {
-			return errors.New("unable to find any transaction set")
+			return util.NewFindElementError("transaction set")
 		}
 
 		for index := 0; index < len(r.TransactionSets); index++ {
 			set := r.TransactionSets[index]
 			if err = set.Validate(&groupRule.Trans); err != nil {
-				return fmt.Errorf("transaction set(%02d) is not invalid", index)
+				return err
 			}
 		}
 
@@ -83,10 +78,6 @@ func (r *FunctionalGroup) Validate(groupRule *rules.GroupRule) error {
 	}
 
 	if r.GE != nil {
-		if geRule.Name != "GE" {
-			return errors.New("invalid ge rule")
-		}
-
 		err = r.GE.Validate(&geRule.Elements)
 		if err != nil && rules.IsMaskRequired(geRule.Mask) {
 			return errors.New("unable to validate ge segment")
@@ -121,14 +112,11 @@ func (r *FunctionalGroup) Parse(data string, args ...string) (int, error) {
 	// Parsing GS Segment
 	gsRule := r.rule.GS
 	{
-		if gsRule.Name != "GS" {
-			return 0, errors.New("invalid gs rule")
-		}
-
 		r.GS.SetRule(&gsRule.Elements)
 		size, err = r.GS.Parse(data[read:], args...)
 		if err != nil {
-			return 0, errors.New("unable to parse gs segment")
+			util.AppendErrorSegmentLine(err, data[read:], args...)
+			return 0, util.UpdateErrorReason(err)
 		} else {
 			read += size
 		}
@@ -156,7 +144,8 @@ func (r *FunctionalGroup) Parse(data string, args ...string) (int, error) {
 		newGE := segments.NewGE(&geRule.Elements)
 		size, err = newGE.Parse(data[read:], args...)
 		if err != nil && rules.IsMaskRequired(geRule.Mask) {
-			return 0, errors.New("unable to parse ge segment")
+			util.AppendErrorSegmentLine(err, data[read:], args...)
+			return 0, util.UpdateErrorReason(err)
 		} else if err == nil {
 			read += size
 			if s, ok := newGE.(*segments.GE); ok {

@@ -6,7 +6,6 @@ package loops
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"strings"
 
@@ -58,12 +57,12 @@ func (r *CompositeLoop) Validate(loopRule *rules.LoopRule) error {
 	}
 
 	if loopRule == nil {
-		return errors.New("please specify rules for this Composite loop")
+		return util.NewSpecifiedRuleError(util.GetStructName(r))
 	}
 
 	err := r.Loop.Validate(&loopRule.Segments)
 	if err != nil {
-		return fmt.Errorf("loop(%s) is invalid, %s", r.rule.Name, err.Error())
+		return err
 	}
 
 	segIndex := 0
@@ -108,13 +107,14 @@ func (r *CompositeLoop) Validate(loopRule *rules.LoopRule) error {
 
 func (r *CompositeLoop) Parse(data string, args ...string) (int, error) {
 	if r.rule == nil {
-		return 0, errors.New("please specify rules for this Composite loop")
+		return 0, util.NewSpecifiedRuleError(util.GetStructName(r))
 	}
 
 	r.Loop.SetRule(r.rule)
 	size, err := r.Loop.Parse(data, args...)
 	if err != nil {
-		return 0, fmt.Errorf("unable to parse %s loop", strings.ToLower(r.rule.Name))
+		util.AppendErrorStack(err, strings.ToLower(r.rule.Name))
+		return 0, err
 	}
 
 	if len(r.rule.Composite) == 0 {
@@ -136,11 +136,7 @@ func (r *CompositeLoop) Parse(data string, args ...string) (int, error) {
 				r.SubLoops = append(r.SubLoops, *newChild)
 			} else {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
-					errString := ""
-					if err != nil {
-						errString = err.Error()
-					}
-					return 0, fmt.Errorf("unable to parse %s loop (%s)", strings.ToLower(rule.Name), errString)
+					return 0, err
 				}
 				break
 			}

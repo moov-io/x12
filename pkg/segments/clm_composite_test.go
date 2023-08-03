@@ -31,7 +31,7 @@ func TestForHealthCareServiceLocation(t *testing.T) {
 		read, err = composite.Parse(in)
 		require.Error(t, err)
 		require.Equal(t, 0, read)
-		require.Equal(t, "unable to parse service location's element (03), the element contains unexpected value", err.Error())
+		require.Equal(t, "unable to parse healthcareservicelocation's element (03), the element contains unexpected value", err.Error())
 	})
 
 }
@@ -64,12 +64,12 @@ func TestForRelatedCausesInformation(t *testing.T) {
 		in = "CC"
 		_, err = composite.Parse(in)
 		require.Error(t, err)
-		require.Equal(t, "unable to parse service location's element (01), the element contains unexpected value", err.Error())
+		require.Equal(t, "unable to parse healthcareservicelocation's element (01), the element contains unexpected value", err.Error())
 
 		in = "AA:CC"
 		_, err = composite.Parse(in)
 		require.Error(t, err)
-		require.Equal(t, "unable to parse service location's element (02), the element contains unexpected value", err.Error())
+		require.Equal(t, "unable to parse healthcareservicelocation's element (02), the element contains unexpected value", err.Error())
 
 		in = "AA:AA:CC"
 		_, err = composite.Parse(in)

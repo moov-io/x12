@@ -36,12 +36,12 @@ func TestFoQtyComposite(t *testing.T) {
 		in = "CC"
 		_, err = composite.Parse(in)
 		require.Error(t, err)
-		require.Equal(t, "unable to parse qty composite's element (01), the element contains unexpected value", err.Error())
+		require.Equal(t, "unable to parse qtycomposite's element (01), the element contains unexpected value", err.Error())
 
 		in = "AA:CC"
 		_, err = composite.Parse(in)
 		require.Error(t, err)
-		require.Equal(t, "unable to parse qty composite's element (02), the element contains unexpected value", err.Error())
+		require.Equal(t, "unable to parse qtycomposite's element (02), the element contains unexpected value", err.Error())
 
 		in = "AA:AA"
 		_, err = composite.Parse(in)

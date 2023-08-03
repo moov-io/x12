@@ -48,13 +48,9 @@ func (r *TransactionSet) Validate(transRule *rules.TransactionRule) error {
 	// Validating ST Segment
 	stRule := transRule.ST
 	{
-		if stRule.Name != "ST" {
-			return errors.New("invalid st rule")
-		}
-
 		err = r.ST.Validate(&stRule.Elements)
 		if err != nil {
-			return errors.New("unable to validate st segment")
+			return err
 		}
 	}
 
@@ -72,7 +68,7 @@ func (r *TransactionSet) Validate(transRule *rules.TransactionRule) error {
 					break
 				}
 
-				if r.Segments[segIndex].Name() != rule.Name {
+				if util.GetStructName(r.Segments[segIndex]) != rule.Name {
 					if rules.IsMaskRequired(rule.Mask) {
 						return fmt.Errorf("segment(%02d)'s name is not equal with rule's name (%s)", segIndex, strings.ToLower(rule.Name))
 					}
@@ -173,8 +169,7 @@ func (r *TransactionSet) Validate(transRule *rules.TransactionRule) error {
 		segmentCnt += len(r.Segments)
 
 		for _, loop := range r.Loops {
-			segs := loop.GetSegments()
-			segmentCnt += len(segs)
+			segmentCnt += len(loop.GetSegments())
 		}
 
 		// compare number of segments
@@ -203,14 +198,11 @@ func (r *TransactionSet) Parse(data string, args ...string) (int, error) {
 	// Parsing ST Segment
 	stRule := r.rule.ST
 	{
-		if stRule.Name != "ST" {
-			return 0, errors.New("invalid st rule")
-		}
-
 		r.ST.SetRule(&stRule.Elements)
 		size, err = r.ST.Parse(data[read:], args...)
 		if err != nil {
-			return 0, errors.New("unable to parse st segment, (" + err.Error() + ")")
+			util.AppendErrorSegmentLine(err, data[read:], args...)
+			return 0, util.UpdateErrorReason(err)
 		} else {
 			read += size
 		}
@@ -225,7 +217,8 @@ func (r *TransactionSet) Parse(data string, args ...string) (int, error) {
 				newSegment, createErr := segments.CreateSegment(rule.Name, rule)
 				if createErr != nil {
 					if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
-						return 0, fmt.Errorf("unable to parse %s segment", strings.ToLower(rule.Name))
+						util.AppendErrorSegmentLine(createErr, data[read:], args...)
+						return 0, util.UpdateErrorReason(createErr)
 					}
 					break
 				}
@@ -233,7 +226,8 @@ func (r *TransactionSet) Parse(data string, args ...string) (int, error) {
 				readSize, parseErr := newSegment.Parse(data[read:], args...)
 				if parseErr != nil {
 					if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
-						return 0, fmt.Errorf("unable to parse %s segment (%s)", strings.ToLower(rule.Name), parseErr.Error())
+						util.AppendErrorSegmentLine(parseErr, data[read:], args...)
+						return 0, util.UpdateErrorReason(parseErr)
 					}
 					break
 				} else {
@@ -259,7 +253,7 @@ func (r *TransactionSet) Parse(data string, args ...string) (int, error) {
 					r.Loops = append(r.Loops, *newLoop)
 				} else {
 					if repeatIdx == 0 && rules.IsMaskRequired(loopRule.Mask) {
-						return 0, fmt.Errorf("unable to parse %s loop", strings.ToLower(loopRule.Name))
+						return 0, util.UpdateErrorReason(err)
 					}
 					break
 				}
@@ -274,7 +268,8 @@ func (r *TransactionSet) Parse(data string, args ...string) (int, error) {
 		newSE := segments.NewSE(&seRule.Elements)
 		size, err = newSE.Parse(data[read:], args...)
 		if err != nil && rules.IsMaskRequired(seRule.Mask) {
-			return 0, errors.New("unable to parse se segment")
+			util.AppendErrorSegmentLine(err, data[read:], args...)
+			return 0, util.UpdateErrorReason(err)
 		} else if err == nil {
 			read += size
 			if s, ok := newSE.(*segments.SE); ok {

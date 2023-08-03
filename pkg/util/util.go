@@ -119,6 +119,15 @@ func DumpStructInfo(r any, level int) ElementInfo {
 	return info
 }
 
+func GetSegmentSize(input string, args ...string) int {
+	idx := strings.Index(input, GetSegmentTerminator(args...))
+	if idx == -1 {
+		return 0
+	}
+
+	return idx + 1
+}
+
 func getIndex(input string, args ...string) int {
 	idx1 := strings.Index(input, DataElementSeparator)
 	idx2 := strings.Index(input, GetSegmentTerminator(args...))
@@ -283,4 +292,20 @@ func GetDuplicateControlNumber(strSlice []string) (bool, string) {
 		}
 	}
 	return false, ""
+}
+
+func GetFormattedIndex(i int) string {
+	return fmt.Sprintf("%02d", i)
+}
+
+func GetStructName(r any) string {
+	if r == nil {
+		return ""
+	}
+
+	if t := reflect.TypeOf(r); t.Kind() == reflect.Ptr {
+		return reflect.TypeOf(r).Elem().Name()
+	} else {
+		return t.Name()
+	}
 }

@@ -6,7 +6,6 @@ package loops
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"strings"
 
@@ -50,7 +49,7 @@ func (r *Loop) Validate(segRules *rules.SegmentSetRule) error {
 	}
 
 	if segRules == nil {
-		return errors.New("please specify rules for this loop")
+		return util.NewSpecifiedRuleError(util.GetStructName(r))
 	}
 
 	index := 0
@@ -65,16 +64,16 @@ func (r *Loop) Validate(segRules *rules.SegmentSetRule) error {
 				break
 			}
 
-			if r.Segments[segIndex].Name() != rule.Name {
+			if util.GetStructName(r.Segments[segIndex]) != rule.Name {
 				if rules.IsMaskRequired(rule.Mask) {
-					return fmt.Errorf("segment(%02d)'s name is not equal with rule's name (%s)", segIndex, strings.ToLower(rule.Name))
+					return util.NewMismatchSegmentError(util.GetStructName(r.Segments[segIndex]), rule.Name)
 				}
 				break
 			}
 
 			if err := r.Segments[segIndex].Validate(&rule.Elements); err != nil {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
-					return fmt.Errorf("segment(%02d) should be valid %s segment", segIndex, strings.ToUpper(rule.Name))
+					return err
 				}
 				break
 			}
@@ -98,7 +97,7 @@ func (r *Loop) Validate(segRules *rules.SegmentSetRule) error {
 
 func (r *Loop) Parse(data string, args ...string) (int, error) {
 	if r.rule == nil {
-		return 0, errors.New("please specify rules for this loop")
+		return 0, util.NewSpecifiedRuleError(util.GetStructName(r))
 	}
 
 	var newSegments []segments.SegmentInterface
@@ -108,12 +107,12 @@ func (r *Loop) Parse(data string, args ...string) (int, error) {
 	index := 0
 
 	for rule := segRules.Get(index); rule != nil; rule = segRules.Get(index) {
-
 		for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
 			segment, err := segments.CreateSegment(rule.Name, rule)
 			if err != nil {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
-					return 0, fmt.Errorf("unable to parse %s segment", strings.ToLower(rule.Name))
+					util.AppendErrorSegmentLine(err, data[read:], args...)
+					return 0, err
 				}
 				break
 			}
@@ -121,7 +120,8 @@ func (r *Loop) Parse(data string, args ...string) (int, error) {
 			size, err := segment.Parse(data[read:], args...)
 			if err != nil {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
-					return 0, fmt.Errorf("unable to parse %s segment (%s)", strings.ToLower(rule.Name), err.Error())
+					util.AppendErrorSegmentLine(err, data[read:], args...)
+					return 0, err
 				}
 				break
 			} else {
@@ -134,7 +134,7 @@ func (r *Loop) Parse(data string, args ...string) (int, error) {
 	}
 
 	if len(newSegments) == 0 {
-		return 0, fmt.Errorf("unable to parse loop(%s)", r.Name())
+		return 0, util.NewUnableParseError(r.Name())
 	}
 
 	r.Segments = newSegments

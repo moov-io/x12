@@ -22,8 +22,9 @@ func TestForSV5(t *testing.T) {
 
 		in = "SV5*85*2*INDIAN HEALTH HOSPITAL*****~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "sv5 segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "SV5*85*2*INDIAN HEALTH HOSPITAL**~"
 		read, err = seg.Parse(in)
@@ -67,9 +68,9 @@ func TestForSV5(t *testing.T) {
 
 		in := "SV5*85*2*INDIAN HEALTH HOSPITAL*****XX*7745613100~"
 		read, err := seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, 36, read)
-		require.Equal(t, "SV5*85*2*INDIAN HEALTH HOSPITAL***~", seg.String())
+		require.Error(t, err)
+		require.Equal(t, "sv5 segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		seg.SetFieldByIndex("01", "86")
 		err = seg.Validate(nil)

@@ -46,9 +46,9 @@ func TestForN1(t *testing.T) {
 	t.Run("encoding of n1 segment", func(t *testing.T) {
 		seg := NewN1(nil)
 
-		require.Equal(t, "N1**~", seg.String())
+		require.Equal(t, "N1*~", seg.String())
 
-		in := "N1*3*~"
+		in := "N1*3~"
 		read, err := seg.Parse(in)
 		require.NoError(t, err)
 		require.Equal(t, len(in), read)

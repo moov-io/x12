@@ -22,8 +22,9 @@ func TestForPWK(t *testing.T) {
 
 		in = "PWK*IC*BUSINESS OFFICE*TE*5052484349***~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "pwk segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "PWK*IC*BUSINESS OFFICE*TE*5052484349~"
 		read, err = seg.Parse(in)

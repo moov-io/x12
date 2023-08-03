@@ -22,8 +22,9 @@ func TestForTOO(t *testing.T) {
 
 		in = "TOO***11:B:1*~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "too segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "TOO~"
 		read, err = seg.Parse(in)

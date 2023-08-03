@@ -22,8 +22,9 @@ func TestForSBR(t *testing.T) {
 
 		in = "SBR*P*18*******MC*~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "sbr segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "SBR*P*18~"
 		read, err = seg.Parse(in)

@@ -25,7 +25,13 @@ func TestForAMT(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, len(in), read)
 
-		in = "AMT*0019*~"
+		in = "AMT*0019*********~"
+		read, err = seg.Parse(in)
+		require.Error(t, err)
+		require.Equal(t, "amt segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
+
+		in = "AMT*0019**~"
 		read, err = seg.Parse(in)
 		require.NoError(t, err)
 		require.Equal(t, len(in), read)
