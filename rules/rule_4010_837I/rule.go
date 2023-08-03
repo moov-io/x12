@@ -3541,107 +3541,111 @@ var TransactionSetRule = rules.TransactionRule{
 		Mask:        rules.MASK_REQUIRED,
 		Elements:    rules.ElementSetRule{},
 	},
-	Segments: rules.SegmentSetRule{
-		0: rules.SegmentRule{
-			Name:        "BHT",
-			Description: "BEGINNING OF HIERARCHICAL TRANSACTION",
-			Mask:        rules.MASK_REQUIRED,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"0019"}},
-				"02": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"00", "18"}},
-				"03": {Mask: rules.MASK_REQUIRED},
-				"04": {Mask: rules.MASK_REQUIRED},
-				"05": {Mask: rules.MASK_REQUIRED},
-				"06": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"CH", "RP"}},
+	Composite: rules.LoopRule{
+		Name: "Transaction Loop",
+		Mask: rules.MASK_REQUIRED,
+		Segments: rules.SegmentSetRule{
+			0: rules.SegmentRule{
+				Name:        "BHT",
+				Description: "BEGINNING OF HIERARCHICAL TRANSACTION",
+				Mask:        rules.MASK_REQUIRED,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"0019"}},
+					"02": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"00", "18"}},
+					"03": {Mask: rules.MASK_REQUIRED},
+					"04": {Mask: rules.MASK_REQUIRED},
+					"05": {Mask: rules.MASK_REQUIRED},
+					"06": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"CH", "RP"}},
+				},
+			},
+			1: rules.SegmentRule{
+				Name:        "REF",
+				Description: "TRANSACTION TYPE IDENTIFICATION",
+				Mask:        rules.MASK_OPTIONAL,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"87"}},
+					"02": {Mask: rules.MASK_REQUIRED},
+				},
 			},
 		},
-		1: rules.SegmentRule{
-			Name:        "REF",
-			Description: "TRANSACTION TYPE IDENTIFICATION",
-			Mask:        rules.MASK_OPTIONAL,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"87"}},
-				"02": {Mask: rules.MASK_REQUIRED},
+		Composite: map[int]rules.LoopRule{
+			0: {
+				Segments: L1000ARule,
+				Mask:     rules.MASK_REQUIRED,
+				Name:     "1000A",
 			},
-		},
-	},
-	Loops: map[int]rules.LoopRule{
-		0: {
-			Segments: L1000ARule,
-			Mask:     rules.MASK_REQUIRED,
-			Name:     "1000A",
-		},
-		1: {
-			Segments: L1000BRule,
-			Mask:     rules.MASK_REQUIRED,
-			Name:     "1000B",
-		},
-		2: {
-			Segments:    L2000ARule,
-			Mask:        rules.MASK_OPTIONAL,
-			RepeatCount: rules.GREATER_THAN_ONE,
-			Name:        "2000A",
-			Composite: rules.LoopSetRule{
-				0: {
-					Segments: L2010AARule,
-					Mask:     rules.MASK_REQUIRED,
-					Name:     "2010AA",
-				},
-				1: {
-					Segments: L2010ABRule,
-					Mask:     rules.MASK_OPTIONAL,
-					Name:     "2010AB",
-				},
-				2: {
-					Segments:    L2000BRule,
-					Mask:        rules.MASK_REQUIRED,
-					Name:        "2000B",
-					RepeatCount: rules.GREATER_THAN_ONE,
-					Composite: rules.LoopSetRule{
-						0: {
-							Segments: L2010BARule,
-							Mask:     rules.MASK_REQUIRED,
-							Name:     "2010BA",
-						},
-						1: {
-							Segments: L2010BBRule,
-							Mask:     rules.MASK_OPTIONAL,
-							Name:     "2010BB",
-						},
-						2: {
-							Segments: L2010BCRule,
-							Mask:     rules.MASK_REQUIRED,
-							Name:     "2010BC",
-						},
-						3: {
-							Segments: L2010BDRule,
-							Mask:     rules.MASK_OPTIONAL,
-							Name:     "2010BD",
-						},
-						4: {
-							Segments:    L2300Rule,
-							Mask:        rules.MASK_OPTIONAL,
-							Name:        "2300",
-							RepeatCount: 100,
-							Composite:   L2300Composite,
-						},
-						5: {
-							Segments:    L2000CRule,
-							Mask:        rules.MASK_OPTIONAL,
-							Name:        "2000C",
-							RepeatCount: rules.GREATER_THAN_ONE,
-							Composite: rules.LoopSetRule{
-								0: {
-									Segments: L2010CARule,
-									Mask:     rules.MASK_REQUIRED,
-									Name:     "2010CA",
-								},
-								1: {
-									Segments:    L2300Rule,
-									Mask:        rules.MASK_OPTIONAL,
-									Name:        "2300",
-									RepeatCount: 100,
-									Composite:   L2300Composite,
+			1: {
+				Segments: L1000BRule,
+				Mask:     rules.MASK_REQUIRED,
+				Name:     "1000B",
+			},
+			2: {
+				Segments:    L2000ARule,
+				Mask:        rules.MASK_OPTIONAL,
+				RepeatCount: rules.GREATER_THAN_ONE,
+				Name:        "2000A",
+				Composite: rules.LoopSetRule{
+					0: {
+						Segments: L2010AARule,
+						Mask:     rules.MASK_REQUIRED,
+						Name:     "2010AA",
+					},
+					1: {
+						Segments: L2010ABRule,
+						Mask:     rules.MASK_OPTIONAL,
+						Name:     "2010AB",
+					},
+					2: {
+						Segments:    L2000BRule,
+						Mask:        rules.MASK_REQUIRED,
+						Name:        "2000B",
+						RepeatCount: rules.GREATER_THAN_ONE,
+						Composite: rules.LoopSetRule{
+							0: {
+								Segments: L2010BARule,
+								Mask:     rules.MASK_REQUIRED,
+								Name:     "2010BA",
+							},
+							1: {
+								Segments: L2010BBRule,
+								Mask:     rules.MASK_OPTIONAL,
+								Name:     "2010BB",
+							},
+							2: {
+								Segments: L2010BCRule,
+								Mask:     rules.MASK_REQUIRED,
+								Name:     "2010BC",
+							},
+							3: {
+								Segments: L2010BDRule,
+								Mask:     rules.MASK_OPTIONAL,
+								Name:     "2010BD",
+							},
+							4: {
+								Segments:    L2300Rule,
+								Mask:        rules.MASK_OPTIONAL,
+								Name:        "2300",
+								RepeatCount: 100,
+								Composite:   L2300Composite,
+							},
+							5: {
+								Segments:    L2000CRule,
+								Mask:        rules.MASK_OPTIONAL,
+								Name:        "2000C",
+								RepeatCount: rules.GREATER_THAN_ONE,
+								Composite: rules.LoopSetRule{
+									0: {
+										Segments: L2010CARule,
+										Mask:     rules.MASK_REQUIRED,
+										Name:     "2010CA",
+									},
+									1: {
+										Segments:    L2300Rule,
+										Mask:        rules.MASK_OPTIONAL,
+										Name:        "2300",
+										RepeatCount: 100,
+										Composite:   L2300Composite,
+									},
 								},
 							},
 						},

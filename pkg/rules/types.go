@@ -131,10 +131,9 @@ func (g GroupRule) dumpRuleInfo(level int, isRequiredOnly bool) []ruleInfo {
 
 // Rule for transaction set
 type TransactionRule struct {
-	ST       SegmentRule
-	SE       SegmentRule
-	Loops    LoopSetRule
-	Segments SegmentSetRule
+	ST        SegmentRule
+	SE        SegmentRule
+	Composite LoopRule
 }
 
 func (t TransactionRule) dumpRuleInfo(level int, isRequiredOnly bool) []ruleInfo {
@@ -144,15 +143,7 @@ func (t TransactionRule) dumpRuleInfo(level int, isRequiredOnly bool) []ruleInfo
 		infos = append(infos, t.ST.dumpRuleInfo(level))
 	}
 
-	for index := 0; index < len(t.Segments); index++ {
-		s := t.Segments[index]
-		infos = append(infos, s.dumpRuleInfo(level))
-	}
-
-	for index := 0; index < len(t.Loops); index++ {
-		l := t.Loops[index]
-		infos = append(infos, l.dumpRuleInfo(level+1, isRequiredOnly)...)
-	}
+	infos = append(infos, t.Composite.dumpRuleInfo(level, isRequiredOnly)...)
 
 	if t.SE.isRequired(isRequiredOnly) {
 		infos = append(infos, t.SE.dumpRuleInfo(level))
@@ -173,6 +164,22 @@ type LoopRule struct {
 }
 
 func (l LoopRule) Repeat() int {
+	if l.RepeatCount > 1 {
+		return l.RepeatCount
+	}
+
+	return 1
+}
+
+func (l LoopRule) MinRepeat() int {
+	if l.Mask != MASK_REQUIRED {
+		return 0
+	}
+
+	if l.RepeatCount == GREATER_THAN_ONE {
+		return 1
+	}
+
 	if l.RepeatCount > 1 {
 		return l.RepeatCount
 	}
@@ -209,7 +216,7 @@ func (l LoopRule) dumpRuleInfo(level int, isRequiredOnly bool) []ruleInfo {
 
 	for index := 0; index < len(l.Composite); index++ {
 		c := l.Composite[index]
-		infos = append(infos, c.dumpRuleInfo(level+2, isRequiredOnly)...)
+		infos = append(infos, c.dumpRuleInfo(level+1, isRequiredOnly)...)
 	}
 
 	return infos
@@ -240,6 +247,22 @@ func (s SegmentRule) dumpRuleInfo(level int) ruleInfo {
 }
 
 func (s SegmentRule) Repeat() int {
+	if s.RepeatCount > 1 {
+		return s.RepeatCount
+	}
+
+	return 1
+}
+
+func (s SegmentRule) MinRepeat() int {
+	if s.Mask != MASK_REQUIRED {
+		return 0
+	}
+
+	if s.RepeatCount == GREATER_THAN_ONE {
+		return 1
+	}
+
 	if s.RepeatCount > 1 {
 		return s.RepeatCount
 	}

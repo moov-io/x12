@@ -18,6 +18,11 @@ const (
 	ErrSpecifiedRule    = 10
 	ErrMismatchSegment  = 11
 	ErrUnableParse      = 12
+	ErrMinSegment       = 13
+	ErrAllSegment       = 14
+	ErrMismatchLoop     = 15
+	ErrAllLoop          = 16
+	ErrMinLoop          = 17
 )
 
 type ErrorObject struct {
@@ -35,7 +40,7 @@ func (e *ErrorObject) Error() string {
 func NewParseSegmentError(name, idx, msg string) error {
 	err := ErrorObject{
 		Code:       ErrParseSegment,
-		Reason:     fmt.Sprintf("unable to parse %s's element (%s), %s", strings.ToLower(name), idx, strings.ToLower(msg)),
+		Reason:     strings.ToLower(fmt.Sprintf("unable to parse %s's element (%s), %s", strings.ToLower(name), idx, msg)),
 		Originated: []string{name},
 	}
 
@@ -45,7 +50,7 @@ func NewParseSegmentError(name, idx, msg string) error {
 func NewValidateElementError(name, idx, msg string) error {
 	err := ErrorObject{
 		Code:       ErrValidateSegment,
-		Reason:     fmt.Sprintf("%s's element (%s) has invalid value, %s", strings.ToLower(name), idx, strings.ToLower(msg)),
+		Reason:     strings.ToLower(fmt.Sprintf("%s's element (%s) has invalid value, %s", name, idx, msg)),
 		Originated: []string{name},
 	}
 
@@ -55,7 +60,7 @@ func NewValidateElementError(name, idx, msg string) error {
 func NewMinLengthErr(name string) error {
 	err := ErrorObject{
 		Code:       ErrMinLength,
-		Reason:     fmt.Sprintf("%s segment has not enough input data", strings.ToLower(name)),
+		Reason:     strings.ToLower(fmt.Sprintf("%s segment has not enough input data", name)),
 		Originated: []string{name},
 	}
 
@@ -65,7 +70,7 @@ func NewMinLengthErr(name string) error {
 func NewMaxLengthErr(name string) error {
 	err := ErrorObject{
 		Code:       ErrMaxLength,
-		Reason:     fmt.Sprintf("%s segment can't parse all input data", strings.ToLower(name)),
+		Reason:     strings.ToLower(fmt.Sprintf("%s segment can't parse all input data", name)),
 		Originated: []string{name},
 	}
 
@@ -75,7 +80,7 @@ func NewMaxLengthErr(name string) error {
 func NewInvalidCodeErr(name string) error {
 	err := ErrorObject{
 		Code:       ErrInvalidCode,
-		Reason:     fmt.Sprintf("%s segment contains invalid code", strings.ToLower(name)),
+		Reason:     strings.ToLower(fmt.Sprintf("%s segment contains invalid code", name)),
 		Originated: []string{name},
 	}
 
@@ -85,7 +90,7 @@ func NewInvalidCodeErr(name string) error {
 func NewUnsupportSegmentError(name string) error {
 	err := ErrorObject{
 		Code:       ErrUnsupportSegment,
-		Reason:     fmt.Sprintf("unsupported segment name(%s)", strings.ToLower(name)),
+		Reason:     strings.ToLower(fmt.Sprintf("unsupported segment name(%s)", name)),
 		Originated: []string{name},
 	}
 
@@ -95,7 +100,7 @@ func NewUnsupportSegmentError(name string) error {
 func NewFindSegmentError(name string) error {
 	err := ErrorObject{
 		Code:       ErrFindSegment,
-		Reason:     fmt.Sprintf("unable to find %s segment", strings.ToLower(name)),
+		Reason:     strings.ToLower(fmt.Sprintf("unable to find %s segment", name)),
 		Originated: []string{name},
 	}
 
@@ -105,7 +110,7 @@ func NewFindSegmentError(name string) error {
 func NewFindRuleError(name string) error {
 	err := ErrorObject{
 		Code:       ErrFindRule,
-		Reason:     fmt.Sprintf("unable to find %s rule", strings.ToLower(name)),
+		Reason:     strings.ToLower(fmt.Sprintf("unable to find %s rule", name)),
 		Originated: []string{name},
 	}
 
@@ -115,7 +120,7 @@ func NewFindRuleError(name string) error {
 func NewFindElementError(name string) error {
 	err := ErrorObject{
 		Code:       ErrFindElement,
-		Reason:     fmt.Sprintf("unable to find %s", strings.ToLower(name)),
+		Reason:     strings.ToLower(fmt.Sprintf("unable to find %s", name)),
 		Originated: []string{name},
 	}
 
@@ -124,8 +129,9 @@ func NewFindElementError(name string) error {
 
 func NewSpecifiedRuleError(name string) error {
 	err := ErrorObject{
-		Code:   ErrSpecifiedRule,
-		Reason: fmt.Sprintf("please specify rules for loop(%s)", strings.ToLower(name)),
+		Code:       ErrSpecifiedRule,
+		Reason:     strings.ToLower(fmt.Sprintf("element(%s) rule is not defined", name)),
+		Originated: []string{name},
 	}
 
 	return &err
@@ -133,8 +139,9 @@ func NewSpecifiedRuleError(name string) error {
 
 func NewMismatchSegmentError(segName, ruleName string) error {
 	err := ErrorObject{
-		Code:   ErrMismatchSegment,
-		Reason: fmt.Sprintf("segment(%s)'s name is not equal with rule's name (%s)", strings.ToLower(segName), strings.ToLower(ruleName)),
+		Code:       ErrMismatchSegment,
+		Reason:     strings.ToLower(fmt.Sprintf("segment(%s) don't accept specified rule(%s), please verify segment orders or has dirty segments as previous segment", segName, ruleName)),
+		Originated: []string{segName},
 	}
 
 	return &err
@@ -143,7 +150,57 @@ func NewMismatchSegmentError(segName, ruleName string) error {
 func NewUnableParseError(name string) error {
 	err := ErrorObject{
 		Code:       ErrUnableParse,
-		Reason:     fmt.Sprintf("unable to parse %s", strings.ToLower(name)),
+		Reason:     strings.ToLower(fmt.Sprintf("unable to parse %s", name)),
+		Originated: []string{name},
+	}
+
+	return &err
+}
+
+func NewMinSegmentError(name string) error {
+	err := ErrorObject{
+		Code:       ErrMinSegment,
+		Reason:     strings.ToLower(fmt.Sprintf("segment(%s) does not repeat as specified times", name)),
+		Originated: []string{name},
+	}
+
+	return &err
+}
+
+func NewAllSegmentError(name string) error {
+	err := ErrorObject{
+		Code:       ErrAllSegment,
+		Reason:     strings.ToLower(fmt.Sprintf("all segments of %s don't to validate using specified rule, have dirty segments", name)),
+		Originated: []string{name},
+	}
+
+	return &err
+}
+
+func NewMismatchLoopError(segName, ruleName string) error {
+	err := ErrorObject{
+		Code:       ErrMismatchLoop,
+		Reason:     strings.ToLower(fmt.Sprintf("loop(%s) don't accept specified rule(%s), please verify loop orders or has dirty loops as previous loop", segName, ruleName)),
+		Originated: []string{segName},
+	}
+
+	return &err
+}
+
+func NewAllLoopError(name string) error {
+	err := ErrorObject{
+		Code:       ErrAllLoop,
+		Reason:     strings.ToLower(fmt.Sprintf("all loops of %s don't to validate using specified rule, have dirty rules", name)),
+		Originated: []string{name},
+	}
+
+	return &err
+}
+
+func NewMinLoopError(name string) error {
+	err := ErrorObject{
+		Code:       ErrMinLoop,
+		Reason:     strings.ToLower(fmt.Sprintf("loop(%s) does not repeat as specified times", name)),
 		Originated: []string{name},
 	}
 

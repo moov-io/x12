@@ -269,91 +269,164 @@ var TransactionSetRule = rules.TransactionRule{
 			"03": {Mask: rules.MASK_NOTUSED},
 		},
 	},
-	Segments: rules.SegmentSetRule{
-		0: rules.SegmentRule{
-			Name:        "BPR",
-			Description: "FINANCIAL INFORMATION",
-			Mask:        rules.MASK_REQUIRED,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"C", "D", "I", "P", "U", "X"}},
-				"02": {Mask: rules.MASK_REQUIRED},
-				"03": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"C", "D"}},
-				"04": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"ACH", "BOP", "CHK", "FWT", "SWT"}},
-				"05": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"CCP", "CTX"}},
-				"06": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"01", "04"}},
-				"07": {Mask: rules.MASK_OPTIONAL},
-				"08": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"ALC", "DA"}},
-				"09": {Mask: rules.MASK_OPTIONAL},
-				"10": {Mask: rules.MASK_OPTIONAL},
-				"11": {Mask: rules.MASK_OPTIONAL},
-				"12": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"01", "04"}},
-				"13": {Mask: rules.MASK_OPTIONAL},
-				"14": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"DA", "SG"}},
-				"15": {Mask: rules.MASK_OPTIONAL},
-				"16": {Mask: rules.MASK_REQUIRED},
-				"17": {Mask: rules.MASK_NOTUSED},
-				"18": {Mask: rules.MASK_NOTUSED},
-				"19": {Mask: rules.MASK_NOTUSED},
-				"20": {Mask: rules.MASK_NOTUSED},
-				"21": {Mask: rules.MASK_NOTUSED},
+	Composite: rules.LoopRule{
+		Name: "Transaction Loop",
+		Mask: rules.MASK_REQUIRED,
+		Segments: rules.SegmentSetRule{
+			0: rules.SegmentRule{
+				Name:        "BPR",
+				Description: "FINANCIAL INFORMATION",
+				Mask:        rules.MASK_REQUIRED,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"C", "D", "I", "P", "U", "X"}},
+					"02": {Mask: rules.MASK_REQUIRED},
+					"03": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"C", "D"}},
+					"04": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"ACH", "BOP", "CHK", "FWT", "SWT"}},
+					"05": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"CCP", "CTX"}},
+					"06": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"01", "04"}},
+					"07": {Mask: rules.MASK_OPTIONAL},
+					"08": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"ALC", "DA"}},
+					"09": {Mask: rules.MASK_OPTIONAL},
+					"10": {Mask: rules.MASK_OPTIONAL},
+					"11": {Mask: rules.MASK_OPTIONAL},
+					"12": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"01", "04"}},
+					"13": {Mask: rules.MASK_OPTIONAL},
+					"14": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"DA", "SG"}},
+					"15": {Mask: rules.MASK_OPTIONAL},
+					"16": {Mask: rules.MASK_REQUIRED},
+					"17": {Mask: rules.MASK_NOTUSED},
+					"18": {Mask: rules.MASK_NOTUSED},
+					"19": {Mask: rules.MASK_NOTUSED},
+					"20": {Mask: rules.MASK_NOTUSED},
+					"21": {Mask: rules.MASK_NOTUSED},
+				},
+			},
+			1: rules.SegmentRule{
+				Name:        "TRN",
+				Description: "REASSOCIATION KEY",
+				Mask:        rules.MASK_REQUIRED,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"1", "3"}},
+					"02": {Mask: rules.MASK_REQUIRED},
+					"03": {Mask: rules.MASK_OPTIONAL},
+					"04": {Mask: rules.MASK_OPTIONAL},
+				},
+			},
+			2: rules.SegmentRule{
+				Name:        "CUR",
+				Description: "NON-US DOLLARS CURRENCY",
+				Mask:        rules.MASK_OPTIONAL,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"2B", "PR"}},
+					"02": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"MXP", "CAD", "USD"}},
+					"03": {Mask: rules.MASK_OPTIONAL},
+				},
+			},
+			3: rules.SegmentRule{
+				Name:        "REF",
+				Description: "PREMIUM RECEIVERS IDENTIFICATION KEY",
+				Mask:        rules.MASK_OPTIONAL,
+				RepeatCount: rules.GREATER_THAN_ONE,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"14", "18", "2F", "38", "72"}},
+					"02": {Mask: rules.MASK_REQUIRED},
+				},
+			},
+			4: rules.SegmentRule{
+				Name:        "DTP",
+				Description: "PROCESS DAY",
+				Mask:        rules.MASK_OPTIONAL,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"009"}},
+					"02": {Mask: rules.MASK_REQUIRED},
+				},
+			},
+			5: rules.SegmentRule{
+				Name:        "DTP",
+				Description: "DELIVERY DATE",
+				Mask:        rules.MASK_OPTIONAL,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"035"}},
+					"02": {Mask: rules.MASK_REQUIRED},
+				},
+			},
+			6: rules.SegmentRule{
+				Name:        "DTP",
+				Description: "COVERAGE PERIOD",
+				Mask:        rules.MASK_OPTIONAL,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"582"}},
+					"02": {Mask: rules.MASK_REQUIRED},
+				},
 			},
 		},
-		1: rules.SegmentRule{
-			Name:        "TRN",
-			Description: "REASSOCIATION KEY",
-			Mask:        rules.MASK_REQUIRED,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"1", "3"}},
-				"02": {Mask: rules.MASK_REQUIRED},
-				"03": {Mask: rules.MASK_OPTIONAL},
-				"04": {Mask: rules.MASK_OPTIONAL},
+		Composite: map[int]rules.LoopRule{
+			0: {
+				Segments: L1000ARule,
+				Mask:     rules.MASK_REQUIRED,
+				Name:     "1000A",
 			},
-		},
-		2: rules.SegmentRule{
-			Name:        "CUR",
-			Description: "NON-US DOLLARS CURRENCY",
-			Mask:        rules.MASK_OPTIONAL,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"2B", "PR"}},
-				"02": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"MXP", "CAD", "USD"}},
-				"03": {Mask: rules.MASK_OPTIONAL},
+			1: {
+				Segments: L1000BRule,
+				Mask:     rules.MASK_REQUIRED,
+				Name:     "1000B",
 			},
-		},
-		3: rules.SegmentRule{
-			Name:        "REF",
-			Description: "PREMIUM RECEIVERS IDENTIFICATION KEY",
-			Mask:        rules.MASK_OPTIONAL,
-			RepeatCount: rules.GREATER_THAN_ONE,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"14", "18", "2F", "38", "72"}},
-				"02": {Mask: rules.MASK_REQUIRED},
+			2: {
+				Segments: L2000ARule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "2000A",
+				Composite: rules.LoopSetRule{
+					0: {
+						Segments: L2300ARule,
+						Mask:     rules.MASK_REQUIRED,
+						Name:     "2300A",
+						Composite: rules.LoopSetRule{
+							0: {
+								Segments: L2310ARule,
+								Mask:     rules.MASK_OPTIONAL,
+								Name:     "2310A",
+								Composite: rules.LoopSetRule{
+									0: {
+										Segments: L2315ARule,
+										Mask:     rules.MASK_OPTIONAL,
+										Name:     "2315A",
+									},
+								},
+							},
+							1: {
+								Segments: L2320ARule,
+								Mask:     rules.MASK_OPTIONAL,
+								Name:     "2320A",
+							},
+						},
+					},
+				},
 			},
-		},
-		4: rules.SegmentRule{
-			Name:        "DTP",
-			Description: "PROCESS DAY",
-			Mask:        rules.MASK_OPTIONAL,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"009"}},
-				"02": {Mask: rules.MASK_REQUIRED},
-			},
-		},
-		5: rules.SegmentRule{
-			Name:        "DTP",
-			Description: "DELIVERY DATE",
-			Mask:        rules.MASK_OPTIONAL,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"035"}},
-				"02": {Mask: rules.MASK_REQUIRED},
-			},
-		},
-		6: rules.SegmentRule{
-			Name:        "DTP",
-			Description: "COVERAGE PERIOD",
-			Mask:        rules.MASK_OPTIONAL,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"582"}},
-				"02": {Mask: rules.MASK_REQUIRED},
+			3: {
+				Segments:    L2000BRule,
+				Mask:        rules.MASK_OPTIONAL,
+				Name:        "2000B",
+				RepeatCount: rules.GREATER_THAN_ONE,
+				Composite: rules.LoopSetRule{
+					0: {
+						Segments: L2100BRule,
+						Mask:     rules.MASK_OPTIONAL,
+						Name:     "2100B",
+					},
+					1: {
+						Segments: L2300BRule,
+						Mask:     rules.MASK_OPTIONAL,
+						Name:     "2300B",
+						Composite: rules.LoopSetRule{
+							0: {
+								Segments:    L2320BRule,
+								Mask:        rules.MASK_OPTIONAL,
+								Name:        "2320B",
+								RepeatCount: rules.GREATER_THAN_ONE,
+							},
+						},
+					},
+				},
 			},
 		},
 	},
@@ -362,75 +435,6 @@ var TransactionSetRule = rules.TransactionRule{
 		Description: "TRANSACTION SET TRAILER",
 		Mask:        rules.MASK_REQUIRED,
 		Elements:    rules.ElementSetRule{},
-	},
-	Loops: map[int]rules.LoopRule{
-		0: {
-			Segments: L1000ARule,
-			Mask:     rules.MASK_REQUIRED,
-			Name:     "1000A",
-		},
-		1: {
-			Segments: L1000BRule,
-			Mask:     rules.MASK_REQUIRED,
-			Name:     "1000B",
-		},
-		2: {
-			Segments: L2000ARule,
-			Mask:     rules.MASK_OPTIONAL,
-			Name:     "2000A",
-			Composite: rules.LoopSetRule{
-				0: {
-					Segments: L2300ARule,
-					Mask:     rules.MASK_REQUIRED,
-					Name:     "2300A",
-					Composite: rules.LoopSetRule{
-						0: {
-							Segments: L2310ARule,
-							Mask:     rules.MASK_OPTIONAL,
-							Name:     "2310A",
-							Composite: rules.LoopSetRule{
-								0: {
-									Segments: L2315ARule,
-									Mask:     rules.MASK_OPTIONAL,
-									Name:     "2315A",
-								},
-							},
-						},
-						1: {
-							Segments: L2320ARule,
-							Mask:     rules.MASK_OPTIONAL,
-							Name:     "2320A",
-						},
-					},
-				},
-			},
-		},
-		3: {
-			Segments:    L2000BRule,
-			Mask:        rules.MASK_OPTIONAL,
-			Name:        "2000B",
-			RepeatCount: rules.GREATER_THAN_ONE,
-			Composite: rules.LoopSetRule{
-				0: {
-					Segments: L2100BRule,
-					Mask:     rules.MASK_OPTIONAL,
-					Name:     "2100B",
-				},
-				1: {
-					Segments: L2300BRule,
-					Mask:     rules.MASK_OPTIONAL,
-					Name:     "2300B",
-					Composite: rules.LoopSetRule{
-						0: {
-							Segments:    L2320BRule,
-							Mask:        rules.MASK_OPTIONAL,
-							Name:        "2320B",
-							RepeatCount: rules.GREATER_THAN_ONE,
-						},
-					},
-				},
-			},
-		},
 	},
 }
 
