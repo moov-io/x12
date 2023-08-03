@@ -245,6 +245,7 @@ func UpdateErrorReason(err error) error {
 	buildStack := func(stack []string) string {
 		msg := ""
 		for _, item := range stack {
+			item = strings.ToLower(item)
 			if msg == "" {
 				msg = item
 			} else {
@@ -265,7 +266,11 @@ func UpdateErrorReason(err error) error {
 	}
 
 	if len(obj.Originated) > 1 {
-		obj.Reason = fmt.Sprintf("%s, error stack: '%s', error segment line: '%s'", obj.Reason, buildStack(obj.Originated), obj.Segment)
+		if len(obj.Segment) > 0 {
+			obj.Reason = fmt.Sprintf("%s, error stack: '%s', error segment line: '%s'", obj.Reason, buildStack(obj.Originated), obj.Segment)
+		} else {
+			obj.Reason = fmt.Sprintf("%s, error stack: '%s'", obj.Reason, buildStack(obj.Originated))
+		}
 	} else {
 		obj.Reason = fmt.Sprintf("%s, error segment line: '%s'", obj.Reason, obj.Segment)
 	}

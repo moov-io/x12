@@ -1193,6 +1193,7 @@ var LFARule = rules.SegmentSetRule{
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"ZZ"}},
+			"02": {Mask: rules.MASK_OPTIONAL},
 		},
 	},
 	1: rules.SegmentRule{

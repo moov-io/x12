@@ -26,7 +26,7 @@ func NewFA1(rule *rules.ElementSetRule) SegmentInterface {
 
 type FA1 struct {
 	Field01 string `index:"01" json:"01" xml:"01"`
-	Field02 string `index:"02" json:"02" xml:"02"`
+	Field02 string `index:"02" json:"02,omitempty" xml:"02,omitempty"`
 
 	Element
 }
