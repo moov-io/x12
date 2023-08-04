@@ -171,7 +171,7 @@ Accept values is to specify available values that can use the field.
 Element's mask is a bit different from segment and loop.
 Each segment has a real struct such as IEA, ISA, GS, etc.
 Field of segment is omitted field or required field (check out with json, xml tag).
-If the mask option of element rule is omitted, will use original field's property (omitted field or required field).  
+If the mask option of element rule is omitted, will use original field's property (omitted field or required field).
 
 #### Rule example
 ```
@@ -485,7 +485,7 @@ User should create interchange, group, transaction, segments.
 	if newInterchange.String(segmentTerminator) != raw {
 		fmt.Println("invalid string")
 	}
-	
+
 ```
 
 We need to know hierarchy of file, interchange or rule when editing new interchange.
@@ -564,6 +564,10 @@ IEA                         |REQUIRED |1             |INTERCHANGE CONTROL TRAILE
 
 
 Checkout the [Go methods available](https://pkg.go.dev/github.com/moov-io/x12) for full details.
+
+## Further Reading
+
+- [What makes EDI so hard?](https://www.stedi.com/blog/what-makes-edi-so-hard)
 
 ## Getting help
 
