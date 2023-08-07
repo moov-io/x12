@@ -223,8 +223,6 @@ func AppendErrorSegmentLine(err error, data string, args ...string) {
 		msg = strings.ReplaceAll(msg, "\r", "\\r")
 		obj.Segment = msg
 	}
-
-	return
 }
 
 func AppendErrorStack(err error, name string) {
@@ -238,7 +236,6 @@ func AppendErrorStack(err error, name string) {
 	}
 
 	obj.Originated = append(obj.Originated, name)
-	return
 }
 
 func UpdateErrorReason(err error) error {
