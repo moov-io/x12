@@ -31,7 +31,7 @@ func TestForServiceProcedure(t *testing.T) {
 		read, err = composite.Parse(in)
 		require.Error(t, err)
 		require.Equal(t, 0, read)
-		require.Equal(t, "unable to parse dental procedure's element (02), the element contains unexpected value", err.Error())
+		require.Equal(t, "unable to parse serviceprocedure's element (02), the element contains unexpected value", err.Error())
 	})
 
 }
@@ -56,7 +56,7 @@ func TestForDentalServiceCode(t *testing.T) {
 		read, err = composite.Parse(in)
 		require.Error(t, err)
 		require.Equal(t, 0, read)
-		require.Equal(t, "unable to parse dental code's element (02), the element contains unexpected value", err.Error())
+		require.Equal(t, "unable to parse dentalservicecode's element (02), the element contains unexpected value", err.Error())
 	})
 
 }
@@ -81,7 +81,7 @@ func TestForDentalServiceCodePointer(t *testing.T) {
 		read, err = composite.Parse(in)
 		require.Error(t, err)
 		require.Equal(t, 0, read)
-		require.Equal(t, "unable to parse dental code pointer's element (02), the element contains unexpected value", err.Error())
+		require.Equal(t, "unable to parse dentalservicecodepointer's element (02), the element contains unexpected value", err.Error())
 	})
 
 }

@@ -23,8 +23,9 @@ func TestForCLM(t *testing.T) {
 
 		in = "CLM*1-1180*174***11:B:1*Y*A*Y*Y*P***********~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "clm segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "CLM*1-1180*174***11:B:1*Y*A*Y*Y~"
 		read, err = seg.Parse(in)
@@ -60,7 +61,7 @@ func TestForCLM(t *testing.T) {
 		read, err := seg.Parse(in)
 		require.Error(t, err)
 		require.Equal(t, 0, read)
-		require.Equal(t, "unable to parse clm's element (05), unable to parse service location's element (02), doesn't enough input string", err.Error())
+		require.Equal(t, "unable to parse clm's element (05), unable to parse healthcareservicelocation's element (02), doesn't enough input string", err.Error())
 
 		read, err = seg.Parse(in, util.SegmentTerminator, "<")
 		require.NoError(t, err)
@@ -126,7 +127,7 @@ func TestForCLM(t *testing.T) {
 		in = "CLM*1-1180*174***11:A:1*Y*A*W*Y*P~"
 		read, err = seg.Parse(in)
 		require.Error(t, err)
-		require.Equal(t, "unable to parse clm's element (05), unable to parse service location's element (02), the element contains unexpected value", err.Error())
+		require.Equal(t, "unable to parse clm's element (05), unable to parse healthcareservicelocation's element (02), the element contains unexpected value", err.Error())
 		require.Equal(t, 0, read)
 
 		in = "CLM*1-1180*174***11:2:1*Y*A*W*Y*P*AA:PP~"

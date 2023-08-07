@@ -23,12 +23,13 @@ func TestForRMR(t *testing.T) {
 		in = "RMR*85*2*INDIAN HEALTH HOSPITAL**~"
 		read, err = seg.Parse(in)
 		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Equal(t, len(in), read)
 
 		in = "RMR*85*2*INDIAN HEALTH HOSPITAL~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in), read)
+		require.Error(t, err)
+		require.Equal(t, "unable to parse rmr's element (04), doesn't enough input string", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "RMR"
 		read, err = seg.Parse(in)
@@ -46,9 +47,9 @@ func TestForRMR(t *testing.T) {
 	t.Run("encoding of rmr segment", func(t *testing.T) {
 		seg := NewRMR(nil)
 
-		require.Equal(t, "RMR**~", seg.String())
+		require.Equal(t, "RMR****~", seg.String())
 
-		in := "RMR*85*2~"
+		in := "RMR*85*2**~"
 		read, err := seg.Parse(in)
 		require.NoError(t, err)
 		require.Equal(t, len(in), read)

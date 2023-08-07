@@ -5,8 +5,6 @@
 package segments
 
 import (
-	"fmt"
-
 	"github.com/moov-io/x12/pkg/rules"
 	"github.com/moov-io/x12/pkg/util"
 )
@@ -16,14 +14,6 @@ type MonetaryIdentification struct {
 	ReferenceIdentification string `index:"02" json:"02,omitempty" xml:"02,omitempty"`
 
 	Element
-}
-
-func (r MonetaryIdentification) defaultMask() string {
-	return rules.MASK_OPTIONAL
-}
-
-func (r MonetaryIdentification) fieldCount() int {
-	return 2
 }
 
 func (r *MonetaryIdentification) SetFieldByIndex(index string, data any) error {
@@ -39,11 +29,11 @@ func (r *MonetaryIdentification) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= r.fieldCount(); i++ {
-		idx := fmt.Sprintf("%02d", i)
+	for i := 1; i <= segmentFieldCount(r); i++ {
+		idx := util.GetFormattedIndex(i)
 
-		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask()); err != nil {
-			return fmt.Errorf("monetary identification's element (%s) has invalid value, %s", idx, err.Error())
+		if err := util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), getFieldMask(r, i)); err != nil {
+			return util.NewValidateElementError(util.GetStructName(r), idx, err.Error())
 		}
 	}
 
@@ -55,12 +45,12 @@ func (r *MonetaryIdentification) Parse(data string, args ...string) (int, error)
 	var size, read int
 	line := data
 
-	for i := 1; i <= r.fieldCount(); i++ {
+	for i := 1; i <= segmentFieldCount(r); i++ {
 		var value string
-		idx := fmt.Sprintf("%02d", i)
+		idx := util.GetFormattedIndex(i)
 
-		if value, size, err = util.ReadCompositeField(line, read, r.GetRule().Get(idx), r.defaultMask(), args...); err != nil {
-			return 0, fmt.Errorf("unable to parse monetary identification's element (%s), %s", idx, err.Error())
+		if value, size, err = util.ReadCompositeField(line, read, r.GetRule().Get(idx), getFieldMask(r, i), args...); err != nil {
+			return 0, util.NewParseSegmentError(util.GetStructName(r), idx, err.Error())
 		} else {
 			read += size
 			r.SetFieldByIndex(idx, value)
@@ -74,9 +64,9 @@ func (r MonetaryIdentification) String(args ...string) string {
 	var buf string
 	separator := util.GetElementSeparator(args...)
 
-	for i := r.fieldCount(); i > 0; i-- {
-		idx := fmt.Sprintf("%02d", i)
-		mask := r.GetRule().GetMask(idx, r.defaultMask())
+	for i := segmentFieldCount(r); i > 0; i-- {
+		idx := util.GetFormattedIndex(i)
+		mask := r.GetRule().GetMask(idx, getFieldMask(r, i))
 
 		buf = r.CompositeString(buf, mask, separator, "", r.GetFieldByIndex(idx))
 	}

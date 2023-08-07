@@ -25,6 +25,12 @@ func TestForBIG(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, len(in), read)
 
+		in = "BIG*0019*00*XX**********************~"
+		read, err = seg.Parse(in)
+		require.Error(t, err)
+		require.Equal(t, "big segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
+
 		in = "BIG*0019*~"
 		read, err = seg.Parse(in)
 		require.NoError(t, err)

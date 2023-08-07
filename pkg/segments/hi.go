@@ -5,7 +5,6 @@
 package segments
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/moov-io/x12/pkg/rules"
@@ -38,22 +37,6 @@ type HI struct {
 	Element
 }
 
-func (r HI) defaultMask(index int) string {
-	mask := rules.MASK_REQUIRED
-	if index > 1 {
-		mask = rules.MASK_OPTIONAL
-	}
-	return mask
-}
-
-func (r HI) fieldCount() int {
-	return 8
-}
-
-func (r HI) Name() string {
-	return "HI"
-}
-
 func (r *HI) SetFieldByIndex(index string, data any) error {
 	return util.SetFieldByIndex(r, index, data)
 }
@@ -67,9 +50,9 @@ func (r *HI) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= r.fieldCount(); i++ {
+	for i := 1; i <= segmentFieldCount(r); i++ {
 		var err error
-		idx := fmt.Sprintf("%02d", i)
+		idx := util.GetFormattedIndex(i)
 
 		switch i {
 		case 1:
@@ -113,7 +96,7 @@ func (r *HI) Validate(rule *rules.ElementSetRule) error {
 		}
 
 		if err != nil {
-			return fmt.Errorf("hi's element (%s) has invalid value, %s", idx, err.Error())
+			return util.NewValidateElementError(util.GetStructName(r), idx, err.Error())
 		}
 
 	}
@@ -123,20 +106,20 @@ func (r *HI) Validate(rule *rules.ElementSetRule) error {
 
 func (r *HI) Parse(data string, args ...string) (int, error) {
 	var size int
-	name := strings.ToLower(r.Name())
+	name := strings.ToLower(util.GetStructName(r))
 	read, line, err := r.VerifyCode(data, name, args...)
 	if err != nil {
 		return 0, err
 	}
 
-	for i := 1; i <= r.fieldCount(); i++ {
+	for i := 1; i <= segmentFieldCount(r); i++ {
 		var value string
-		idx := fmt.Sprintf("%02d", i)
+		idx := util.GetFormattedIndex(i)
 
 		rule := r.GetRule().Get(idx)
 
-		if value, size, err = util.ReadField(line, read, rule, r.defaultMask(i), args...); err != nil {
-			return 0, fmt.Errorf("unable to parse %s's element (%s), %s", name, idx, err.Error())
+		if value, size, err = util.ReadField(line, read, rule, getFieldMask(r, i), args...); err != nil {
+			return 0, util.NewParseSegmentError(name, idx, err.Error())
 		} else {
 			read += size
 
@@ -153,80 +136,80 @@ func (r *HI) Parse(data string, args ...string) (int, error) {
 					r.HealthCareCodeInformation1 = composite
 				}
 
-				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
-					return 0, fmt.Errorf("unable to parse %s's element (%s), %s", name, idx, parseErr.Error())
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, getFieldMask(r, i))) && parseErr != nil {
+					return 0, util.NewParseSegmentError(name, idx, parseErr.Error())
 				}
 			case 2:
 				if parseErr == nil {
 					r.HealthCareCodeInformation2 = &composite
 				}
 
-				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
-					return 0, fmt.Errorf("unable to parse %s's element (%s), %s", name, idx, parseErr.Error())
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, getFieldMask(r, i))) && parseErr != nil {
+					return 0, util.NewParseSegmentError(name, idx, parseErr.Error())
 				}
 			case 3:
 				if parseErr == nil {
 					r.HealthCareCodeInformation3 = &composite
 				}
 
-				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
-					return 0, fmt.Errorf("unable to parse %s's element (%s), %s", name, idx, parseErr.Error())
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, getFieldMask(r, i))) && parseErr != nil {
+					return 0, util.NewParseSegmentError(name, idx, parseErr.Error())
 				}
 			case 4:
 				if parseErr == nil {
 					r.HealthCareCodeInformation4 = &composite
 				}
 
-				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
-					return 0, fmt.Errorf("unable to parse %s's element (%s), %s", name, idx, parseErr.Error())
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, getFieldMask(r, i))) && parseErr != nil {
+					return 0, util.NewParseSegmentError(name, idx, parseErr.Error())
 				}
 			case 5:
 				if parseErr == nil {
 					r.HealthCareCodeInformation5 = &composite
 				}
 
-				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
-					return 0, fmt.Errorf("unable to parse %s's element (%s), %s", name, idx, parseErr.Error())
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, getFieldMask(r, i))) && parseErr != nil {
+					return 0, util.NewParseSegmentError(name, idx, parseErr.Error())
 				}
 			case 6:
 				if parseErr == nil {
 					r.HealthCareCodeInformation6 = &composite
 				}
 
-				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
-					return 0, fmt.Errorf("unable to parse %s's element (%s), %s", name, idx, parseErr.Error())
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, getFieldMask(r, i))) && parseErr != nil {
+					return 0, util.NewParseSegmentError(name, idx, parseErr.Error())
 				}
 			case 7:
 				if parseErr == nil {
 					r.HealthCareCodeInformation7 = &composite
 				}
 
-				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
-					return 0, fmt.Errorf("unable to parse %s's element (%s), %s", name, idx, parseErr.Error())
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, getFieldMask(r, i))) && parseErr != nil {
+					return 0, util.NewParseSegmentError(name, idx, parseErr.Error())
 				}
 			case 8:
 				if parseErr == nil {
 					r.HealthCareCodeInformation8 = &composite
 				}
 
-				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
-					return 0, fmt.Errorf("unable to parse %s's element (%s), %s", name, idx, parseErr.Error())
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, getFieldMask(r, i))) && parseErr != nil {
+					return 0, util.NewParseSegmentError(name, idx, parseErr.Error())
 				}
 			}
 
 		}
 	}
 
-	return read, nil
+	return returnRead(read, data, name, args...)
 }
 
 func (r HI) String(args ...string) string {
 	var buf string
 
-	for i := r.fieldCount(); i > 0; i-- {
+	for i := segmentFieldCount(r); i > 0; i-- {
 		var value any
-		idx := fmt.Sprintf("%02d", i)
-		mask := r.GetRule().GetMask(idx, r.defaultMask(i))
+		idx := util.GetFormattedIndex(i)
+		mask := r.GetRule().GetMask(idx, getFieldMask(r, i))
 
 		switch i {
 		case 1:
@@ -264,5 +247,5 @@ func (r HI) String(args ...string) string {
 		buf = r.CompositeString(buf, mask, util.DataElementSeparator, util.GetSegmentTerminator(args...), value)
 	}
 
-	return r.TerminateString(buf, r.Name())
+	return r.TerminateString(buf, util.GetStructName(r))
 }

@@ -5,10 +5,10 @@
 package segments
 
 import (
-	"errors"
 	"fmt"
 	"github.com/moov-io/x12/pkg/rules"
 	"github.com/moov-io/x12/pkg/util"
+	"reflect"
 	"strings"
 )
 
@@ -77,16 +77,15 @@ func (e *Element) VerifyCode(data, name string, args ...string) (int, string, er
 	read := codeLen + 1
 
 	if length < codeLen {
-		return 0, "", fmt.Errorf("%s segment has not enough input data", name)
+		return 0, "", util.NewMinLengthErr(name)
 	} else if !strings.EqualFold(strings.ToUpper(name), strings.ToUpper(data[:codeLen])) {
-		return 0, "", fmt.Errorf("%s segment contains invalid code", name)
+		return 0, "", util.NewInvalidCodeErr(name)
 	}
 
 	return read, data[:length], nil
 }
 
 type SegmentInterface interface {
-	Name() string
 	GetRule() *rules.ElementSetRule
 	SetRule(s *rules.ElementSetRule)
 	GetDescription() string
@@ -254,7 +253,7 @@ var (
 func CreateSegment(name string, rule *rules.SegmentRule) (SegmentInterface, error) {
 	constructor := segmentConstructor[name]
 	if constructor == nil {
-		return nil, errors.New("unsupported segment name")
+		return nil, util.NewUnsupportSegmentError(name)
 	}
 
 	if rule == nil {
@@ -265,4 +264,49 @@ func CreateSegment(name string, rule *rules.SegmentRule) (SegmentInterface, erro
 	newSegment.SetDescription(rule.Description)
 
 	return newSegment, nil
+}
+
+func segmentFieldCount(r any) int {
+	if r == nil {
+		return 0
+	}
+
+	if t := reflect.TypeOf(r); t.Kind() == reflect.Ptr {
+		return t.Elem().NumField() - 1
+	} else {
+		return t.NumField() - 1
+	}
+}
+
+func getFieldMask(r any, i int) string {
+	var dataStruct reflect.Value
+	if reflect.ValueOf(r).Kind() == reflect.Ptr {
+		dataStruct = reflect.ValueOf(r).Elem()
+	} else if reflect.ValueOf(r).Kind() == reflect.Struct {
+		dataStruct = reflect.ValueOf(r)
+	}
+
+	if i >= dataStruct.NumField() {
+		return rules.MASK_NOTUSED
+	}
+
+	idx := i - 1
+	if idx < 0 {
+		idx = 0
+	}
+
+	field := dataStruct.Type().Field(idx)
+	if strings.Contains(field.Tag.Get("json"), "omitempty") {
+		return rules.MASK_OPTIONAL
+	}
+
+	return rules.MASK_REQUIRED
+}
+
+func returnRead(read int, data, name string, args ...string) (int, error) {
+	if read != util.GetSegmentSize(data, args...) {
+		return 0, util.NewMaxLengthErr(name)
+	}
+
+	return read, nil
 }

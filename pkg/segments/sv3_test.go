@@ -22,8 +22,9 @@ func TestForSV3(t *testing.T) {
 
 		in = "SV3*1-1180*174***11:B:1*Y*A*Y*Y*P*********~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, 35, read)
+		require.Error(t, err)
+		require.Equal(t, "sv3 segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "SV3*1-1180*174***11:B:1*Y*A*Y*Y~"
 		read, err = seg.Parse(in)

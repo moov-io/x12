@@ -6,10 +6,6 @@ package loops
 
 import (
 	"bytes"
-	"errors"
-	"fmt"
-	"strings"
-
 	"github.com/moov-io/x12/pkg/rules"
 	"github.com/moov-io/x12/pkg/segments"
 	"github.com/moov-io/x12/pkg/util"
@@ -44,53 +40,51 @@ func (r Loop) Name() string {
 	return "loop"
 }
 
-func (r *Loop) Validate(segRules *rules.SegmentSetRule) error {
-	if segRules == nil && r.rule != nil {
-		segRules = &r.rule.Segments
+func (r *Loop) Validate(setRules *rules.SegmentSetRule) error {
+	if setRules == nil && r.rule != nil {
+		setRules = &r.rule.Segments
 	}
 
-	if segRules == nil {
-		return errors.New("please specify rules for this loop")
+	if setRules == nil {
+		return util.NewSpecifiedRuleError(r.Name())
 	}
 
-	index := 0
-	segIndex := 0
-	for rule := segRules.Get(index); rule != nil; rule = segRules.Get(index) {
+	ruleIndex := 0
+	passIndex := 0
+	for rule := setRules.Get(ruleIndex); rule != nil; rule = setRules.Get(ruleIndex) {
+		passSegIndex := 0
 		for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
-			if segIndex+1 > len(r.Segments) {
-				// there isn't segments although rule has required segments
-				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
-					return fmt.Errorf("please add new %s segment", strings.ToUpper(rule.Name))
-				}
+			if passIndex+1 > len(r.Segments) {
 				break
 			}
 
-			if r.Segments[segIndex].Name() != rule.Name {
+			if util.GetStructName(r.Segments[passIndex]) != rule.Name {
 				if rules.IsMaskRequired(rule.Mask) {
-					return fmt.Errorf("segment(%02d)'s name is not equal with rule's name (%s)", segIndex, strings.ToLower(rule.Name))
+					return util.NewMismatchSegmentError(util.GetStructName(r.Segments[passIndex]), rule.Name)
 				}
 				break
 			}
 
-			if err := r.Segments[segIndex].Validate(&rule.Elements); err != nil {
+			if err := r.Segments[passIndex].Validate(&rule.Elements); err != nil {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
-					return fmt.Errorf("segment(%02d) should be valid %s segment", segIndex, strings.ToUpper(rule.Name))
+					return err
 				}
 				break
 			}
 
-			segIndex++
+			passSegIndex++
+			passIndex++
 		}
 
-		index++
+		if passSegIndex < rule.MinRepeat() {
+			return util.NewMinSegmentError(rule.Name)
+		}
+
+		ruleIndex++
 	}
 
-	if len(r.Segments) > segIndex {
-		if segIndex == len(r.Segments)-1 {
-			return fmt.Errorf("unable to validate segment(%02d), rule is not specified", segIndex)
-		} else {
-			return fmt.Errorf("unable to validate segment(%02d~%02d), rule is not specified", segIndex, len(r.Segments)-1)
-		}
+	if len(r.Segments) > passIndex {
+		return util.NewAllSegmentError(r.Name())
 	}
 
 	return nil
@@ -98,7 +92,7 @@ func (r *Loop) Validate(segRules *rules.SegmentSetRule) error {
 
 func (r *Loop) Parse(data string, args ...string) (int, error) {
 	if r.rule == nil {
-		return 0, errors.New("please specify rules for this loop")
+		return 0, util.NewSpecifiedRuleError(r.Name())
 	}
 
 	var newSegments []segments.SegmentInterface
@@ -108,12 +102,12 @@ func (r *Loop) Parse(data string, args ...string) (int, error) {
 	index := 0
 
 	for rule := segRules.Get(index); rule != nil; rule = segRules.Get(index) {
-
 		for repeatIdx := 0; repeatIdx < rule.Repeat(); repeatIdx++ {
 			segment, err := segments.CreateSegment(rule.Name, rule)
 			if err != nil {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
-					return 0, fmt.Errorf("unable to parse %s segment", strings.ToLower(rule.Name))
+					util.AppendErrorSegmentLine(err, data[read:], args...)
+					return 0, err
 				}
 				break
 			}
@@ -121,7 +115,8 @@ func (r *Loop) Parse(data string, args ...string) (int, error) {
 			size, err := segment.Parse(data[read:], args...)
 			if err != nil {
 				if repeatIdx == 0 && rules.IsMaskRequired(rule.Mask) {
-					return 0, fmt.Errorf("unable to parse %s segment (%s)", strings.ToLower(rule.Name), err.Error())
+					util.AppendErrorSegmentLine(err, data[read:], args...)
+					return 0, err
 				}
 				break
 			} else {
@@ -134,7 +129,7 @@ func (r *Loop) Parse(data string, args ...string) (int, error) {
 	}
 
 	if len(newSegments) == 0 {
-		return 0, fmt.Errorf("unable to parse loop(%s)", r.Name())
+		return 0, util.NewUnableParseError(r.Name())
 	}
 
 	r.Segments = newSegments

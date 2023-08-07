@@ -22,8 +22,9 @@ func TestForNTE(t *testing.T) {
 
 		in = "NTE*0019*00*XX~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-3, read)
+		require.Error(t, err)
+		require.Equal(t, "nte segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "NTE*0019*~"
 		read, err = seg.Parse(in)

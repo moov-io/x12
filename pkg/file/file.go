@@ -6,7 +6,6 @@ package file
 
 import (
 	"bytes"
-	"errors"
 	"io"
 
 	"github.com/moov-io/x12/pkg/rules"
@@ -40,11 +39,11 @@ func (f File) getTerminator() string {
 
 func (f *File) Validate() error {
 	if len(f.Interchanges) == 0 {
-		return errors.New("unable to find any interchange")
+		return util.NewFindElementError("interchange")
 	}
 
 	if f.rule == nil {
-		return errors.New("unable to find valid rule")
+		return util.NewFindRuleError("valid")
 	}
 
 	for _, change := range f.Interchanges {
@@ -89,7 +88,7 @@ func (f File) Print(w io.Writer) {
 
 func (f *File) Parse(scan Scanner) error {
 	if f.rule == nil {
-		return errors.New("unable to find valid rule")
+		return util.NewFindRuleError("valid")
 	}
 
 	for line := scan.GetInterchange(); line != ""; line = scan.GetInterchange() {

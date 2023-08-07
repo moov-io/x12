@@ -44,7 +44,7 @@ func TestForProcedureIdentifier(t *testing.T) {
 		read, err = composite.Parse(in)
 		require.Error(t, err)
 		require.Equal(t, 0, read)
-		require.Equal(t, "unable to parse procedure identifier's element (03), the element contains unexpected value", err.Error())
+		require.Equal(t, "unable to parse procedureidentifier's element (03), the element contains unexpected value", err.Error())
 	})
 
 }

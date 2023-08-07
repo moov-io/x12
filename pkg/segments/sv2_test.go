@@ -22,8 +22,9 @@ func TestForSV2(t *testing.T) {
 
 		in = "SV2*a*1-1180*174***11:B:1*Y*A*Y*Y*P*****~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, 34, read)
+		require.Error(t, err)
+		require.Equal(t, "sv2 segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "SV2*1-1180*174***11:B:1*Y*A*Y*Y~"
 		read, err = seg.Parse(in)

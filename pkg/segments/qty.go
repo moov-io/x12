@@ -5,7 +5,6 @@
 package segments
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/moov-io/x12/pkg/rules"
@@ -28,25 +27,10 @@ func NewQTY(rule *rules.ElementSetRule) SegmentInterface {
 type QTY struct {
 	Qualifier string        `index:"01" json:"01" xml:"01"`
 	Quantity  string        `index:"02" json:"02" xml:"02"`
-	Field03   *QtyComposite `index:"03" json:"03" xml:"03"`
-	Field04   string        `index:"04" json:"04" xml:"04"`
+	Field03   *QtyComposite `index:"03" json:"03,omitempty" xml:"03,omitempty"`
+	Field04   string        `index:"04" json:"04,omitempty" xml:"04,omitempty"`
 
 	Element
-}
-
-func (r QTY) defaultMask(index int) string {
-	if index < 3 {
-		return rules.MASK_REQUIRED
-	}
-	return rules.MASK_OPTIONAL
-}
-
-func (r QTY) fieldCount() int {
-	return 4
-}
-
-func (r QTY) Name() string {
-	return "QTY"
 }
 
 func (r *QTY) SetFieldByIndex(index string, data any) error {
@@ -62,9 +46,9 @@ func (r *QTY) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= r.fieldCount(); i++ {
+	for i := 1; i <= segmentFieldCount(r); i++ {
 		var err error
-		idx := fmt.Sprintf("%02d", i)
+		idx := util.GetFormattedIndex(i)
 
 		if i == 3 {
 			if r.Field03 != nil {
@@ -72,11 +56,11 @@ func (r *QTY) Validate(rule *rules.ElementSetRule) error {
 				err = r.Field03.Validate(&cRule)
 			}
 		} else {
-			err = util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask(i))
+			err = util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), getFieldMask(r, i))
 		}
 
 		if err != nil {
-			return fmt.Errorf("qty's element (%s) has invalid value, %s", idx, err.Error())
+			return util.NewValidateElementError(util.GetStructName(r), idx, err.Error())
 		}
 	}
 
@@ -85,19 +69,19 @@ func (r *QTY) Validate(rule *rules.ElementSetRule) error {
 
 func (r *QTY) Parse(data string, args ...string) (int, error) {
 	var size int
-	name := strings.ToLower(r.Name())
+	name := strings.ToLower(util.GetStructName(r))
 	read, line, err := r.VerifyCode(data, name, args...)
 	if err != nil {
 		return 0, err
 	}
 
-	for i := 1; i <= r.fieldCount(); i++ {
+	for i := 1; i <= segmentFieldCount(r); i++ {
 		var value string
-		idx := fmt.Sprintf("%02d", i)
+		idx := util.GetFormattedIndex(i)
 		rule := r.GetRule().Get(idx)
 
-		if value, size, err = util.ReadField(line, read, rule, r.defaultMask(i), args...); err != nil {
-			return 0, fmt.Errorf("unable to parse %s's element (%s), %s", name, idx, err.Error())
+		if value, size, err = util.ReadField(line, read, rule, getFieldMask(r, i), args...); err != nil {
+			return 0, util.NewParseSegmentError(name, idx, err.Error())
 		} else {
 			read += size
 			compositeRule := rule.Composite
@@ -113,8 +97,8 @@ func (r *QTY) Parse(data string, args ...string) (int, error) {
 					r.Field03 = &composite
 				}
 
-				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask(i))) && parseErr != nil {
-					return 0, fmt.Errorf("unable to parse %s's element (%s), %s", name, idx, parseErr.Error())
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, getFieldMask(r, i))) && parseErr != nil {
+					return 0, util.NewParseSegmentError(name, idx, parseErr.Error())
 				}
 			} else {
 				r.SetFieldByIndex(idx, value)
@@ -122,16 +106,16 @@ func (r *QTY) Parse(data string, args ...string) (int, error) {
 		}
 	}
 
-	return read, nil
+	return returnRead(read, data, name, args...)
 }
 
 func (r QTY) String(args ...string) string {
 	var buf string
 
-	for i := r.fieldCount(); i > 0; i-- {
+	for i := segmentFieldCount(r); i > 0; i-- {
 		var value any
-		idx := fmt.Sprintf("%02d", i)
-		mask := r.GetRule().GetMask(idx, r.defaultMask(i))
+		idx := util.GetFormattedIndex(i)
+		mask := r.GetRule().GetMask(idx, getFieldMask(r, i))
 
 		if i == 3 {
 			if r.Field03 != nil {
@@ -144,5 +128,5 @@ func (r QTY) String(args ...string) string {
 		buf = r.CompositeString(buf, mask, util.DataElementSeparator, util.GetSegmentTerminator(args...), value)
 	}
 
-	return r.TerminateString(buf, r.Name())
+	return r.TerminateString(buf, util.GetStructName(r))
 }

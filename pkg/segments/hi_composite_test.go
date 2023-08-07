@@ -31,7 +31,7 @@ func TestForHealthCareCode(t *testing.T) {
 		read, err = composite.Parse(in)
 		require.Error(t, err)
 		require.Equal(t, 0, read)
-		require.Equal(t, "unable to parse health care code's element (02), the element contains unexpected value", err.Error())
+		require.Equal(t, "unable to parse healthcarecode's element (02), the element contains unexpected value", err.Error())
 	})
 
 }

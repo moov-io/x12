@@ -22,8 +22,9 @@ func TestForPRV(t *testing.T) {
 
 		in = "PRV*ALBUQUERQUE*NM*871201234*~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "prv segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "PRV*ALBUQUERQUE**~"
 		read, err = seg.Parse(in)

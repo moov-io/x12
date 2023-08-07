@@ -69,7 +69,7 @@ func (r *Interchange) Validate(validateRule *rules.InterchangeRule) error {
 	}
 
 	if changeRule == nil {
-		return errors.New("invalid interchange rule")
+		return util.NewFindRuleError(util.GetStructName(r))
 	}
 
 	var err error
@@ -77,45 +77,32 @@ func (r *Interchange) Validate(validateRule *rules.InterchangeRule) error {
 	// Validating ISA Segment
 	isaRule := changeRule.ISA
 	{
-		if isaRule.Name != "ISA" {
-			return errors.New("invalid isa rule")
-		}
-
 		err = r.ISA.Validate(&isaRule.Elements)
 		if err != nil {
-			return errors.New("unable to validate isa segment")
+			return util.UpdateErrorReason(err)
 		}
 	}
 
 	// Validating groups
 	{
 		if len(r.FunctionalGroups) == 0 {
-			return errors.New("unable to find any group")
+			return util.NewFindElementError("group")
 		}
 
 		for index := 0; index < len(r.FunctionalGroups); index++ {
 			group := r.FunctionalGroups[index]
 			if err = group.Validate(&changeRule.Group); err != nil {
-				return err
+				return util.UpdateErrorReason(err)
 			}
 		}
 
 	}
 
-	// Validating IEA Segment
 	ieaRule := changeRule.IEA
-	if rules.IsMaskRequired(ieaRule.Mask) && r.IEA == nil {
-		return errors.New("iea segment is required segment")
-	}
-
 	if r.IEA != nil {
-		if ieaRule.Name != "IEA" {
-			return errors.New("invalid iea rule")
-		}
-
 		err = r.IEA.Validate(&ieaRule.Elements)
 		if err != nil && rules.IsMaskRequired(ieaRule.Mask) {
-			return errors.New("unable to validate iea segment")
+			return util.UpdateErrorReason(err)
 		}
 	}
 
@@ -148,7 +135,7 @@ func (r *Interchange) Validate(validateRule *rules.InterchangeRule) error {
 
 func (r *Interchange) Parse(data string) (int, error) {
 	if r.rule == nil {
-		return 0, errors.New("please specify rules for this group")
+		return 0, util.NewFindRuleError(util.GetStructName(r))
 	}
 
 	var size, read int
@@ -157,14 +144,11 @@ func (r *Interchange) Parse(data string) (int, error) {
 	// Parsing ISA Segment
 	isaRule := r.rule.ISA
 	{
-		if isaRule.Name != "ISA" {
-			return 0, errors.New("invalid isa rule")
-		}
-
 		r.ISA.SetRule(&isaRule.Elements)
 		size, err = r.ISA.Parse(data[read:], r.getTerminator())
 		if err != nil {
-			return 0, errors.New("unable to parse isa segment")
+			util.AppendErrorSegmentLine(err, data[read:], r.getTerminator())
+			return 0, util.UpdateErrorReason(err)
 		} else {
 			read += size
 		}
@@ -181,7 +165,7 @@ func (r *Interchange) Parse(data string) (int, error) {
 		} else {
 			line := data[read:]
 			if len(r.FunctionalGroups) == 0 && (len(line) > 2 && line[0:2] == "GS") {
-				return 0, err
+				return 0, util.UpdateErrorReason(err)
 			}
 		}
 	}
@@ -192,13 +176,16 @@ func (r *Interchange) Parse(data string) (int, error) {
 		newIEA := segments.NewIEA(&ieaRule.Elements)
 		size, err = newIEA.Parse(data[read:], r.getTerminator())
 		if err != nil && rules.IsMaskRequired(ieaRule.Mask) {
-			return 0, errors.New("unable to parse iea segment")
+			util.AppendErrorSegmentLine(err, data[read:], r.getTerminator())
+			return 0, util.UpdateErrorReason(err)
 		} else if err == nil {
 			read += size
 			if s, ok := newIEA.(*segments.IEA); ok {
 				r.IEA = s
 			}
 		}
+	} else if rules.IsMaskRequired(ieaRule.Mask) {
+		return 0, util.NewFindSegmentError("iea")
 	}
 
 	return read, nil

@@ -22,8 +22,9 @@ func TestForIEA(t *testing.T) {
 
 		in = "IEA*3*8*~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "iea segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "IEA*3*~"
 		read, err = seg.Parse(in)

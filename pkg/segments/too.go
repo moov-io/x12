@@ -5,7 +5,6 @@
 package segments
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/moov-io/x12/pkg/rules"
@@ -33,18 +32,6 @@ type TOO struct {
 	Element
 }
 
-func (r TOO) defaultMask() string {
-	return rules.MASK_OPTIONAL
-}
-
-func (r TOO) fieldCount() int {
-	return 3
-}
-
-func (r TOO) Name() string {
-	return "TOO"
-}
-
 func (r *TOO) SetFieldByIndex(index string, data any) error {
 	return util.SetFieldByIndex(r, index, data)
 }
@@ -58,9 +45,9 @@ func (r *TOO) Validate(rule *rules.ElementSetRule) error {
 		rule = r.GetRule()
 	}
 
-	for i := 1; i <= r.fieldCount(); i++ {
+	for i := 1; i <= segmentFieldCount(r); i++ {
 		var err error
-		idx := fmt.Sprintf("%02d", i)
+		idx := util.GetFormattedIndex(i)
 		cRule := rule.Get(idx).Composite
 
 		if i == 3 {
@@ -68,11 +55,11 @@ func (r *TOO) Validate(rule *rules.ElementSetRule) error {
 				err = r.ToothSurfaceCode.Validate(&cRule)
 			}
 		} else {
-			err = util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), r.defaultMask())
+			err = util.ValidateField(r.GetFieldByIndex(idx), rule.Get(idx), getFieldMask(r, i))
 		}
 
 		if err != nil {
-			return fmt.Errorf("sv3's element (%s) has invalid value, %s", idx, err.Error())
+			return util.NewValidateElementError(util.GetStructName(r), idx, err.Error())
 		}
 	}
 
@@ -81,20 +68,20 @@ func (r *TOO) Validate(rule *rules.ElementSetRule) error {
 
 func (r *TOO) Parse(data string, args ...string) (int, error) {
 	var size int
-	name := strings.ToLower(r.Name())
+	name := strings.ToLower(util.GetStructName(r))
 	read, line, err := r.VerifyCode(data, name, args...)
 	if err != nil {
 		return 0, err
 	}
 
-	for i := 1; i <= r.fieldCount(); i++ {
+	for i := 1; i <= segmentFieldCount(r); i++ {
 		var value string
-		idx := fmt.Sprintf("%02d", i)
+		idx := util.GetFormattedIndex(i)
 
 		rule := r.GetRule().Get(idx)
 
-		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), r.defaultMask(), args...); err != nil {
-			return 0, fmt.Errorf("unable to parse %s's element (%s), %s", name, idx, err.Error())
+		if value, size, err = util.ReadField(line, read, r.GetRule().Get(idx), getFieldMask(r, i), args...); err != nil {
+			return 0, util.NewParseSegmentError(name, idx, err.Error())
 		} else {
 			read += size
 			r.SetFieldByIndex(idx, value)
@@ -112,8 +99,8 @@ func (r *TOO) Parse(data string, args ...string) (int, error) {
 					r.ToothSurfaceCode = &composite
 				}
 
-				if rules.IsMaskRequired(rules.GetMask(rule.Mask, r.defaultMask())) && parseErr != nil {
-					return 0, fmt.Errorf("unable to parse %s's element (%s), %s", name, idx, parseErr.Error())
+				if rules.IsMaskRequired(rules.GetMask(rule.Mask, getFieldMask(r, i))) && parseErr != nil {
+					return 0, util.NewParseSegmentError(name, idx, parseErr.Error())
 				}
 
 			} else {
@@ -122,16 +109,16 @@ func (r *TOO) Parse(data string, args ...string) (int, error) {
 		}
 	}
 
-	return read, nil
+	return returnRead(read, data, name, args...)
 }
 
 func (r TOO) String(args ...string) string {
 	var buf string
 
-	for i := r.fieldCount(); i > 0; i-- {
+	for i := segmentFieldCount(r); i > 0; i-- {
 		var value any
-		idx := fmt.Sprintf("%02d", i)
-		mask := r.GetRule().GetMask(idx, r.defaultMask())
+		idx := util.GetFormattedIndex(i)
+		mask := r.GetRule().GetMask(idx, getFieldMask(r, i))
 
 		if i == 3 {
 			if r.ToothSurfaceCode != nil {
@@ -144,5 +131,5 @@ func (r TOO) String(args ...string) string {
 		buf = r.CompositeString(buf, mask, util.DataElementSeparator, util.GetSegmentTerminator(args...), value)
 	}
 
-	return r.TerminateString(buf, r.Name())
+	return r.TerminateString(buf, util.GetStructName(r))
 }

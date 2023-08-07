@@ -15,17 +15,18 @@ func TestForFA1(t *testing.T) {
 	t.Run("parsing of fa1 segment", func(t *testing.T) {
 		seg := NewFA1(nil)
 
-		in := "FA1*0019~"
+		in := "FA1*0019*~"
 		read, err := seg.Parse(in)
 		require.NoError(t, err)
 		require.Equal(t, len(in), read)
 
-		in = "FA1*0019*XX~"
+		in = "FA1*0019*XX*~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-3, read)
+		require.Error(t, err)
+		require.Equal(t, "fa1 segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
-		in = "FA1*0019~"
+		in = "FA1*0019*~"
 		read, err = seg.Parse(in)
 		require.NoError(t, err)
 		require.Equal(t, len(in), read)

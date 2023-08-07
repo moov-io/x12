@@ -22,8 +22,9 @@ func TestForBHT(t *testing.T) {
 
 		in = "BHT*0019*00*101654*20130709*1058*CH*~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "bht segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "BHT*0019*00*101654*20130709**~"
 		read, err = seg.Parse(in)

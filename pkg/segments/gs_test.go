@@ -22,8 +22,9 @@ func TestForGS(t *testing.T) {
 
 		in = "GS*HC*85-0858585**20130709*1058*101654*X*005010X222A1*~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "gs segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "GS*HC*85-0858585**20130709*1058*101654**~"
 		read, err = seg.Parse(in)

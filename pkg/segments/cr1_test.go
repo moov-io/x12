@@ -22,8 +22,9 @@ func TestForCR1(t *testing.T) {
 
 		in = "CR1*19**********~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "cr1 segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "CR1*19********~"
 		read, err = seg.Parse(in)

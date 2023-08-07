@@ -164,31 +164,31 @@ func FillCompositeLoopWithRule(loop *CompositeLoop) {
 	sub2 := NewCompositeLoop(&compositeRule2)
 	sub2.Loop = *l1002a
 
-	loop.SubLoops = []CompositeLoop{*sub1, *sub2}
+	loop.SubLoops = []CompositeLoop{*sub1, *sub2, *sub2}
 }
 
 func TestCompositeLoop(t *testing.T) {
-	t.Run("testing empty Composite loop", func(t *testing.T) {
+	t.Run("testing empty composite loop", func(t *testing.T) {
 		loop := &CompositeLoop{}
 		require.Error(t, loop.Validate(nil))
-		require.Equal(t, "please specify rules for this Composite loop", loop.Validate(nil).Error())
+		require.Equal(t, "element(composite loop) rule is not defined", loop.Validate(nil).Error())
 		require.Equal(t, "", loop.String())
 		require.Equal(t, "Composite loop", loop.Name())
 
 		read, err := loop.Parse("")
 		require.Error(t, err)
-		require.Equal(t, "please specify rules for this Composite loop", err.Error())
+		require.Equal(t, "element(composite loop) rule is not defined", err.Error())
 		require.Equal(t, 0, read)
 
 		loop = NewCompositeLoop(nil)
 		require.Error(t, loop.Validate(nil))
-		require.Equal(t, "please specify rules for this Composite loop", loop.Validate(nil).Error())
+		require.Equal(t, "element(composite loop) rule is not defined", loop.Validate(nil).Error())
 		require.Equal(t, "", loop.String())
 		require.Equal(t, "Composite loop", loop.Name())
 
 		read, err = loop.Parse("")
 		require.Error(t, err)
-		require.Equal(t, "please specify rules for this Composite loop", err.Error())
+		require.Equal(t, "element(composite loop) rule is not defined", err.Error())
 		require.Equal(t, 0, read)
 
 		loop = NewCompositeLoop(&testRule)
@@ -200,34 +200,35 @@ func TestCompositeLoop(t *testing.T) {
 		require.Equal(t, "Composite loop", loop.Name())
 	})
 
-	t.Run("testing Composite loop with specified rule", func(t *testing.T) {
+	t.Run("testing composite loop with specified rule", func(t *testing.T) {
 		loop := NewCompositeLoop(&testComplexRule)
 		require.Error(t, loop.Validate(nil))
-		require.Equal(t, "loop(1000A) is invalid, please add new NM1 segment", loop.Validate(nil).Error())
+		require.Equal(t, "loop(1001a) does not repeat as specified times", loop.Validate(nil).Error())
 		require.Equal(t, "", loop.String())
 		require.Equal(t, "1000A", loop.Name())
 
 		FillCompositeLoopWithRule(loop)
-		require.Equal(t, 2, len(loop.SubLoops))
+		require.Equal(t, 3, len(loop.SubLoops))
 		require.NoError(t, loop.Validate(nil))
 		require.NoError(t, loop.Validate(&testComplexRule))
 
 		subLoops := loop.SubLoops
 
 		loop.SubLoops = append(subLoops, subLoops[1], subLoops[1])
-		require.Equal(t, 4, len(loop.SubLoops))
+		require.Equal(t, 5, len(loop.SubLoops))
 		err := loop.Validate(nil)
 		require.Error(t, err)
+		require.Equal(t, "all loops of 1000a don't to validate using specified rule, have dirty rules", err.Error())
 
 		loop.SubLoops = loop.SubLoops[0:1]
 		err = loop.Validate(nil)
 		require.Equal(t, 1, len(loop.SubLoops))
 		require.Error(t, err)
-		require.Equal(t, "please add new 1002A loop", err.Error())
+		require.Equal(t, "loop(1002a) does not repeat as specified times", err.Error())
 
 	})
 
-	t.Run("testing Composite loop with 1000A", func(t *testing.T) {
+	t.Run("testing composite loop with 1000A", func(t *testing.T) {
 		rule := rules.LoopRule{
 			Segments: rule_5010_837p.L1000ARule,
 			Mask:     rules.MASK_REQUIRED,
@@ -236,9 +237,9 @@ func TestCompositeLoop(t *testing.T) {
 
 		loop := NewCompositeLoop(&rule)
 
-		read, err := loop.Parse("NM1*41*2*CS*****46*133052274~PER*IC*CUSTOMER SOLUTIONS*TE*8008456592~")
+		read, err := loop.Parse("NM1*41*2*CS*****46*133052274~PER*IC*CUSTOMER SOLUTIONS*TE*8008456592~PER*IC*CUSTOMER SOLUTIONS*TE*8008456592~")
 		require.NoError(t, err)
-		require.Equal(t, 69, read)
+		require.Equal(t, 109, read)
 		require.Equal(t, nil, loop.Validate(nil))
 		require.Equal(t, nil, loop.Validate(&rule))
 	})

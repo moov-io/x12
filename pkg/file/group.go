@@ -7,7 +7,6 @@ package file
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"strconv"
 
 	"github.com/moov-io/x12/pkg/rules"
@@ -51,26 +50,24 @@ func (r *FunctionalGroup) Validate(groupRule *rules.GroupRule) error {
 	// Validating GS Segment
 	gsRule := groupRule.GS
 	{
-		if gsRule.Name != "GS" {
-			return errors.New("invalid gs rule")
-		}
-
 		err = r.GS.Validate(&gsRule.Elements)
 		if err != nil {
-			return errors.New("unable to validate gs segment")
+			util.AppendErrorStack(err, util.GetStructName(r))
+			return err
 		}
 	}
 
 	// Validating transaction sets
 	{
 		if len(r.TransactionSets) == 0 {
-			return errors.New("unable to find any transaction set")
+			return util.NewFindRuleError(util.GetStructName(r))
 		}
 
 		for index := 0; index < len(r.TransactionSets); index++ {
 			set := r.TransactionSets[index]
 			if err = set.Validate(&groupRule.Trans); err != nil {
-				return fmt.Errorf("transaction set(%02d) is not invalid", index)
+				util.AppendErrorStack(err, util.GetStructName(r))
+				return err
 			}
 		}
 
@@ -78,18 +75,10 @@ func (r *FunctionalGroup) Validate(groupRule *rules.GroupRule) error {
 
 	// Validating GE Segment
 	geRule := groupRule.GE
-	if rules.IsMaskRequired(geRule.Mask) && r.GE == nil {
-		return errors.New("ge segment is required segment")
-	}
-
 	if r.GE != nil {
-		if geRule.Name != "GE" {
-			return errors.New("invalid ge rule")
-		}
-
 		err = r.GE.Validate(&geRule.Elements)
 		if err != nil && rules.IsMaskRequired(geRule.Mask) {
-			return errors.New("unable to validate ge segment")
+			return err
 		}
 	}
 
@@ -112,7 +101,7 @@ func (r *FunctionalGroup) Validate(groupRule *rules.GroupRule) error {
 
 func (r *FunctionalGroup) Parse(data string, args ...string) (int, error) {
 	if r.rule == nil {
-		return 0, errors.New("please specify rules for this group")
+		return 0, util.NewFindRuleError(util.GetStructName(r))
 	}
 
 	var size, read int
@@ -121,14 +110,11 @@ func (r *FunctionalGroup) Parse(data string, args ...string) (int, error) {
 	// Parsing GS Segment
 	gsRule := r.rule.GS
 	{
-		if gsRule.Name != "GS" {
-			return 0, errors.New("invalid gs rule")
-		}
-
 		r.GS.SetRule(&gsRule.Elements)
 		size, err = r.GS.Parse(data[read:], args...)
 		if err != nil {
-			return 0, errors.New("unable to parse gs segment")
+			util.AppendErrorSegmentLine(err, data[read:], args...)
+			return 0, err
 		} else {
 			read += size
 		}
@@ -145,6 +131,7 @@ func (r *FunctionalGroup) Parse(data string, args ...string) (int, error) {
 		} else {
 			line := data[read:]
 			if len(r.TransactionSets) == 0 && (len(line) > 2 && line[0:2] == "ST") {
+				util.AppendErrorStack(err, util.GetStructName(r))
 				return 0, err
 			}
 		}
@@ -156,7 +143,8 @@ func (r *FunctionalGroup) Parse(data string, args ...string) (int, error) {
 		newGE := segments.NewGE(&geRule.Elements)
 		size, err = newGE.Parse(data[read:], args...)
 		if err != nil && rules.IsMaskRequired(geRule.Mask) {
-			return 0, errors.New("unable to parse ge segment")
+			util.AppendErrorSegmentLine(err, data[read:], args...)
+			return 0, err
 		} else if err == nil {
 			read += size
 			if s, ok := newGE.(*segments.GE); ok {

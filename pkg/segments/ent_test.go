@@ -22,8 +22,9 @@ func TestForENT(t *testing.T) {
 
 		in = "ENT*85*2*INDIAN HEALTH HOSPITAL**~"
 		read, err = seg.Parse(in)
-		require.NoError(t, err)
-		require.Equal(t, len(in)-1, read)
+		require.Error(t, err)
+		require.Equal(t, "ent segment can't parse all input data", err.Error())
+		require.Equal(t, 0, read)
 
 		in = "ENT*85*2*INDIAN HEALTH HOSPITAL~"
 		read, err = seg.Parse(in)

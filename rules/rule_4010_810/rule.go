@@ -1193,6 +1193,7 @@ var LFARule = rules.SegmentSetRule{
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"ZZ"}},
+			"02": {Mask: rules.MASK_OPTIONAL},
 		},
 	},
 	1: rules.SegmentRule{
@@ -1218,213 +1219,311 @@ var TransactionSetRule = rules.TransactionRule{
 			"03": {Mask: rules.MASK_NOTUSED},
 		},
 	},
-	Segments: rules.SegmentSetRule{
-		0: rules.SegmentRule{
-			Name:        "BIG",
-			Description: "BILLING INFORMATION",
-			Mask:        rules.MASK_REQUIRED,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_OPTIONAL},
-				"02": {Mask: rules.MASK_OPTIONAL},
-				"03": {Mask: rules.MASK_OPTIONAL},
-				"04": {Mask: rules.MASK_OPTIONAL},
-				"05": {Mask: rules.MASK_OPTIONAL},
-				"06": {Mask: rules.MASK_OPTIONAL},
-				"07": {Mask: rules.MASK_OPTIONAL},
-				"08": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"54", "22", "53", "SU"}},
-				"09": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"9"}},
-				"10": {Mask: rules.MASK_OPTIONAL},
+	Composite: rules.LoopRule{
+		Name: "Transaction Loop",
+		Mask: rules.MASK_REQUIRED,
+		Segments: rules.SegmentSetRule{
+			0: rules.SegmentRule{
+				Name:        "BIG",
+				Description: "BILLING INFORMATION",
+				Mask:        rules.MASK_REQUIRED,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_OPTIONAL},
+					"02": {Mask: rules.MASK_OPTIONAL},
+					"03": {Mask: rules.MASK_OPTIONAL},
+					"04": {Mask: rules.MASK_OPTIONAL},
+					"05": {Mask: rules.MASK_OPTIONAL},
+					"06": {Mask: rules.MASK_OPTIONAL},
+					"07": {Mask: rules.MASK_OPTIONAL},
+					"08": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"54", "22", "53", "SU"}},
+					"09": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"9"}},
+					"10": {Mask: rules.MASK_OPTIONAL},
+				},
+			},
+			1: rules.SegmentRule{
+				Name:        "NTE",
+				Description: "SERVICE LEVEL REQUESTED",
+				Mask:        rules.MASK_OPTIONAL,
+				RepeatCount: 100,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"ORI"}},
+					"02": {Mask: rules.MASK_OPTIONAL},
+				},
+			},
+			2: rules.SegmentRule{
+				Name:        "NTE",
+				Description: "SERVICE LEVEL PROVIDED",
+				Mask:        rules.MASK_OPTIONAL,
+				RepeatCount: 100,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"DOI"}},
+					"02": {Mask: rules.MASK_OPTIONAL},
+				},
+			},
+			3: rules.SegmentRule{
+				Name:        "NTE",
+				Description: "PRODUCT NAME",
+				Mask:        rules.MASK_OPTIONAL,
+				RepeatCount: 100,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"PDS"}},
+					"02": {Mask: rules.MASK_OPTIONAL},
+				},
+			},
+			4: rules.SegmentRule{
+				Name:        "NTE",
+				Description: "FILE REQUEST NAME",
+				Mask:        rules.MASK_OPTIONAL,
+				RepeatCount: 100,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"OTH"}},
+					"02": {Mask: rules.MASK_OPTIONAL},
+				},
+			},
+			5: rules.SegmentRule{
+				Name:        "NTE",
+				Description: "SOURCE DOCUMENT USED FOR HEADER DATA",
+				Mask:        rules.MASK_OPTIONAL,
+				RepeatCount: 100,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"PCS"}},
+					"02": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"MERGED", "ORDER", "INVOICE"}},
+				},
+			},
+			6: rules.SegmentRule{
+				Name:        "NTE",
+				Description: "SOURCE DOCUMENT USED FOR LINE ITEM DATA",
+				Mask:        rules.MASK_OPTIONAL,
+				RepeatCount: 100,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"LIN", "GPI"}},
+					"02": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"ORDER", "DOC TYPE", "INVOICE"}},
+				},
+			},
+			7: rules.SegmentRule{
+				Name:        "NTE",
+				Description: "SOURCE DOCUMENT USED FOR SERVICE CHANGES",
+				Mask:        rules.MASK_OPTIONAL,
+				RepeatCount: 100,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"INV", "APN", "GEN"}},
+					"02": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"INVOICE", "ORDER", "DOCTYPE"}},
+				},
+			},
+			8: rules.SegmentRule{
+				Name:        "NTE",
+				Description: "SOURCE DOCUMENT USED FOR EBILL LINE ITEM DATA",
+				Mask:        rules.MASK_OPTIONAL,
+				RepeatCount: 100,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"ADD", "CAR"}},
+					"02": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"EBILL", "GL CODE"}},
+				},
+			},
+			9: rules.SegmentRule{
+				Name:        "CUR",
+				Description: "CURRENCY",
+				Mask:        rules.MASK_OPTIONAL,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"ZZ"}},
+					"02": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"AUD", "CAD", "CHF", "EUR", "GDP", "JPY", "USD"}},
+					"03": {Mask: rules.MASK_OPTIONAL},
+				},
+			},
+			10: rules.SegmentRule{
+				Name:        "REF",
+				Description: "CUSTOMER ORDER NUMBER/BOL NUMBER",
+				Mask:        rules.MASK_OPTIONAL,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"CO", "BM"}},
+					"02": {Mask: rules.MASK_REQUIRED},
+					"03": {Mask: rules.MASK_OPTIONAL},
+				},
+			},
+			11: rules.SegmentRule{
+				Name:        "REF",
+				Description: "INVOICE/PRO NUMBER",
+				Mask:        rules.MASK_OPTIONAL,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"IV"}},
+					"02": {Mask: rules.MASK_REQUIRED},
+					"03": {Mask: rules.MASK_OPTIONAL},
+				},
+			},
+			12: rules.SegmentRule{
+				Name:        "REF",
+				Description: "BILL NUMBER",
+				Mask:        rules.MASK_OPTIONAL,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"TN"}},
+					"02": {Mask: rules.MASK_REQUIRED},
+					"03": {Mask: rules.MASK_OPTIONAL},
+				},
+			},
+			13: rules.SegmentRule{
+				Name:        "REF",
+				Description: "DOCUMENT TYPE",
+				Mask:        rules.MASK_OPTIONAL,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"8X"}},
+					"02": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"ORDER", "BOL", "EBILL", "INVOICE", "PRO", "FEE", "SUPPLEMENTAL INVOICE"}},
+					"03": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"MATCHING", "BUYER SELF INVOICING", "SELLER INVOICING"}},
+				},
+			},
+			14: rules.SegmentRule{
+				Name:        "REF",
+				Description: "SYSTEM NUMBER",
+				Mask:        rules.MASK_OPTIONAL,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"06"}},
+					"02": {Mask: rules.MASK_REQUIRED},
+					"03": {Mask: rules.MASK_OPTIONAL},
+				},
+			},
+			15: rules.SegmentRule{
+				Name:        "REF",
+				Description: "INBOUND/OUTBOUND INDICATOR OR BUYER RELEASE NUMBER",
+				Mask:        rules.MASK_OPTIONAL,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"4C", "RE"}},
+					"02": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"Inbound", "Outbound", "INBOUND", "OUTBOUND"}},
+					"03": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"YES", "NO"}},
+				},
+			},
+			16: rules.SegmentRule{
+				Name:        "REF",
+				Description: "FINANCIAL STATUS",
+				Mask:        rules.MASK_OPTIONAL,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"1Z"}},
+					"02": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"PS", "PI", "AE", "AF", "CA", "DN", "HD", "ON", "OP", "MA"}},
+					"03": {Mask: rules.MASK_OPTIONAL},
+				},
+			},
+			17: rules.SegmentRule{
+				Name:        "REF",
+				Description: "COMPLIANCE COMPLETION EVENT",
+				Mask:        rules.MASK_OPTIONAL,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"ACC"}},
+					"02": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"DV", "AF", "VD"}},
+					"03": {Mask: rules.MASK_OPTIONAL},
+				},
+			},
+			18: rules.SegmentRule{
+				Name:        "REF",
+				Description: "SHIPMENT MODE",
+				Mask:        rules.MASK_OPTIONAL,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"ZZ"}},
+					"02": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"LT", "M", "A", "O", "R", "HHG"}},
+					"03": {Mask: rules.MASK_OPTIONAL},
+				},
+			},
+			19: rules.SegmentRule{
+				Name:        "REF",
+				Description: "USER DEFINED REFERENCE DATA",
+				Mask:        rules.MASK_OPTIONAL,
+				RepeatCount: 3,
+				Elements: rules.ElementSetRule{
+					"01": {Mask: rules.MASK_REQUIRED},
+					"02": {Mask: rules.MASK_REQUIRED},
+					"03": {Mask: rules.MASK_OPTIONAL},
+				},
 			},
 		},
-		1: rules.SegmentRule{
-			Name:        "NTE",
-			Description: "SERVICE LEVEL REQUESTED",
-			Mask:        rules.MASK_OPTIONAL,
-			RepeatCount: 100,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"ORI"}},
-				"02": {Mask: rules.MASK_OPTIONAL},
+		Composite: map[int]rules.LoopRule{
+			0: {
+				Segments: PayerRule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "Payer",
 			},
-		},
-		2: rules.SegmentRule{
-			Name:        "NTE",
-			Description: "SERVICE LEVEL PROVIDED",
-			Mask:        rules.MASK_OPTIONAL,
-			RepeatCount: 100,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"DOI"}},
-				"02": {Mask: rules.MASK_OPTIONAL},
+			1: {
+				Segments: PayeeRule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "Payee",
 			},
-		},
-		3: rules.SegmentRule{
-			Name:        "NTE",
-			Description: "PRODUCT NAME",
-			Mask:        rules.MASK_OPTIONAL,
-			RepeatCount: 100,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"PDS"}},
-				"02": {Mask: rules.MASK_OPTIONAL},
+			2: {
+				Segments: BuyingRule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "Buyer",
 			},
-		},
-		4: rules.SegmentRule{
-			Name:        "NTE",
-			Description: "FILE REQUEST NAME",
-			Mask:        rules.MASK_OPTIONAL,
-			RepeatCount: 100,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"OTH"}},
-				"02": {Mask: rules.MASK_OPTIONAL},
+			3: {
+				Segments: SellingRule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "Seller",
 			},
-		},
-		5: rules.SegmentRule{
-			Name:        "NTE",
-			Description: "SOURCE DOCUMENT USED FOR HEADER DATA",
-			Mask:        rules.MASK_OPTIONAL,
-			RepeatCount: 100,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"PCS"}},
-				"02": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"MERGED", "ORDER", "INVOICE"}},
+			4: {
+				Segments: ShipFromRule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "ShipFrom",
 			},
-		},
-		6: rules.SegmentRule{
-			Name:        "NTE",
-			Description: "SOURCE DOCUMENT USED FOR LINE ITEM DATA",
-			Mask:        rules.MASK_OPTIONAL,
-			RepeatCount: 100,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"LIN", "GPI"}},
-				"02": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"ORDER", "DOC TYPE", "INVOICE"}},
+			5: {
+				Segments: ShipToRule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "ShipFrom",
 			},
-		},
-		7: rules.SegmentRule{
-			Name:        "NTE",
-			Description: "SOURCE DOCUMENT USED FOR SERVICE CHANGES",
-			Mask:        rules.MASK_OPTIONAL,
-			RepeatCount: 100,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"INV", "APN", "GEN"}},
-				"02": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"INVOICE", "ORDER", "DOCTYPE"}},
+			6: {
+				Segments: PropertyRule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "UserDefinedProperty",
 			},
-		},
-		8: rules.SegmentRule{
-			Name:        "NTE",
-			Description: "SOURCE DOCUMENT USED FOR EBILL LINE ITEM DATA",
-			Mask:        rules.MASK_OPTIONAL,
-			RepeatCount: 100,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"ADD", "CAR"}},
-				"02": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"EBILL", "GL CODE"}},
+			7: {
+				Segments: StopOffRule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "StopOff",
 			},
-		},
-		9: rules.SegmentRule{
-			Name:        "CUR",
-			Description: "CURRENCY",
-			Mask:        rules.MASK_OPTIONAL,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"ZZ"}},
-				"02": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"AUD", "CAD", "CHF", "EUR", "GDP", "JPY", "USD"}},
-				"03": {Mask: rules.MASK_OPTIONAL},
+			8: {
+				Segments: CycleRule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "Cycle",
 			},
-		},
-		10: rules.SegmentRule{
-			Name:        "REF",
-			Description: "CUSTOMER ORDER NUMBER/BOL NUMBER",
-			Mask:        rules.MASK_OPTIONAL,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"CO", "BM"}},
-				"02": {Mask: rules.MASK_REQUIRED},
-				"03": {Mask: rules.MASK_OPTIONAL},
+			9: {
+				Segments:    ExtendedRule,
+				Mask:        rules.MASK_OPTIONAL,
+				RepeatCount: 200,
+				Name:        "Extended",
 			},
-		},
-		11: rules.SegmentRule{
-			Name:        "REF",
-			Description: "INVOICE/PRO NUMBER",
-			Mask:        rules.MASK_OPTIONAL,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"IV"}},
-				"02": {Mask: rules.MASK_REQUIRED},
-				"03": {Mask: rules.MASK_OPTIONAL},
+			10: {
+				Segments: LIT1Rule,
+				Mask:     rules.MASK_OPTIONAL,
+				Name:     "LOOP IT1",
+				Composite: rules.LoopSetRule{
+					0: {
+						Segments:    LPIDRule,
+						Mask:        rules.MASK_OPTIONAL,
+						Name:        "LOOP PID",
+						RepeatCount: 100,
+					},
+					1: {
+						Segments: LLineItemRule,
+						Mask:     rules.MASK_OPTIONAL,
+						Name:     "LOOP LINE ITEM",
+					},
+					2: {
+						Segments:    LSACRule,
+						Mask:        rules.MASK_OPTIONAL,
+						Name:        "LOOP SAC",
+						RepeatCount: 25,
+					},
+					3: {
+						Segments:    LN1Rule,
+						Mask:        rules.MASK_OPTIONAL,
+						Name:        "LOOP N1",
+						RepeatCount: 200,
+					},
+					4: {
+						Segments:    LFARule,
+						Mask:        rules.MASK_OPTIONAL,
+						Name:        "LOOP FA",
+						RepeatCount: rules.GREATER_THAN_ONE,
+					},
+				},
 			},
-		},
-		12: rules.SegmentRule{
-			Name:        "REF",
-			Description: "BILL NUMBER",
-			Mask:        rules.MASK_OPTIONAL,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"TN"}},
-				"02": {Mask: rules.MASK_REQUIRED},
-				"03": {Mask: rules.MASK_OPTIONAL},
-			},
-		},
-		13: rules.SegmentRule{
-			Name:        "REF",
-			Description: "DOCUMENT TYPE",
-			Mask:        rules.MASK_OPTIONAL,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"8X"}},
-				"02": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"ORDER", "BOL", "EBILL", "INVOICE", "PRO", "FEE", "SUPPLEMENTAL INVOICE"}},
-				"03": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"MATCHING", "BUYER SELF INVOICING", "SELLER INVOICING"}},
-			},
-		},
-		14: rules.SegmentRule{
-			Name:        "REF",
-			Description: "SYSTEM NUMBER",
-			Mask:        rules.MASK_OPTIONAL,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"06"}},
-				"02": {Mask: rules.MASK_REQUIRED},
-				"03": {Mask: rules.MASK_OPTIONAL},
-			},
-		},
-		15: rules.SegmentRule{
-			Name:        "REF",
-			Description: "INBOUND/OUTBOUND INDICATOR OR BUYER RELEASE NUMBER",
-			Mask:        rules.MASK_OPTIONAL,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"4C", "RE"}},
-				"02": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"Inbound", "Outbound", "INBOUND", "OUTBOUND"}},
-				"03": {Mask: rules.MASK_OPTIONAL, AcceptValues: []string{"YES", "NO"}},
-			},
-		},
-		16: rules.SegmentRule{
-			Name:        "REF",
-			Description: "FINANCIAL STATUS",
-			Mask:        rules.MASK_OPTIONAL,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"1Z"}},
-				"02": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"PS", "PI", "AE", "AF", "CA", "DN", "HD", "ON", "OP", "MA"}},
-				"03": {Mask: rules.MASK_OPTIONAL},
-			},
-		},
-		17: rules.SegmentRule{
-			Name:        "REF",
-			Description: "COMPLIANCE COMPLETION EVENT",
-			Mask:        rules.MASK_OPTIONAL,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"ACC"}},
-				"02": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"DV", "AF", "VD"}},
-				"03": {Mask: rules.MASK_OPTIONAL},
-			},
-		},
-		18: rules.SegmentRule{
-			Name:        "REF",
-			Description: "SHIPMENT MODE",
-			Mask:        rules.MASK_OPTIONAL,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"ZZ"}},
-				"02": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"LT", "M", "A", "O", "R", "HHG"}},
-				"03": {Mask: rules.MASK_OPTIONAL},
-			},
-		},
-		19: rules.SegmentRule{
-			Name:        "REF",
-			Description: "USER DEFINED REFERENCE DATA",
-			Mask:        rules.MASK_OPTIONAL,
-			RepeatCount: 3,
-			Elements: rules.ElementSetRule{
-				"01": {Mask: rules.MASK_REQUIRED},
-				"02": {Mask: rules.MASK_REQUIRED},
-				"03": {Mask: rules.MASK_OPTIONAL},
+			11: {
+				Segments: SummaryRule,
+				Mask:     rules.MASK_REQUIRED,
+				Name:     "Summary",
 			},
 		},
 	},
@@ -1435,100 +1534,6 @@ var TransactionSetRule = rules.TransactionRule{
 		Elements: rules.ElementSetRule{
 			"01": {Mask: rules.MASK_REQUIRED},
 			"02": {Mask: rules.MASK_REQUIRED},
-		},
-	},
-	Loops: map[int]rules.LoopRule{
-		0: {
-			Segments: PayerRule,
-			Mask:     rules.MASK_OPTIONAL,
-			Name:     "Payer",
-		},
-		1: {
-			Segments: PayeeRule,
-			Mask:     rules.MASK_OPTIONAL,
-			Name:     "Payee",
-		},
-		2: {
-			Segments: BuyingRule,
-			Mask:     rules.MASK_OPTIONAL,
-			Name:     "Buyer",
-		},
-		3: {
-			Segments: SellingRule,
-			Mask:     rules.MASK_OPTIONAL,
-			Name:     "Seller",
-		},
-		4: {
-			Segments: ShipFromRule,
-			Mask:     rules.MASK_OPTIONAL,
-			Name:     "ShipFrom",
-		},
-		5: {
-			Segments: ShipToRule,
-			Mask:     rules.MASK_OPTIONAL,
-			Name:     "ShipFrom",
-		},
-		6: {
-			Segments: PropertyRule,
-			Mask:     rules.MASK_OPTIONAL,
-			Name:     "UserDefinedProperty",
-		},
-		7: {
-			Segments: StopOffRule,
-			Mask:     rules.MASK_OPTIONAL,
-			Name:     "StopOff",
-		},
-		8: {
-			Segments: CycleRule,
-			Mask:     rules.MASK_OPTIONAL,
-			Name:     "Cycle",
-		},
-		9: {
-			Segments:    ExtendedRule,
-			Mask:        rules.MASK_OPTIONAL,
-			RepeatCount: 200,
-			Name:        "Extended",
-		},
-		10: {
-			Segments: LIT1Rule,
-			Mask:     rules.MASK_OPTIONAL,
-			Name:     "LOOP IT1",
-			Composite: rules.LoopSetRule{
-				0: {
-					Segments:    LPIDRule,
-					Mask:        rules.MASK_OPTIONAL,
-					Name:        "LOOP PID",
-					RepeatCount: 100,
-				},
-				1: {
-					Segments: LLineItemRule,
-					Mask:     rules.MASK_OPTIONAL,
-					Name:     "LOOP LINE ITEM",
-				},
-				2: {
-					Segments:    LSACRule,
-					Mask:        rules.MASK_OPTIONAL,
-					Name:        "LOOP SAC",
-					RepeatCount: 25,
-				},
-				3: {
-					Segments:    LN1Rule,
-					Mask:        rules.MASK_OPTIONAL,
-					Name:        "LOOP N1",
-					RepeatCount: 200,
-				},
-				4: {
-					Segments:    LFARule,
-					Mask:        rules.MASK_OPTIONAL,
-					Name:        "LOOP FA",
-					RepeatCount: rules.GREATER_THAN_ONE,
-				},
-			},
-		},
-		11: {
-			Segments: SummaryRule,
-			Mask:     rules.MASK_REQUIRED,
-			Name:     "Summary",
 		},
 	},
 }
