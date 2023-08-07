@@ -31,10 +31,6 @@ type N9 struct {
 	Element
 }
 
-func (r N9) fieldCount() int {
-	return 2
-}
-
 func (r *N9) SetFieldByIndex(index string, data any) error {
 	return util.SetFieldByIndex(r, index, data)
 }
