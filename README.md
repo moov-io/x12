@@ -568,6 +568,8 @@ Checkout the [Go methods available](https://pkg.go.dev/github.com/moov-io/x12) f
 ## Further Reading
 
 - [What makes EDI so hard?](https://www.stedi.com/blog/what-makes-edi-so-hard)
+- [awesome-edi](https://github.com/Stedi/awesome-edi)
+- EDI [catalog](https://www.stedi.com/edi/catalog) / [inspector](https://www.stedi.com/edi/inspector) / [reference](https://www.stedi.com/edi) (Stedi)
 
 ## Getting help
 
