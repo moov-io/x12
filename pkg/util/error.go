@@ -264,7 +264,7 @@ func UpdateErrorReason(err error) error {
 
 	if len(obj.Originated) > 1 {
 		if len(obj.Segment) > 0 {
-			obj.Reason = fmt.Sprintf("%s, error stack: '%s', error segment line: '%s'", obj.Reason, buildStack(obj.Originated), obj.Segment)
+			obj.Reason = fmt.Sprintf("%s, error segment line: '%s', error stack: '%s'", obj.Reason, buildStack(obj.Originated), obj.Segment)
 		} else {
 			obj.Reason = fmt.Sprintf("%s, error stack: '%s'", obj.Reason, buildStack(obj.Originated))
 		}

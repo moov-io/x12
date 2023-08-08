@@ -76,8 +76,10 @@ Each interchange will perform validation check based on specified rule
 
 Currently, we support following rules for :
 
+* [4010 810](./specs/rule_4010_810/rule.go) - ASC X12F 4010 810
 * [4010 820](./specs/rule_4010_820/rule.go) - ASC X12F 4010 820 (004010X061A1)
 * [4010 835](./specs/rule_4010_835/rule.go) - ASC X12F 4010 825 (004010X091A1)
+* [4010 837I](./specs/rule_5010_837I/rule.go) - ASC X12N 4010 837I (004010X096A1)
 * [5010 835](./specs/rule_5010_835/rule.go) - ASC X12N 5010 835 (005010X221A1)
 * [5010 837d](./specs/rule_5010_837d/rule.go) - ASC X12N 5010 837 (005010X224A2)
 * [5010 837p](./specs/rule_5010_8837p/rule.go) - ASC X12N 5010 837 (005010X222A1)
@@ -564,6 +566,31 @@ IEA                         |REQUIRED |1             |INTERCHANGE CONTROL TRAILE
 
 
 Checkout the [Go methods available](https://pkg.go.dev/github.com/moov-io/x12) for full details.
+
+
+### Error Messages
+X12 project used 2 error styles for parsing logic. 
+First style used when getting error on any segment inside composite loop or loop, second type used for normal segment
+* reason, error stack, error line
+```
+  tds segment can't parse all input data, error segment line: 'TDS*139550*1*1*1*1~', error stack: 'functionalgroup->transactionset->summary->tds'
+```
+
+* reason, error line
+```
+  ge segment contains invalid code, error segment line: 'ST*810*0002~'
+```
+
+X12 project used 2 error styles for validating logic.
+First style used when getting validate error on any segment inside composite loop or loop, second type used for normal segment
+* reason, error stack, error line
+```
+  segment(amt) don't accept specified rule(tds), please verify segment orders or has dirty segments as previous segment, error stack: 'functionalgroup->transactionset->summary->amt'
+```
+
+```
+  segment(amt) don't accept specified rule(tds), please verify segment orders or has dirty segments as previous segment
+```
 
 ## Further Reading
 
