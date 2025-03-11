@@ -600,7 +600,7 @@ var L2300Rule = rules.SegmentSetRule{
 		Description: "CLAIM NOTE - 2300",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
-			"01": {AcceptValues: []string{"ADD", " CER", " DCP", " DGN", " TPO"}},
+			"01": {AcceptValues: []string{"ADD", "CER", "DCP", "DGN", "TPO"}},
 		},
 	},
 	14: rules.SegmentRule{
@@ -1101,7 +1101,7 @@ var L2310ARule = rules.SegmentSetRule{
 		Description: "REFERRING PROVIDER NAME - 2310A",
 		Mask:        rules.MASK_OPTIONAL,
 		Elements: rules.ElementSetRule{
-			"01": {AcceptValues: []string{"0B", "1G", "G2"}},
+			"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"0B", "1G", "G2"}},
 		},
 	},
 }
@@ -1246,6 +1246,7 @@ var L2310ERule = rules.SegmentSetRule{
 	1: rules.SegmentRule{
 		Name:        "N3",
 		Description: "AMBULANCE PICK-UP LOCATION ADDRESS - 2310E",
+		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"02": {Mask: rules.MASK_OPTIONAL},
 		},
@@ -1253,6 +1254,7 @@ var L2310ERule = rules.SegmentSetRule{
 	2: rules.SegmentRule{
 		Name:        "N4",
 		Description: "AMBULANCE PICK-UP LOCATION CITY/STATE/ZIP - 2310E",
+		Mask:        rules.MASK_REQUIRED,
 		Elements: rules.ElementSetRule{
 			"02": {Mask: rules.MASK_OPTIONAL},
 			"03": {Mask: rules.MASK_OPTIONAL},
@@ -1512,7 +1514,7 @@ var L2330CRule = rules.SegmentSetRule{
 		Mask:        rules.MASK_REQUIRED,
 		RepeatCount: 3,
 		Elements: rules.ElementSetRule{
-			"01": {AcceptValues: []string{"0B", "1G", "G2"}},
+			"01": {Mask: rules.MASK_REQUIRED, AcceptValues: []string{"0B", "1G", "G2"}},
 		},
 	},
 }
@@ -1539,7 +1541,7 @@ var L2330DRule = rules.SegmentSetRule{
 		Mask:        rules.MASK_REQUIRED,
 		RepeatCount: 3,
 		Elements: rules.ElementSetRule{
-			"01": {AcceptValues: []string{"0B", "IG", "G2", "LU"}},
+			"01": {AcceptValues: []string{"0B", "1G", "G2", "LU"}},
 		},
 	},
 }
