@@ -2628,7 +2628,7 @@ var GroupRule = rules.GroupRule{
 }
 
 var InterchangeRule = rules.InterchangeRule{
-	Name: "837D(005010X224A2)",
+	Name: "837P(005010X222A1)",
 	ISA: rules.SegmentRule{
 		Name:        "ISA",
 		Description: "INTERCHANGE CONTROL HEADER",
