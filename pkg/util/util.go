@@ -103,13 +103,13 @@ func DumpStructInfo(r any, level int) ElementInfo {
 			} else if elm.Kind() == reflect.Struct {
 				method := elm.MethodByName("String")
 				if method.IsValid() {
-					response := method.Call(nil)
+					response := method.Call(nil) //nolint:forbidigo // reflect.Value.Call for String()
 					info.Items = append(info.Items, response[0].String())
 				}
 			} else if elm.Kind() == reflect.Ptr && !elm.IsNil() {
 				method := reflect.ValueOf(elm.Interface()).MethodByName("String")
 				if method.IsValid() {
-					response := method.Call(nil)
+					response := method.Call(nil) //nolint:forbidigo // reflect.Value.Call for String()
 					info.Items = append(info.Items, response[0].String())
 				}
 			}

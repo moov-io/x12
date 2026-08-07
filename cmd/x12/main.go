@@ -165,7 +165,7 @@ func describeFile(paths []string, rule rules.InterchangeRule, validateFlag bool)
 		}
 
 		if validateFlag {
-			if f.Validate() == nil {
+			if err := f.Validate(); err == nil {
 				fmt.Fprintf(os.Stdout, "The edi file is valid(%s)\n", path)
 			} else {
 				fmt.Fprintf(os.Stdout, "Failed to validate edi(%s): %v\n", path, err)
