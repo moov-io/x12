@@ -89,10 +89,9 @@ func (r *FunctionalGroup) Validate(groupRule *rules.GroupRule) error {
 		}
 
 		// compare number of transaction set
-		if v, conErr := strconv.ParseInt(r.GE.NumberOfTransactionSet, 10, 32); conErr == nil {
-			if v != int64(len(r.TransactionSets)) {
-				return errors.New("has invalid number of transaction set")
-			}
+		v, conErr := strconv.ParseInt(r.GE.NumberOfTransactionSet, 10, 32)
+		if conErr != nil || v != int64(len(r.TransactionSets)) {
+			return errors.New("has invalid number of transaction set")
 		}
 	}
 

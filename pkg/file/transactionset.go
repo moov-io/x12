@@ -79,10 +79,12 @@ func (r *TransactionSet) Validate(transRule *rules.TransactionRule) error {
 		segmentCnt += len(r.Composite.GetSegments())
 
 		// compare number of segments
-		if v, conErr := strconv.ParseInt(r.SE.NumberOfSegments, 10, 32); conErr == nil {
-			if v != int64(segmentCnt) {
-				return errors.New("has invalid number of segments")
-			}
+		v, conErr := strconv.ParseInt(r.SE.NumberOfSegments, 10, 32)
+		if conErr != nil {
+			return errors.New("has invalid number of segments")
+		}
+		if v != int64(segmentCnt) {
+			return errors.New("has invalid number of segments")
 		}
 	}
 

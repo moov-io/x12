@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/moov-io/x12/pkg/rules"
+	"github.com/moov-io/x12/pkg/segments"
 	"github.com/moov-io/x12/pkg/util"
 	rule "github.com/moov-io/x12/rules/rule_5010_837p"
 	"github.com/stretchr/testify/require"
@@ -226,4 +228,19 @@ GE*1*2120~`
 		require.Equal(t, data, newGroup.String(util.SegmentTerminator, "<"))
 	})
 
+}
+
+func TestGroupRejectsNonNumericTransactionCount(t *testing.T) {
+	g := &FunctionalGroup{
+		GS: segments.GS{GroupControlNumber: "1"},
+		GE: &segments.GE{
+			NumberOfTransactionSet: "XX",
+			GroupControlNumber:     "1",
+		},
+	}
+	err := g.Validate(&rules.GroupRule{
+		GS: rules.SegmentRule{Mask: rules.MASK_OPTIONAL},
+		GE: rules.SegmentRule{Mask: rules.MASK_OPTIONAL},
+	})
+	require.Error(t, err)
 }
