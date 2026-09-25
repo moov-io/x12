@@ -113,10 +113,9 @@ func (r *Interchange) Validate(validateRule *rules.InterchangeRule) error {
 		}
 
 		// compare number of groups
-		if v, conErr := strconv.ParseInt(r.IEA.NumberOfFunctionalGroups, 10, 32); conErr == nil {
-			if v != int64(len(r.FunctionalGroups)) {
-				return errors.New("has invalid number of functional groups")
-			}
+		v, conErr := strconv.ParseInt(r.IEA.NumberOfFunctionalGroups, 10, 32)
+		if conErr != nil || v != int64(len(r.FunctionalGroups)) {
+			return errors.New("has invalid number of functional groups")
 		}
 	}
 

@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/moov-io/x12/pkg/rules"
+	"github.com/moov-io/x12/pkg/segments"
 	"github.com/moov-io/x12/pkg/util"
 	rule "github.com/moov-io/x12/rules/rule_5010_837p"
 	"github.com/stretchr/testify/require"
@@ -228,4 +230,19 @@ IEA*1*000002120~`
 		require.Equal(t, data, newChange.String(util.SegmentTerminator, "<"))
 	})
 
+}
+
+func TestInterchangeRejectsNonNumericGroupCount(t *testing.T) {
+	change := &Interchange{
+		ISA: segments.ISA{InterchangeControlNumber: "1"},
+		IEA: &segments.IEA{
+			NumberOfFunctionalGroups: "XX",
+			InterchangeControlNumber: "1",
+		},
+	}
+	err := change.Validate(&rules.InterchangeRule{
+		ISA: rules.SegmentRule{Mask: rules.MASK_OPTIONAL},
+		IEA: rules.SegmentRule{Mask: rules.MASK_OPTIONAL},
+	})
+	require.Error(t, err)
 }

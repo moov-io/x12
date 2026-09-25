@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/moov-io/x12/pkg/rules"
+	"github.com/moov-io/x12/pkg/segments"
 	"github.com/moov-io/x12/pkg/util"
 	rule "github.com/moov-io/x12/rules/rule_5010_837p"
 	"github.com/stretchr/testify/require"
@@ -224,4 +226,20 @@ SE*191*000000533~`
 		require.Equal(t, data, newTransaction.String(util.SegmentTerminator, "<"))
 	})
 
+}
+
+func TestTransactionSetRejectsNonNumericSegmentCount(t *testing.T) {
+	rule := rules.TransactionRule{
+		ST: rules.SegmentRule{Mask: rules.MASK_OPTIONAL},
+		SE: rules.SegmentRule{Mask: rules.MASK_REQUIRED},
+	}
+	tx := &TransactionSet{
+		ST: segments.ST{TransactionSetControlNumber: "0001"},
+		SE: &segments.SE{
+			NumberOfSegments:            "XX",
+			TransactionSetControlNumber: "0001",
+		},
+	}
+	err := tx.Validate(&rule)
+	require.Error(t, err)
 }
