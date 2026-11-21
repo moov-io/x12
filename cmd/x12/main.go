@@ -13,7 +13,6 @@ import (
 	"path/filepath"
 	"regexp"
 	"runtime/debug"
-	"slices"
 	"sort"
 	"strings"
 
@@ -277,6 +276,15 @@ func readGS08(data string) (string, error) {
 	return "", errors.New("GS segment not found")
 }
 
+func contains(values []string, value string) bool {
+	for _, v := range values {
+		if v == value {
+			return true
+		}
+	}
+	return false
+}
+
 // detectRule finds the built-in rule which accepts the GS08 value of the file.
 // A rule that lists the exact value is used before a rule that matches it with a regex.
 func detectRule(data string) (string, rules.InterchangeRule, error) {
@@ -291,7 +299,7 @@ func detectRule(data string) (string, rules.InterchangeRule, error) {
 		if !ok {
 			continue
 		}
-		if slices.Contains(elm.AcceptValues, gs08) {
+		if contains(elm.AcceptValues, gs08) {
 			exact = append(exact, name)
 			continue
 		}
