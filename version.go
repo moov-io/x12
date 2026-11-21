@@ -4,4 +4,6 @@
 
 package x12
 
-const Version = "v0.0.0"
+// Version is the version of x12. Release builds set it with
+// -ldflags "-X github.com/moov-io/x12.Version=vX.Y.Z".
+var Version = "v0.0.0"
