@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/moov-io/x12/pkg/file"
@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-	reader, err := os.Open(path.Join("examples", "example_5010_835", "sample2.txt"))
+	reader, err := os.Open(samplePath("sample2.txt"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -40,4 +40,14 @@ func main() {
 	newChange.Print(os.Stdout)
 
 	InterchangeRule.Print(os.Stdout, true)
+}
+
+// samplePath returns the path of a sample file. The example can run from
+// the repository root (go run ./examples/example_5010_835) or from its own folder.
+func samplePath(name string) string {
+	path := filepath.Join("examples", "example_5010_835", name)
+	if _, err := os.Stat(path); err == nil {
+		return path
+	}
+	return name
 }
