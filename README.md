@@ -724,6 +724,33 @@ Twitter [@moov](https://twitter.com/moov)	| You can follow Moov.io's Twitter fee
 [GitHub Issue](https://github.com/moov-io/x12/issues/new) | If you are able to reproduce a problem please open a GitHub Issue under the specific project that caused the error.
 [moov-io slack](https://slack.moov.io/) | Join our slack channel (`x12`) to have an interactive discussion about the development of the project.
 
+## Command line
+
+The `x12` command line tool prints EDI files and rules in a human-readable format. Install it with:
+
+```
+go install github.com/moov-io/x12/cmd/x12@latest
+```
+
+Usage:
+
+```
+x12 describe_file [-rule <name>] [-validate] <files>
+x12 describe_rule [-rule <name>] [-required]
+x12 -version
+```
+
+`describe_file` parses and prints each file. With `-validate` it also validates each file. When `-rule` is not given, it uses the built-in rule that accepts the GS08 value of the file. It exits with a non-zero code when a file cannot be read, parsed, or validated.
+
+`describe_rule` prints a rule. The default rule is `5010_837d`. With `-required` it prints only the required segments.
+
+Supported rules: `4010_810`, `4010_820`, `4010_835`, `4010_837i`, `5010_835`, `5010_837d`, `5010_837p`, `stp_820`.
+
+```
+x12 describe_file -validate examples/example_5010_835/sample2.txt
+x12 describe_rule -rule 5010_835 -required
+```
+
 ## Contributing
 
 Yes please! Please review our [Contributing guide](https://github.com/moov-io/ach/blob/master/CONTRIBUTING.md) and [Code of Conduct](https://github.com/moov-io/ach/blob/master/CODE_OF_CONDUCT.md) to get started! Checkout our [issues for first time contributors](https://github.com/moov-io/x12/contribute) for something to help out with.

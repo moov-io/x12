@@ -1,5 +1,8 @@
 PLATFORM=$(shell uname -s | tr '[:upper:]' '[:lower:]')
-VERSION := $(shell grep -Eo '(v[0-9]+[\.][0-9]+[\.][0-9]+(-[a-zA-Z0-9]*)?)' version.go)
+ifndef VERSION
+	VERSION := $(shell git describe --tags --abbrev=0 2>/dev/null || echo v0.0.0)
+endif
+LDFLAGS := -X github.com/moov-io/x12.Version=$(VERSION)
 
 USERID := $(shell id -u $$USER)
 GROUPID:= $(shell id -g $$USER)
@@ -17,9 +20,9 @@ endif
 
 dist: clean
 ifeq ($(OS),Windows_NT)
-	CGO_ENABLED=1 GOOS=windows go build -o bin/x12.exe github.com/moov-io/x12/cmd/x12
+	CGO_ENABLED=1 GOOS=windows go build -ldflags "$(LDFLAGS)" -o bin/x12.exe github.com/moov-io/x12/cmd/x12
 else
-	CGO_ENABLED=1 GOOS=$(PLATFORM) go build -o bin/x12-$(PLATFORM)-amd64 github.com/moov-io/x12/cmd/x12
+	CGO_ENABLED=1 GOOS=$(PLATFORM) go build -ldflags "$(LDFLAGS)" -o bin/x12-$(PLATFORM)-amd64 github.com/moov-io/x12/cmd/x12
 endif
 
 .PHONY: clean
